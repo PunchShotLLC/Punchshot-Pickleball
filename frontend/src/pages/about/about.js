@@ -10,6 +10,8 @@ import { display } from '@mui/system';
 import zIndex from "@mui/material/styles/zIndex";
 import { Table } from '@mui/material';
 import Rectangle27 from '../../assets/images/Rectangle27.png';
+import { ImageList } from '@mui/material';
+import scss from '../about/about.scss';
 
 
 //vh - 800
@@ -28,7 +30,7 @@ export const Main = () => {
                 backgroundColor: 'black',
                 width: '50%',
                 height: '77.685%',
-                zIndex: 1,
+                zIndex: 0,
                 alignContent: 'leading',
               }}
             >
@@ -42,25 +44,28 @@ export const Main = () => {
                 width: '50%',
                 height: '77.685%',
                 zIndex: 0,
+                position: "relative"
               }}
             >
-              <Box
-                className = "rightDiv"
+                <Box
+                className = "PurpleBox"
                 sx={{
                   backgroundColor: '#9146D8',
                   width: '92.84%',
                   height: '89.51%',
-                  zIndex: 1,
+                  zIndex: 2,
                   mt: '5.50%',
               }}
               >
               </Box> 
-              <image 
-                src= {Rectangle27}
-                sx={{
-                  zIndex: 2,
-              }}
-              />
+              <img 
+              className="courtPicture"
+              src={Rectangle27}
+              position='relative'
+              width= '98.12%'
+              height='91.29%'
+              zIndex='3'
+                />
             </Box>
         </Box>
     );
