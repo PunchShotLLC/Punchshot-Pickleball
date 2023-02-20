@@ -4,6 +4,10 @@ import './header.scss'
 import Box from '@mui/material/Box';
 import { Stack } from '@mui/material';
 import Divider from '@mui/material/Divider';
+import login from '../../assets/images/login.svg'
+import search from '../../assets/images/search.svg'
+import shop from '../../assets/images/shop.svg'
+import Button from '@mui/material/Button';
 
 const StyledHeader = styled('header')({
     display: 'flex',
@@ -37,7 +41,7 @@ const StyledTitle = styled('header')({
 })
 
 //Height is 241px Width is 1080 px
-//Assumption: screen is 1728 by 898 px
+//Screen is 1728 by 898 px
 
 export default function Header() {
     return (
@@ -57,16 +61,31 @@ export default function Header() {
                     direction='row' 
                     divider={<Divider orientation="vertical" flexItem sx={{border: '0.08em solid #9146D8'}}/>}
                     spacing='5.5%'
-                    sx={{mt: '3.333%'}} //figure out why 'top' does not work for this
+                    sx={{mt: '3.333%', position: 'relative'}}
                 >
-                    <Box>HOME</Box>
+                    <Button variant="text">HOME</Button>
                     <Box>ABOUT</Box>
-                    <Box>WHAT IS PICKLEBALL?</Box>
+                    <Box sx={{display: 'flex', justifyContent: 'center'}}>
+                        <Box>WHAT IS PICKLEBALL?</Box>
+                    </Box>
                     <Box>PLAY</Box>
                     <Box>TOURNAMENTS</Box>
                 </Stack>
             </Box>
-
+            <Box sx={{alignSelf: 'flex-start', display: 'flex', flexDirection: 'column', width: 'fit-content', top: '10.79%', right: '1.458%', position: 'relative'}}>
+                <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center', width: 'fit-content%', justifyContent: 'flex-end'}}>
+                    <Box sx={{whiteSpace: 'nowrap'}}>LOGIN/SIGN UP</Box>
+                    <img className='icon_image'src={login} />
+                </Box>
+                <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center', width: 'fit-content%', justifyContent: 'flex-end', pt: '16.5%'}}>
+                    <Box sx={{whiteSpace: 'nowrap'}}>SEARCH</Box>
+                    <img className='icon_image'src={search} />
+                </Box>
+                <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center', width: 'fit-content%', justifyContent: 'flex-end', pt: '16.5%'}}>
+                    <Box sx={{whiteSpace: 'nowrap'}}>SHOP</Box>
+                    <img className='icon_image'src={shop} />
+                </Box>
+            </Box>
         </StyledHeader>
     )
 }
