@@ -3,6 +3,7 @@ import { alpha, styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
+
   '& .MuiInputBase-input': {
     borderRadius: 10,
     position: 'relative',
@@ -38,7 +39,7 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 export default function CustomizedInputs() {
   return (
     <div>
-          <BootstrapInput fullWidth defaultValue="Enter Zip Code, e.g., 97229" id="zipcodeInput" />
+          <BootstrapInput placeholder="Enter Zip Code, e.g., 97229" fullWidth id="zipcodeInput" />
     </div>
   );
 }
