@@ -11,7 +11,8 @@ const userSchema = new Schema({
     Username:{
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        immutable: true
     },
     Password:{
         type: String,
@@ -26,10 +27,12 @@ const userSchema = new Schema({
     },
     ZipCode:{
         type: String,
+        required: true,
         minLength: 5
     },
     SkillLevel:{
         type: String,
+        required: true,
         enum: ['Novice', 'Intermediate', 'Advanced']
     },
     Bio:{
