@@ -5,16 +5,18 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
     Email:{
         type: String,
-        required: true
-        
+        required: true,
+        unique: true
     },
     Username:{
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     Password:{
         type: String,
-        required: true
+        required: true,
+        minLength: 8
     },
     FirstName:{
         type: String,
@@ -23,10 +25,12 @@ const userSchema = new Schema({
         type: String,
     },
     ZipCode:{
-        type: Number
+        type: String,
+        minLength: 5
     },
     SkillLevel:{
-        type: String
+        type: String,
+        enum: ['Novice', 'Intermediate', 'Advanced']
     },
     Bio:{
         type: String
