@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "url-loader": "^4.1.1"
+  },
+  "dependencies": {
+    "mongoose": "^6.10.0"
   }
 }
