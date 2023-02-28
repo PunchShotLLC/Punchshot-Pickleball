@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import About from './pages/about/about';
+import { About } from './pages/about/about';
 import { Home } from './pages/home/home';
 import Play from './pages/play/play';
 import Tournaments from './pages/tournaments/tournaments';
