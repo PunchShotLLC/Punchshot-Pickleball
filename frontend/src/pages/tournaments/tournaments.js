@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import CustomizedInputs from "./CustomizedInputs";
 import TournamentTable from "./TournamentTable";
 import { alpha } from '@mui/material/styles';
+import AntTab from './AntTab'
 
 
 export const Tournaments = () => {
@@ -80,11 +81,14 @@ export const Tournaments = () => {
                 </Box>
                 <Box 
                     display="flex"
+                    flexDirection="column"
                     justifyContent="center"
                     alignItems="center"
                     paddingTop="3em"
                     paddingBottom="3em"
                 >
+                    <AntTab/>
+
                     <Box
                 sx={{
                     width: "80%",
