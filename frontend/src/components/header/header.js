@@ -8,7 +8,11 @@ import login from "../../assets/images/login.svg";
 import search from "../../assets/images/search.svg";
 import shop from "../../assets/images/shop.svg";
 import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
 
+function homeRedirect() {
+  window.location.href='/'
+}
 const StyledHeader = styled("header")({
   display: "flex",
   flexDirection: "row",
@@ -45,19 +49,21 @@ const StyledTitle = styled("header")({
 export const Header = () => {
   return (
     <StyledHeader>
-      <img className="logo_image" src={logo} alt="logo" />
-      <Box
-        sx={{
-          ml: "auto",
-          mr: "auto",
-          display: "flex",
-          flexDirection: "column",
-          minWidth: "44.9%",
-          position: "relative",
-          top: "19.09%",
-        }}
-      >
-        <StyledTitle>PUNCHSHOT PICKLEBALL</StyledTitle>
+      <Link to="/">
+        <img className="logo_image" src={logo} alt="logo"  />       
+      </Link>
+        <Box
+          sx={{
+            ml: "auto",
+            mr: "auto",
+            display: "flex",
+            flexDirection: "column",
+            minWidth: "44.9%",
+            position: "relative",
+            top: "19.09%",
+          }}
+        >
+        <StyledTitle onClick={homeRedirect}>PUNCHSHOT PICKLEBALL</StyledTitle>
         <Stack
           direction="row"
           divider={
@@ -75,7 +81,7 @@ export const Header = () => {
             height: "auto",
           }}
         >
-          <Button
+          <Button href="/"
             sx={{
               color: "black",
               fontSize: "calc(0.1em + 1vw)",
@@ -90,7 +96,7 @@ export const Header = () => {
           >
             HOME
           </Button>
-          <Button
+          <Button href="/about"
             sx={{
               color: "black",
               fontSize: "calc(0.1em + 1vw)",
@@ -105,7 +111,7 @@ export const Header = () => {
           >
             ABOUT
           </Button>
-          <Button
+          <Button href="/what"
             sx={{
               color: "black",
               fontSize: "calc(0.1em + 1vw)",
@@ -120,7 +126,7 @@ export const Header = () => {
           >
             WHAT IS PICKLEBALL?
           </Button>
-          <Button
+          <Button href="/play"
             sx={{
               color: "black",
               fontSize: "calc(0.1em + 1vw)",
@@ -135,7 +141,7 @@ export const Header = () => {
           >
             PLAY
           </Button>
-          <Button
+          <Button href="/tournaments"
             sx={{
               color: "black",
               fontSize: "calc(0.1em + 1vw)",
@@ -164,7 +170,7 @@ export const Header = () => {
           justifyContent: "space-around",
         }}
       >
-        <Button
+        <Button href="/login"
           sx={{
             display: "flex",
             flexDirection: "row",
@@ -173,7 +179,7 @@ export const Header = () => {
             justifyContent: "flex-end",
           }}
         >
-          <Box
+          <Box 
             sx={{
               whiteSpace: "nowrap",
               color: "black",
@@ -184,7 +190,7 @@ export const Header = () => {
           </Box>
           <img className="icon_image" src={login} />
         </Button>
-        <Button
+        <Button href="/search"
           sx={{
             display: "flex",
             flexDirection: "row",
@@ -205,7 +211,7 @@ export const Header = () => {
           </Box>
           <img className="icon_image" src={search} />
         </Button>
-        <Button
+        <Button href="/shop"
           sx={{
             display: "flex",
             flexDirection: "row",
