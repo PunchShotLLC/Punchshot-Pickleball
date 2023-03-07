@@ -221,12 +221,10 @@ export const Play = () => {
                                 REGISTER TODAY
                                 <img className="icon_image" src={chevronRight}></img>
                             </CustomButton>
-
                         </Box>
                     </Stack>
                 </Box>
             </Box>
-
         </div>
     )
 }
