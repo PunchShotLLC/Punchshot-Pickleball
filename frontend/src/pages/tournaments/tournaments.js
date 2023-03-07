@@ -3,6 +3,9 @@ import { Header } from "../../components/header/header"
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import CustomizedInputs from "./CustomizedInputs";
+import TournamentTable from "./TournamentTable";
+import { alpha } from '@mui/material/styles';
+import AntTab from './AntTab'
 
 
 export const Tournaments = () => {
@@ -75,6 +78,32 @@ export const Tournaments = () => {
                 >
                     <CustomizedInputs/>
                 </Box>
+                </Box>
+                <Box 
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="center"
+                    alignItems="center"
+                    paddingTop="3em"
+                    paddingBottom="3em"
+                >
+                    <AntTab/>
+
+                    <Box
+                sx={{
+                    width: "80%",
+                    paddingLeft: "1em",
+                    paddingRight: "1em",
+                    borderRadius: 4,
+                    backgroundColor: '#ffffff',
+                    border: '3px solid #D5FD51',
+                    '&:hover': {
+                        boxShadow: `${alpha("#ffffff", 0.25)} 0 0 0 0.2rem`,
+                      },
+                }}
+                >
+                        <TournamentTable/>
+                    </Box>
                 </Box>
             </Box>
 

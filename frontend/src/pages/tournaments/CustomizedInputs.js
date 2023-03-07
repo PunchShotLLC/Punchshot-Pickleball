@@ -32,6 +32,7 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
     '&:focus': {
       boxShadow: `${alpha("#ffffff", 0.25)} 0 0 0 0.2rem`,
       borderColor: "D5FD51",
+      
     },
   },
 }));
