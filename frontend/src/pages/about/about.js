@@ -125,13 +125,15 @@ export const About = () => {
                 display: 'inline-flex',
                 flexDirection: "row",
                 justifyContent: 'space-between',
-                pb: '2.75vh'
+                pb: '2.75vh',
+                paddingLeft:'3vw'
               }}
               >
               <img 
               className="downArrow1"
               src={downArrow}
               zIndex= '4'
+
                 />
               <text className="scrollToReadMore"> 
                 SCROLL TO READ MORE

@@ -7,7 +7,7 @@ import { About } from './pages/about/about';
 import { Home } from './pages/home/home';
 import { Play } from './pages/play/play';
 import { Tournaments } from './pages/tournaments/tournaments';
-import What from './pages/what/what';
+import { What } from './pages/what/what';
 
 const router  = createBrowserRouter([
   {
