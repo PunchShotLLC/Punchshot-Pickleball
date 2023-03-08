@@ -281,7 +281,7 @@ export const What = () => {
               sx={{
                 paddingLeft: "4.33%",
                 paddingTop: "1%",
-                fontSize: "calc(1.8em + 1vw)",
+                fontSize: "calc(1.4em + 1vw)",
                 fontWeight: 700,
                 fontFamily: "inter",
                 zIndex: 4,
@@ -328,7 +328,7 @@ export const What = () => {
               sx={{
                 paddingLeft: "4.33%",
                 paddingTop: "1%",
-                fontSize: "calc(1.8em + 1vw)",
+                fontSize: "calc(1.4em + 1vw)",
                 fontWeight: 700,
                 fontFamily: "inter",
                 zIndex: 4,
@@ -375,7 +375,7 @@ export const What = () => {
               sx={{
                 paddingLeft: "4.33%",
                 paddingTop: "1%",
-                fontSize: "calc(1.8em + 1vw)",
+                fontSize: "calc(1.4em + 1vw)",
                 fontWeight: 700,
                 fontFamily: "inter",
                 zIndex: 4,
@@ -422,7 +422,7 @@ export const What = () => {
               sx={{
                 paddingLeft: "4.33%",
                 paddingTop: "1%",
-                fontSize: "calc(1.8em + 1vw)",
+                fontSize: "calc(1.4em + 1vw)",
                 fontWeight: 700,
                 fontFamily: "inter",
                 zIndex: 4,
