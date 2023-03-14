@@ -25,9 +25,11 @@ connection.once('open', () => {
 })
 
 const usersRouter = require('./routes/users');
+const tournamentsRouter = require('./routes/tournaments');
 
 //All routers (middleware) will be placed here
 app.use('/users', usersRouter)
+app.use('/tournaments', tournamentsRouter)
 
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);

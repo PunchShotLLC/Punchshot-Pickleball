@@ -31,6 +31,6 @@ const tournamentSchema = new Schema({
     }
 })
 
-const Tournament = mongoose.model('Tournament', tournamentSchema);//looks for "users" collection in mongodb
+const Tournament = mongoose.model('Tournament', tournamentSchema);//looks for "tournaments" collection in mongodb
 
-module.exports = User;
+module.exports = Tournament;
