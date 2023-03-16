@@ -8,6 +8,8 @@ import { Home } from './pages/home/home';
 import { Play } from './pages/play/play';
 import { Tournaments } from './pages/tournaments/tournaments';
 import { What } from './pages/what/what';
+import { Login } from './components/login/login.js'
+
 
 const router  = createBrowserRouter([
   {
@@ -29,6 +31,10 @@ const router  = createBrowserRouter([
   {
     path: "what",
     element: <What/>
+  },
+  {
+    path:"login",
+    element: <Login render={true}/>
   }
 ]);
 
