@@ -31,6 +31,10 @@ const tournamentsRouter = require('./routes/tournaments');
 app.use('/users', usersRouter)
 app.use('/tournaments', tournamentsRouter)
 
+app.get('/',(req,res) =>{
+    res.json({mssg:'Welcome!'})
+})
+
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);
 });
