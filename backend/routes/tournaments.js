@@ -8,6 +8,6 @@ const {
 
 router.route('/:id').get(getTournament);
 router.post('/add', createTournament);
-router.post('/delete/:id', deleteTournament);
+router.route('/delete/:id').delete(deleteTournament);
 
 module.exports = router;
