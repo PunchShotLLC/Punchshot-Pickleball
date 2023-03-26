@@ -1,6 +1,6 @@
 import React from "react";
 import Box from "@mui/material/Box";
-import { Header } from "../../components/header/header.js";
+import { Header } from "../../components/Header/header.js";
 import { flexbox, height, margin } from "@mui/system";
 import { Divider } from "@mui/material";
 import { alignProperty } from "@mui/material/styles/cssUtils";
@@ -13,7 +13,6 @@ import { Table } from "@mui/material";
 import downArrow from "../../assets/images/image10.png";
 import courtPicture from "../../assets/images/Rectangle27.png";
 import { ImageList } from "@mui/material";
-import scss from "../about/about.scss";
 import { Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import rightArrow from "../../assets/images/rightArrow.svg";
