@@ -1,5 +1,5 @@
 import React from "react"
-import { Header } from "../../components/header/header"
+import { Header } from "../../components/Header/header"
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import CustomizedInputs from "./CustomizedInputs";
@@ -16,7 +16,7 @@ export const Tournaments = () => {
             sx={{
                 position: "absolute",
                 width: "100%",
-                height:"100%",
+                height:"77.69vh",
                 left: "0px",
                 background: "linear-gradient(100.59deg, #A1C038 0%, #000000 100%)"
             }}>
