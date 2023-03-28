@@ -34,8 +34,24 @@ const deleteUser = async (req, res) => {
         })
 } 
 
+
+// update name, email, username, password, content (zipcode, skilllevel, bio, profilephoto)
+const updatePassword = async(req, res) => {
+    const filter = {_id : req.params.id};
+    const update = req.body;
+    await User.findByIdAndUpdate(filter, update, {new : true})
+        .then((doc) => {
+            res.status(200).json(doc);
+        })
+        .catch((error) => {
+            res.status(400).json({error : error.message});
+        })
+}
+
+
 module.exports = {
     getUser,
     createUser,
-    deleteUser
+    deleteUser,
+    updatePassword
 }
