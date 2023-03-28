@@ -3,12 +3,12 @@ import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import { About } from './pages/About/about';
-import { Home } from './pages/Home/home';
-import { Play } from './pages/Play/play';
-import { Tournaments } from './pages/Tournaments/tournaments';
+import { About } from './pages/about/About';
+import { Home } from './pages/home/Home';
+import { Play } from './pages/play/Play';
+import { Tournaments } from './pages/tournaments/Tournaments';
 import { Account } from './pages/Account/account';
-import { What } from './pages/What/what';
+import { What } from './pages/what/What';
 
 const router  = createBrowserRouter([
   {
