@@ -13,6 +13,8 @@ import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 
 const StyledInput = styled(TextField)({
     borderRadius: '1em',
@@ -22,14 +24,28 @@ const StyledInput = styled(TextField)({
     paddingLeft: "1vw"
 });
 
+const StyledSelect = styled(Select)({
+    borderRadius: '1em',
+    border: '3px solid #000000',
+    fontSize: 'calc(0.8vw + 0.1em)',
+    height: "5h",
+    width: "30vw",
+    paddingLeft: "1vw",
+    bottom: "1em"
+});
+
 const StyledLabel = styled('label')({
-    paddingLeft: "1vw"
+    paddingLeft: "1vw",
+    marginBottom: "0.5vh",
 });
 
 export const SignUp = (props) => {
     const [showPassword, setShowPassword] = React.useState(false);
+    const [confirmPassword, setConfirmPassword] = React.useState(false);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+    const handleClickConfirmPassword = () => setConfirmPassword((show) => !show);
 
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
@@ -42,7 +58,7 @@ export const SignUp = (props) => {
                     <img className='.login_x_button' style={{marginTop:"1vw", marginRight:"1vw"}} src={x_button} onClick={() => props.setRender((oldRender) => !oldRender)}></img>
                 </Box>
                 <img height="20%" width="auto" src={logo}></img>
-                <Box sx={{width:"80vw", display:"flex", justifyContent:"space-around"}} >
+                <Box sx={{width:"65vw", display:"flex", justifyContent:"space-between", marginTop:"2vh"}} >
                     <FormControl sx={{width:"30vw"}}>
                         <StyledLabel htmlFor="email">Email<span style={{color:"red"}}>*</span></StyledLabel>
                         <StyledInput id="email" placeholder="email@example.com" required />
@@ -52,7 +68,7 @@ export const SignUp = (props) => {
                         <StyledInput id="firstname" placeholder="John" required />
                     </FormControl>
                 </Box>
-                <Box sx={{width:"80vw", display:"flex", justifyContent:"space-around"}} >
+                <Box sx={{width:"65vw", display:"flex", justifyContent:"space-between", marginTop:"2vh"}} >
                     <FormControl sx={{width:"30vw"}}>
                         <StyledLabel htmlFor="username">Username<span style={{color:"red"}}>*</span></StyledLabel>
                         <StyledInput id="username" placeholder="JohnDoe" required />
@@ -62,7 +78,7 @@ export const SignUp = (props) => {
                         <StyledInput id="lastname" placeholder="Doe" required />
                     </FormControl>
                 </Box>
-                <Box sx={{width:"80vw", display:"flex", justifyContent:"space-around"}} >
+                <Box sx={{width:"65vw", display:"flex", justifyContent:"space-between", marginTop:"2vh"}} >
                     <FormControl sx={{width:"30vw"}}>
                         <StyledLabel htmlFor="password">Password<span style={{color:"red"}}>*</span></StyledLabel>
                         <StyledInput id="password" placeholder="********" required 
@@ -84,26 +100,36 @@ export const SignUp = (props) => {
                         <StyledInput id="zipcode" placeholder="30332" required />
                     </FormControl>
                 </Box>
-                <Box sx={{width:"80vw", display:"flex", justifyContent:"space-around"}} >
+                <Box sx={{width:"65vw", display:"flex", justifyContent:"space-between", marginTop:"2vh"}} >
                     <FormControl sx={{width:"30vw"}}>
                         <StyledLabel htmlFor="confirmpassword">Confirm Password<span style={{color:"red"}}>*</span></StyledLabel>
                         <StyledInput id="confirmpassword" placeholder="********" required 
-                        type={showPassword ? 'text' : 'password'}
+                        type={confirmPassword ? 'text' : 'password'}
                         endAdornment={
                           <InputAdornment position="end">
                             <IconButton
                               aria-label="toggle password visibility"
-                              onClick={handleClickShowPassword}
+                              onClick={handleClickConfirmPassword}
                               onMouseDown={handleMouseDownPassword}
                             >
-                              {showPassword ? <VisibilityOff /> : <Visibility />}
+                              {confirmPassword ? <VisibilityOff /> : <Visibility />}
                             </IconButton>
                           </InputAdornment>
                         }/>
                     </FormControl>
                     <FormControl sx={{width:"30vw"}}>
                         <StyledLabel htmlFor="lastname">Skill Level<span style={{color:"red"}}>*</span></StyledLabel>
-                        <StyledInput id="lastname" placeholder="Novice, Intermediate, Advanced" required />
+                        <StyledSelect variant="standard" disableUnderline id="lastname" placeholder='Novice, Intermediate, Advanced' required >
+                            <MenuItem key="Novice" value="Novice">Novice</MenuItem>
+                            <MenuItem key="Intermediate" value="Intermediate">Intermediate</MenuItem>
+                            <MenuItem key="Advanced" value="Advanced">Advanced</MenuItem>
+                        </StyledSelect>
+                    </FormControl>
+                </Box>
+                <Box sx={{width:"65vw", display:"flex", justifyContent:"space-between", marginTop:"2vh"}} >
+                    <FormControl sx={{width:"30vw"}}>
+                        <StyledLabel htmlFor="bio">Bio</StyledLabel>
+                        <StyledInput multiline rows={4} sx={{width: "65vw"}} id="bio" placeholder="John Doe is an avid pickleball athlete, competing in open tournaments in the greater Atlanta area since 2013. His  favorite place to play is in his hometown, Portland. He’s looking forward to competing against you!  " required />
                     </FormControl>
                 </Box>
                 <Button variant='contained' color='secondary'>Create Account</Button>
