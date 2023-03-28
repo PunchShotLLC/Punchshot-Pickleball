@@ -25,7 +25,7 @@ const StyledTabs = styled((props) => (
 
 
 
-export default function CustomizedTabs({data, color}) {
+export default function CustomizedTabs(props) {
 
   const [value, setValue] = React.useState(0);
 
@@ -39,7 +39,7 @@ export default function CustomizedTabs({data, color}) {
       color: '#000000',
       '&.Mui-selected': {
         color: '#fff',
-        backgroundColor: color,
+        backgroundColor: props.color,
         borderTopLeftRadius: '.8rem',
         borderTopRightRadius: '.8rem'
   
@@ -61,8 +61,8 @@ export default function CustomizedTabs({data, color}) {
           value={value}
           onChange={handleChange}
         >
-          {data.map((tab) => (
-            <StyledTab label={tab.name} key={tab.id*1000} />
+          {props.data.map((tab) => (
+            <StyledTab label={tab.name} key={tab.id*1000}  onClick={() => props.handleCallback(tab.id)}  />
           ))}
         </StyledTabs>
         <Box />
