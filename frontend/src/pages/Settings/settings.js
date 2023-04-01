@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import { styled } from "@mui/system";
 import * as React from 'react';
 import { useState } from "react";
-import Tabs from '../../components/Tabs/tabs.js'
+import Tabs from '../../components/Tabs/Tabs.js'
 import { alpha } from '@mui/material/styles';
 import General from "./general.js";
 import Privacy from "./privacy.js";
@@ -28,10 +28,6 @@ export const Settings = () => {
   ])
     const [value, setValue] = React.useState(0);
 
-    const handleChange = (event, newValue) => {
-        console.log(newValue);
-        setValue(newValue);
-    };
 
     return (
         <Box
