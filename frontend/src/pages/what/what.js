@@ -1,6 +1,6 @@
 import React from "react";
 import Box from "@mui/material/Box";
-import { Header } from "../../components/Header/header";
+import { Header } from "../../components/header/header";
 import { flexbox, height, margin } from "@mui/system";
 import { Divider } from "@mui/material";
 import { alignProperty } from "@mui/material/styles/cssUtils";

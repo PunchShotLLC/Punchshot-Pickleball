@@ -1,4 +1,4 @@
-import { Header } from "../../components/Header/header";
+import { Header } from "../../components/header/header";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
@@ -7,17 +7,16 @@ import { requirePropFactory } from "@mui/material";
 import home from "../../assets/images/home.svg";
 import { styled } from "@mui/system";
 import "./home.css";
-import { Login } from '../../components/login/login.js'
-import React, { useState } from 'react';
+import { Login } from "../../components/login/login.js";
+import React, { useState } from "react";
 
 export const Home = () => {
-
-  const [renderLoginPopup, setRenderLoginPopup] = React.useState(false)
+  const [renderLoginPopup, setRenderLoginPopup] = React.useState(false);
 
   return (
     <Box>
-      <Login render={renderLoginPopup} setRender={setRenderLoginPopup}/>
-      <Header setRender={setRenderLoginPopup}/>
+      <Login render={renderLoginPopup} setRender={setRenderLoginPopup} />
+      <Header setRender={setRenderLoginPopup} />
       <Box sx={{ display: "flex", width: "100vw", height: "53vh" }}>
         <Box sx={{ width: "100vw", height: "53vh", display: "flex" }}>
           <Box
