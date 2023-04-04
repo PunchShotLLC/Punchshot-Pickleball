@@ -3,15 +3,12 @@ import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import { About } from './pages/About/about.js';
-import { Home } from './pages/Home/home.js';
-import { Play } from './pages/Play/play.js';
-import { Tournaments } from './pages/Tournaments/tournaments.js';
-import { What } from './pages/What/what.js';
-import { Login } from './components/login/login.js'
+import { About } from './pages/about/About';
+import { Home } from './pages/home/Home';
+import { Play } from './pages/play/Play';
+import { Tournaments } from './pages/tournaments/Tournaments';
 import { Account } from './pages/Account/account';
-import { SignUp } from './components/SignUp/signup.js';
-
+import { What } from './pages/what/What';
 
 const router  = createBrowserRouter([
   {
