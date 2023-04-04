@@ -7,11 +7,17 @@ import { requirePropFactory } from "@mui/material";
 import home from "../../assets/images/home.svg";
 import { styled } from "@mui/system";
 import "./home.css";
+import { Login } from '../../components/login/login.js'
+import React, { useState } from 'react';
 
 export const Home = () => {
+
+  const [renderLoginPopup, setRenderLoginPopup] = React.useState(false)
+
   return (
     <Box>
-      <Header />
+      <Login render={renderLoginPopup} setRender={setRenderLoginPopup}/>
+      <Header setRender={setRenderLoginPopup}/>
       <Box sx={{ display: "flex", width: "100vw", height: "53vh" }}>
         <Box sx={{ width: "100vw", height: "53vh", display: "flex" }}>
           <Box
