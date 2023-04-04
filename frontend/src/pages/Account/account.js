@@ -1,4 +1,4 @@
-import { Header } from "../../components/Header/header.js";
+import { Header } from "../../components/Header/header";
 import { Profile } from "../Profile/profile.js";
 import { Upcoming } from "../Upcoming/upcoming.js";
 import { League } from "../League/league.js";

@@ -1,6 +1,6 @@
 import React from "react";
 import Box from "@mui/material/Box";
-import { Header } from "../../components/Header/header.js";
+import { Header } from "../../components/Header/header";
 import { flexbox, height, margin } from "@mui/system";
 import { Divider } from "@mui/material";
 import { alignProperty } from "@mui/material/styles/cssUtils";
@@ -45,10 +45,7 @@ export const What = () => {
             width: "100%",
           }}
         >
-          <Grid
-            container
-            spacing={1.8}
-          >
+          <Grid container spacing={1.8}>
             <Box
               className="LeftSectionTop"
               sx={{
@@ -245,7 +242,6 @@ export const What = () => {
                 height="92%"
                 align="center"
               />
-
             </Box>
           </Grid>
         </Box>

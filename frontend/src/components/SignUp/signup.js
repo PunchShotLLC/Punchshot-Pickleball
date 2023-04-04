@@ -130,7 +130,7 @@ export const SignUp = (props) => {
                 <Box sx={{width:"65vw", display:"flex", justifyContent:"space-between", marginTop:"2vh"}} >
                     <FormControl sx={{width:"30vw"}}>
                         <StyledLabel htmlFor="bio">Bio</StyledLabel>
-                        <StyledInput multiline rows={4} sx={{width: "65vw"}} id="bio" placeholder="John Doe is an avid pickleball athlete, competing in open tournaments in the greater Atlanta area since 2013. His  favorite place to play is in his hometown, Portland. He’s looking forward to competing against you!  " />
+                        <StyledInput multiline rows={4} sx={{width: "65vw"}} id="bio" placeholder="John Doe is an avid pickleball athlete, competing in open tournaments in the greater Atlanta area since 2013. His favorite place to play is in his hometown, Portland. He’s looking forward to competing against you!  " />
                     </FormControl>
                 </Box>
                 <Box sx={{display:"flex", justifyContent:"space-between", width:"65vw", height:"auto", marginTop:"2vh"}}>

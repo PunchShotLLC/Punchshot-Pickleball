@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import * as React from 'react';
-import Tabs from '../../components/Tabs/Tabs.js'
+import Tabs from '../../components/Tabs/tabs.js'
 import { alpha } from '@mui/material/styles';
 
 

@@ -1,4 +1,4 @@
-import { Header } from "../../components/Header/header.js";
+import { Header } from "../../components/Header/header";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
