@@ -40,7 +40,21 @@ const userSchema = new Schema({
     },
     ProfilePhoto:{
         type: String
-    }
+    },
+    Friends: [{
+        Id: {
+            type: Number
+        },
+        FirstName: {
+            type: String
+        },
+        LastName: {
+            type: String
+        },
+        ProfilePhoto: {
+            type: String
+        }
+    }]
 });
 
 const User = mongoose.model('User', userSchema);//looks for "users" collection in mongodb
