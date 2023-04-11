@@ -28,18 +28,18 @@ const buttonTheme = createTheme({
 export const Login = (props) => {
     // const { dispatch } = useAuthContext()
 
-    const [userName, setUserName] = useState('')
-    const [password, setPassword] = useState('')
+    const [Username, setUsername] = useState('')
+    const [Password, setPassword] = useState('')
     const {signup, error, isLoading} = useSignup()
 
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        console.log(userName)
-        console.log(password)
+        console.log(Username)
+        console.log(Password)
         const response = await fetch('http://localhost:5001/users/login', {
             method: 'POST',
-            body: JSON.stringify({ userName, password })
+            body: JSON.stringify({ 'Username': Username, 'Password': Password })
         });
         console.log(response)
         const json = await response.json()
@@ -48,10 +48,10 @@ export const Login = (props) => {
     
     const handleCreate = async (e) => {
         e.preventDefault();
-        console.log(userName, password)
+        console.log(Username, Password)
         const response = await fetch('http://localhost:5001/users/add', {
             method: 'POST',
-            body: JSON.stringify({ userName, password })
+            body: JSON.stringify({ "Username": Username, "Password": Password })
         });
         console.log(response)
         const json = await response.json()
@@ -67,13 +67,13 @@ export const Login = (props) => {
                     <Typography align="center" sx={{ position: 'relative', mt: "10%" }}>Log into your account, or sign up here!</Typography>
                     <div className="login_input">
                         <CustomInput 
-                                text={userName}                               
-                                varChange={(e) => setUserName(e.target.value)}
+                                text={Username}                               
+                                varChange={(e) => setUsername(e.target.value)}
                                 />
                     </div>
                     <div className="login_input">
                         <CustomInput 
-                                text={password}
+                                text={Password}
                                 varChange={(e) => setPassword(e.target.value)}
                                 />
                     </div>
