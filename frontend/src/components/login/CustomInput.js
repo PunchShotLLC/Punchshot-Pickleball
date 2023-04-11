@@ -36,10 +36,10 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function CustomizedInputs({ text }) {
+export default function CustomizedInputs({ text , varChange }) {
   return (
     <div>
-          <BootstrapInput label='password' placeholder={text} fullWidth id="zipcodeInput" />
+          <BootstrapInput label='password' placeholder={text} onChange={varChange} fullWidth id="zipcodeInput" />
     </div>
   );
 }
