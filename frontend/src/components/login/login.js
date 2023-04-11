@@ -38,94 +38,58 @@ export const Login = (props) => {
         console.log(Username)
         console.log(Password)
 
-        /**
-         * fetch("http://localhost:5001/users/login", {
-            "headers": {
-                "accept": "*",
-                "accept-language": "en-US,en;q=0.9",
-                "content-type": "text/plain;charset=UTF-8",
-                "sec-ch-ua": "\"Google Chrome\";v=\"111\", \"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"111\"",
-                "sec-ch-ua-mobile": "?0",
-                "sec-ch-ua-platform": "\"macOS\"",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-site"
-            },
-            "referrer": "http://localhost:3000/",
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": "{\"Username\":\"testUser\",\"Password\":\"changedPassword\"}",
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "omit"
-            });
-            
-            fetch("http://localhost:5001/users/login", {
-                "headers": {
-                    "accept": "*",
-                    "accept-language": "en-US,en;q=0.9",
-                    "content-type": "text/plain;charset=UTF-8",
-                    "sec-ch-ua": "\"Google Chrome\";v=\"111\", \"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"111\"",
-                    "sec-ch-ua-mobile": "?0",
-                    "sec-ch-ua-platform": "\"macOS\"",
-                    "sec-fetch-dest": "empty",
-                    "sec-fetch-mode": "cors",
-                    "sec-fetch-site": "same-site",
-                    "Referer": "http://localhost:3000/",
-                    "Referrer-Policy": "strict-origin-when-cross-origin"
-                },
-                "body": "{\"Username\":\"testUser\",\"Password\":\"changedPassword\"}",
-                "method": "POST"
-                });
+        let errorBool = false; 
+        let response = null;
 
-                handleLogin @ http://localhost:3000/static/js/bundle.js:2267
-                callCallback @ http://localhost:3000/static/js/bundle.js:47205
-                invokeGuardedCallbackDev @ http://localhost:3000/static/js/bundle.js:47249
-                invokeGuardedCallback @ http://localhost:3000/static/js/bundle.js:47306
-                invokeGuardedCallbackAndCatchFirstError @ http://localhost:3000/static/js/bundle.js:47320
-                executeDispatch @ http://localhost:3000/static/js/bundle.js:51464
-                processDispatchQueueItemsInOrder @ http://localhost:3000/static/js/bundle.js:51490
-                processDispatchQueue @ http://localhost:3000/static/js/bundle.js:51501
-                dispatchEventsForPlugins @ http://localhost:3000/static/js/bundle.js:51510
-                (anonymous) @ http://localhost:3000/static/js/bundle.js:51670
-                batchedUpdates$1 @ http://localhost:3000/static/js/bundle.js:66062
-                batchedUpdates @ http://localhost:3000/static/js/bundle.js:47053
-                dispatchEventForPluginEventSystem @ http://localhost:3000/static/js/bundle.js:51669
-                dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ http://localhost:3000/static/js/bundle.js:49175
-                dispatchEvent @ http://localhost:3000/static/js/bundle.js:49169
-                dispatchDiscreteEvent @ http://localhost:3000/static/js/bundle.js:49146
-
-                POST /users/login HTTP/1.1
-
-         */
         try {
             var raw = JSON.stringify({
                 "Username": Username,
                 "Password": Password
               });
             
-            const response = await fetch('http://localhost:5001/users/login', {
+            response = await fetch('http://localhost:5001/users/login', {
                 method: 'POST',
                 body: raw,
                 headers: {
                     'Content-Type': 'application/json'
                   }
             });
-            console.log(response)
-            const json = await response.json()
+
+            // console.log(response)
+            const json = await response.json();
             console.log(json)
-            console.log("logged in");
+
+            if (json.error == "Incorrect password") {
+                console.log("wrong password");
+            } else {
+                console.log("logged in");
+
+            }
+            
+            
         } catch (err) {
+            errorBool = true;
             console.log(err.message);
         }
+
 
     }
     
     const handleCreate = async (e) => {
         e.preventDefault();
         console.log(Username, Password)
+
+        var raw = JSON.stringify({
+            "Username": Username,
+            "Password": Password
+          });
+
         const response = await fetch('http://localhost:5001/users/add', {
             method: 'POST',
-            body: JSON.stringify({ "Username": Username, "Password": Password })
+            body: raw,
+            headers: {
+                'Content-Type': 'application/json'
+              }
         });
         console.log(response)
         const json = await response.json()
