@@ -1,4 +1,6 @@
 let User = require('../models/user.model');
+const bcrypt = require('bcrypt')
+var jwt = require("jsonwebtoken");
 
 // get user w id
 const getUser = async (req, res) => {
@@ -9,6 +11,40 @@ const getUser = async (req, res) => {
         .catch((error) => {
             res.status(400).json({error: error.message});
         })
+}
+
+const createToken = (_id) => {
+    return jwt.sign({_id}, process.env.SECRET, { expiresIn: '3d' })
+}
+
+//get user with username, password
+const loginUser = async(req, res) =>{
+    const {Username, Password} = req.body;
+    
+    try{
+        if (!Username || !Password) {
+            throw Error('All fields must be filled')
+        }
+        const user = await User.findOne({Username})
+        if (!user) {
+            throw Error('Incorrect email')
+        }/*  
+        const match = await bcrypt.compare(Password, user.Password)     
+        if (!match) {
+            throw Error('Incorrect password')
+        }*/
+        const match = (Password === user.Password)
+        if (!match) {
+            throw Error('Incorrect password')
+        }
+        const token = createToken(user._id)
+        //const p = user.Password
+        res.status(200).json({Username, token})
+        //res.status(200).json({p})
+    } catch (error){
+        res.status(400).json({error: error.message})
+    }
+
 }
 
 // create new user
@@ -65,5 +101,6 @@ module.exports = {
     getUser,
     createUser,
     deleteUser,
-    updateContent
+    updateContent,
+    loginUser
 }
