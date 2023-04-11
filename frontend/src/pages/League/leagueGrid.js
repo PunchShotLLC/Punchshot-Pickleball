@@ -9,20 +9,20 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 
 const columns = [
-  { id: 'rank', label: 'Rank', minWidth: 100 },
+  { id: 'rank', label: 'Rank', minWidth: 100, align: 'center'},
   { id: 'competition', label: 'Competitor', minWidth: 120 },
   {
     id: 'record',
     label: 'Record',
     minWidth: 100,
-    align: 'right',
+    align: 'center',
     format: (value) => value.toLocaleString('en-US'),
   },
   {
     id: 'winnings',
     label: 'Avg. Opp. Wins',
     minWidth: 100,
-    align: 'right',
+    align: 'center',
     format: (value) => value.toLocaleString('en-US'),
   },
 ];
@@ -33,15 +33,15 @@ function createData(rank, competition, record, winnings) {
 
 const rows = [
   createData(1, 'Atlanta Classic League', '5-0', '------' ),
-  createData(1, 'Marietta Mash League', '5-0', '$500' ),
-  createData(1, 'Punchshot Tournament', '---', '------' ),
-  createData(1, 'USA PickleBall - Atlanta Open', '---', '$15000' ),
-  createData(1, 'Alpharetta Youth League', '3-2', '$100' ),
-  createData(1, 'Atlanta Classic Open - Mixed Doubles', '---', '$1000' ),
-  createData(1, 'Cumming Tournament - Men\'s Singles', '---', '------' ),
-  createData(1, 'Jong Liu Memorial Open - Men\'s Doubles', '---', '$400' ),
-  createData(1, 'Atlanta Tournament - Mixed Doubles', '---', '$250' ),
-  createData(1, 'Harry Schuster\'s Invitational League', '0-5', '------' )
+  createData(2, 'Marietta Mash League', '5-0', '------' ),
+  createData(3, 'Punchshot Tournament', '---', '------' ),
+  createData(4, 'USA PickleBall - Atlanta Open', '---', '------' ),
+  createData(5, 'Alpharetta Youth League', '3-2', '------' ),
+  createData(6, 'Atlanta Classic Open - Mixed Doubles', '---', '------' ),
+  createData(7, 'Cumming Tournament - Men\'s Singles', '---', '------' ),
+  createData(8, 'Jong Liu Memorial Open - Men\'s Doubles', '---', '------' ),
+  createData(9, 'Atlanta Tournament - Mixed Doubles', '---', '------' ),
+  createData(10, 'Harry Schuster\'s Invitational League', '0-5', '------' )
 ];
 
 export default function TournamentTable() {
@@ -59,7 +59,7 @@ export default function TournamentTable() {
 
   return (
     <Paper elevation={0} sx={{ width: '100%', overflow: 'hidden' }}>
-      <TableContainer sx={{ maxHeight: 300 }}>
+      <TableContainer sx={{ maxHeight: 430 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
