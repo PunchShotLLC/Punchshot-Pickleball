@@ -56,7 +56,7 @@ export const League = () => {
         </Box>
       </Box>
 
-      <Box sx={{width: '40vw', height: '77.69vh', display: 'flex', alignItems}}>
+      <Box sx={{width: '40vw', height: '77.69vh', display: 'flex'}}>
       <Typography className="titleText" sx={{ display: "flex", fontSize: 'calc(0.7em + 1vw)', fontWeight: 'bold', pt: '1%', marginLeft: '9vw', marginBottom: '73vh'}}>
           CREATE LEAGUE
         </Typography>
