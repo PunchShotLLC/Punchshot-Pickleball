@@ -60,7 +60,7 @@ export default function TournamentTable() {
 
   return (
     <Paper elevation={0} sx={{ width: '100%', overflow: 'hidden' }}>
-      <TableContainer sx={{ maxHeight: 300 }}>
+      <TableContainer sx={{ maxHeight: '45vh' }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
