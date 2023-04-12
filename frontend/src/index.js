@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
+import { Root } from "./pages/root/root";
 import { About } from "./pages/about/about";
 import { Home } from "./pages/home/home";
 import { Play } from "./pages/play/play";
@@ -15,27 +16,33 @@ import { SignUp } from "./components/SignUp/signup";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <Root />,
+    children: [
+      {
+        path: "",
+        element: <Home />,
+      },
+      {
+        path: "about",
+        element: <About />,
+      },
+      {
+        path: "what",
+        element: <What />,
+      },
+      {
+        path: "play",
+        element: <Play />,
+      },
+      {
+        path: "tournaments",
+        element: <Tournaments />,
+      },
+    ]
   },
   {
     path: "account",
     element: <Account />,
-  },
-  {
-    path: "about",
-    element: <About />,
-  },
-  {
-    path: "play",
-    element: <Play />,
-  },
-  {
-    path: "tournaments",
-    element: <Tournaments />,
-  },
-  {
-    path: "what",
-    element: <What />,
   },
   {
     path: "login",

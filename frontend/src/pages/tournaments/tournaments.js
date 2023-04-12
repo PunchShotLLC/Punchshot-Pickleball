@@ -1,5 +1,4 @@
 import React from "react";
-import { Header } from "../../components/header/header";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import CustomizedInputs from "./CustomizedInputs";
@@ -9,8 +8,7 @@ import AntTab from "./AntTab";
 
 export const Tournaments = () => {
   return (
-    <div>
-      <Header />
+    <Box>
       <Box
         sx={{
           position: "absolute",
@@ -98,6 +96,6 @@ export const Tournaments = () => {
           </Box>
         </Box>
       </Box>
-    </div>
+    </Box>
   );
 };

@@ -1,6 +1,5 @@
 import React from "react";
 import Box from "@mui/material/Box";
-import { Header } from "../../components/header/header";
 import { flexbox, height, margin } from "@mui/system";
 import { Divider } from "@mui/material";
 import { alignProperty } from "@mui/material/styles/cssUtils";
@@ -25,7 +24,6 @@ import Button from "@mui/material/Button";
 export const What = () => {
   return (
     <Box>
-      <Header />
       <Box
         sx={{
           backgroundColor: "black",
