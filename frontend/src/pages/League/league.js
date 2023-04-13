@@ -79,22 +79,22 @@ export const League = () => {
         </Box>
       </Box>
 
-      <Box sx={{width: '40vw', height: '77.69vh', display: 'flex'}}>
-      <Typography className="titleText" sx={{ display: "flex", fontSize: 'calc(0.7em + 1vw)', fontWeight: 'bold', pt: '1%', marginLeft: '9vw', marginBottom: '73vh'}}>
+      <Box sx={{width: '40vw', height: '77.69vh', display:"flex", justifyContent:"space-between", alignItems: 'flex-start',
+          flexDirection: 'column'}}>
+        <Typography className="titleText" sx={{ display: "flex", fontSize: 'calc(0.7em + 1vw)', fontWeight: 'bold', pt: '1%'}}>
           CREATE LEAGUE
         </Typography>
-        <Box sx={{height:"20vh", display:"flex", justifyContent:"space-between", marginTop:"2vh", alignItems: 'flex-start',
-          flexDirection: 'column',}} >
-                    <FormControl sx={{height:"10vw"}}>
-                        <StyledLabel htmlFor="email">Email<span style={{color:"red"}}>*</span></StyledLabel>
-                        <StyledInput id="email" placeholder="email@example.com" required />
+        <Box sx={{height:"70vh", width:'40vw', marginLeft:'8vw'}} >
+                    <FormControl sx={{height:"5vw"}}>
+                        <StyledLabel htmlFor="leagueName">League Name<span style={{color:"red"}}>*</span></StyledLabel>
+                        <StyledInput id="leagueName" placeholder="Atlanta Leagueg" required />
                     </FormControl>
-                    <FormControl sx={{height:"10vw"}}>
-                        <StyledLabel htmlFor="firstname">First Name<span style={{color:"red"}}>*</span></StyledLabel>
-                        <StyledInput id="firstname" placeholder="John" required />
+                    <FormControl sx={{height:"5vw"}}>
+                        <StyledLabel htmlFor="nbCompetitors">Number of Competitors<span style={{color:"red"}}>*</span></StyledLabel>
+                        <StyledInput id="nbCompetitors" placeholder="5" required />
                     </FormControl>
-                </Box>
-        </Box>
+          </Box>
+      </Box>
        
     </Box>
   );
