@@ -58,8 +58,8 @@ export default function TournamentTable() {
   };
 
   return (
-    <Paper elevation={0} sx={{ width: '100%', overflow: 'hidden' }}>
-      <TableContainer sx={{ maxHeight: 430 }}>
+    <Paper elevation={0} sx={{ width: '100%', overflow: 'hidden'}}>
+      <TableContainer sx={{ maxHeight: 430}}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -71,7 +71,8 @@ export default function TournamentTable() {
                     minWidth: column.minWidth,
                     fontFamily: "Inter",
                     fontWeight: 700,
-                    fontSize: 'calc(0.3em + 1vw)'
+                    fontSize: 'calc(0.3em + 1vw)',
+                    borderLeft:'1px solid rgba(145, 70, 216, 1)'
                    }}
                 >
                   {column.label}
@@ -93,7 +94,8 @@ export default function TournamentTable() {
                           align={column.align}
                           style={{ 
                             fontFamily: "Inter",
-                            fontWeight: 400
+                            fontWeight: 400,
+                            borderLeft:'1px solid rgba(145, 70, 216, 1)'
                            }}
                           >
                           {column.format && typeof value === 'number'
