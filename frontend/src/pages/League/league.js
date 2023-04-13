@@ -84,14 +84,34 @@ export const League = () => {
         <Typography className="titleText" sx={{ display: "flex", fontSize: 'calc(0.7em + 1vw)', fontWeight: 'bold', pt: '1%'}}>
           CREATE LEAGUE
         </Typography>
-        <Box sx={{height:"70vh", width:'40vw', marginLeft:'8vw'}} >
-                    <FormControl sx={{height:"5vw"}}>
-                        <StyledLabel htmlFor="leagueName">League Name<span style={{color:"red"}}>*</span></StyledLabel>
+        <Box sx={{height:"70vh", width:'40vw', marginLeft:'5vw', borderLeft:'2px solid rgba(145, 70, 216, 1)'}} >
+                    <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
+                        <StyledLabel htmlFor="leagueName">League Name <span style={{color:"red"}}>*</span></StyledLabel>
                         <StyledInput id="leagueName" placeholder="Atlanta Leagueg" required />
                     </FormControl>
-                    <FormControl sx={{height:"5vw"}}>
-                        <StyledLabel htmlFor="nbCompetitors">Number of Competitors<span style={{color:"red"}}>*</span></StyledLabel>
+                    <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
+                        <StyledLabel htmlFor="nbCompetitors">Number of Competitors <span style={{color:"red"}}>*</span></StyledLabel>
                         <StyledInput id="nbCompetitors" placeholder="5" required />
+                    </FormControl>
+                    <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
+                        <StyledLabel htmlFor="skillLevel">Skill Level <span style={{color:"red"}}>*</span></StyledLabel>
+                        <StyledInput id="skillLevel" placeholder="Beginner" required />
+                    </FormControl>
+                    <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
+                        <StyledLabel htmlFor="zipCode">Zip Code <span style={{color:"red"}}>*</span></StyledLabel>
+                        <StyledInput id="zipCode" placeholder="30332" required />
+                    </FormControl>
+                    <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
+                        <StyledLabel htmlFor="city">City <span style={{color:"red"}}>*</span></StyledLabel>
+                        <StyledInput id="city" placeholder="Atlanta" required />
+                    </FormControl>
+                    <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
+                        <StyledLabel htmlFor="prize">Prize </StyledLabel>
+                        <StyledInput id="prize" placeholder="$1000" required />
+                    </FormControl>
+                    <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
+                        <StyledLabel htmlFor="email">Email <span style={{color:"red"}}>*</span></StyledLabel>
+                        <StyledInput id="email" placeholder="email@example.com" required />
                     </FormControl>
           </Box>
       </Box>
