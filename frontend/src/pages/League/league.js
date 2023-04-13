@@ -9,10 +9,33 @@ import '@fontsource/inter/200.css';
 import '@fontsource/inter/400.css';
 import '@fontsource/inter/700.css';
 import LeagueGrid from "./leagueGrid.js";
-import Grid from '@mui/material/Grid';
-import CustomizedInputs from "../../components/login/CustomInput";
+import { styled } from '@mui/material/styles';
+import TextField from '@mui/material/InputBase';
+import { FormControl } from '@mui/material';
+import Select from '@mui/material/Select';
 
+const StyledInput = styled(TextField)({
+  borderRadius: '1em',
+  border: '3px solid #000000',
+  fontSize: 'calc(0.8vw + 0.1em)',
+  width: "30vw",
+  paddingLeft: "1vw"
+});
 
+const StyledSelect = styled(Select)({
+  borderRadius: '1em',
+  border: '3px solid #000000',
+  fontSize: 'calc(0.8vw + 0.1em)',
+  height: "5h",
+  width: "30vw",
+  paddingLeft: "1vw",
+  bottom: "1em"
+});
+
+const StyledLabel = styled('label')({
+  paddingLeft: "1vw",
+  marginBottom: "0.5vh",
+});
 
 export const League = () => {
   return (
@@ -60,7 +83,17 @@ export const League = () => {
       <Typography className="titleText" sx={{ display: "flex", fontSize: 'calc(0.7em + 1vw)', fontWeight: 'bold', pt: '1%', marginLeft: '9vw', marginBottom: '73vh'}}>
           CREATE LEAGUE
         </Typography>
-
+        <Box sx={{height:"20vh", display:"flex", justifyContent:"space-between", marginTop:"2vh", alignItems: 'flex-start',
+          flexDirection: 'column',}} >
+                    <FormControl sx={{height:"10vw"}}>
+                        <StyledLabel htmlFor="email">Email<span style={{color:"red"}}>*</span></StyledLabel>
+                        <StyledInput id="email" placeholder="email@example.com" required />
+                    </FormControl>
+                    <FormControl sx={{height:"10vw"}}>
+                        <StyledLabel htmlFor="firstname">First Name<span style={{color:"red"}}>*</span></StyledLabel>
+                        <StyledInput id="firstname" placeholder="John" required />
+                    </FormControl>
+                </Box>
         </Box>
        
     </Box>
