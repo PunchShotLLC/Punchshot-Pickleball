@@ -72,7 +72,6 @@ export default function TournamentTable() {
                     fontFamily: "Inter",
                     fontWeight: 700,
                     fontSize: 'calc(0.3em + 1vw)',
-                    borderLeft:'1px solid rgba(145, 70, 216, 1)'
                    }}
                 >
                   {column.label}
@@ -95,7 +94,6 @@ export default function TournamentTable() {
                           style={{ 
                             fontFamily: "Inter",
                             fontWeight: 400,
-                            borderLeft:'1px solid rgba(145, 70, 216, 1)'
                            }}
                           >
                           {column.format && typeof value === 'number'
