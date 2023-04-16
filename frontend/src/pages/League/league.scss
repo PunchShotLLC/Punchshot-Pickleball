@@ -20,3 +20,12 @@
 .listFeed {
     align-self: center;
 }
+
+.login_button_grid {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 65.3%;
+    margin-top: 2%;
+  }
