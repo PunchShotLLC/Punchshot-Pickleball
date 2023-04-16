@@ -20,7 +20,16 @@ const createTournament = async(req,res) => {
     const {Tournament_Name, Skill_Level, Divisions_Offered, Entry_Fee, Prize, Registration_Deadline} = req.body;
 
     try {
-        const newTournament = await Tournament.create({Tournament_Name, Skill_Level, Divisions_Offered, Entry_Fee, Prize, Registration_Deadline});
+        const newTournament = await Tournament.create(
+            {
+                Tournament_Name: Tournament_Name,
+                Skill_Level: Skill_Level,
+                Divisions_Offered: Divisions_Offered,
+                Entry_Fee: Entry_Fee,
+                Prize: Prize,
+                Registration_Deadline: Registration_Deadline
+            }
+        );
         //res.json({mssg:"POST a new tournament"})
         res.status(200).json(newTournament);
     } catch (error) {
