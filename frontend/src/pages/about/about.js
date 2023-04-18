@@ -1,6 +1,5 @@
 import React from "react";
 import Box from "@mui/material/Box";
-import { Header } from "../../components/header/header";
 import { flexbox } from "@mui/system";
 import { Divider } from "@mui/material";
 import { alignProperty } from "@mui/material/styles/cssUtils";
@@ -25,7 +24,6 @@ import "@fontsource/inter/700.css";
 export const About = () => {
   return (
     <Box>
-      <Header />
       <Box
         sx={{
           display: "flex",

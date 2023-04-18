@@ -1,5 +1,4 @@
 import React from "react";
-import { Header } from "../../components/header/header";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import CustomizedInputs from "./CustomizedInputs";
@@ -66,8 +65,7 @@ const CustomButton = styled("button")({
 
 export const Play = () => {
   return (
-    <div>
-      <Header />
+    <Box>
       <Box
         sx={{
           position: "absolute",
@@ -216,6 +214,6 @@ export const Play = () => {
           </Stack>
         </Box>
       </Box>
-    </div>
+    </Box>
   );
 };
