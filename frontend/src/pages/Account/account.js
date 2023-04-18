@@ -1,6 +1,7 @@
 import { Header } from "../../components/header/header";
 import { Profile } from "../Profile/profile.js";
 import { Upcoming } from "../Upcoming/upcoming.js";
+import { MyTournaments } from "../MyTournaments/my_tournaments.js";
 import { League } from "../League/league.js";
 import { Results } from "../Results/results.js";
 import { Friends } from "../Friends/friends.js";
@@ -21,7 +22,7 @@ const StyledTab = styled((props) => <Tab disableRipple {...props} />)(
     textTransform: "none",
     fontFamily: "Inter",
     fontSize: "calc(0.5em + 1vw)",
-    marginTop: "5vh",
+    marginTop: "3.5vh",
     marginLeft: "10%",
     color: "white",
   })
@@ -56,6 +57,7 @@ export const Account = () => {
         >
           <StyledTab label="PROFILE" />
           <StyledTab label="UPCOMING" />
+          <StyledTab label="TOURNAMENTS" />
           <StyledTab label="LEAGUE" />
           <StyledTab label="RESULTS" />
           <StyledTab label="FRIENDS" />
@@ -63,10 +65,11 @@ export const Account = () => {
         </Tabs>
         {value === 0 && <Profile />}
         {value === 1 && <Upcoming />}
-        {value === 2 && <League />}
-        {value === 3 && <Results />}
-        {value === 4 && <Friends />}
-        {value === 5 && <Settings />}
+        {value === 2 && <MyTournaments />}
+        {value === 3 && <League />}
+        {value === 4 && <Results />}
+        {value === 5 && <Friends />}
+        {value === 6 && <Settings />}
       </Box>
     </Box>
   );
