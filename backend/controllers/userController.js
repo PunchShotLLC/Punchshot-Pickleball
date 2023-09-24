@@ -1,115 +1,117 @@
-let User = require('../models/user.model');
-const bcrypt = require('bcrypt')
-var jwt = require("jsonwebtoken");
+import User from "../models/user.model.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
-// get user w id
-const getUser = async (req, res) => {
-    const user = await User.findById(req.params.id)
-        .then((doc) => {
-            res.status(200).json(doc)
-        })
-        .catch((error) => {
-            res.status(400).json({error: error.message});
-        })
-}
+const hashPassword = (password) => {
+  return new Promise((resolve, reject) => {
+    bcrypt.genSalt(12, (err, salt) => {
+      if (err) {
+        reject(err);
+      }
+      bcrypt.hash(password, salt, (err, hash) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(hash);
+      });
+    });
+  });
+};
 
-const createToken = (_id) => {
-    return jwt.sign({_id}, process.env.SECRET, { expiresIn: '3d' })
-}
+export const comparePassword = (password, hashedPassword) => {
+  return bcrypt.compare(password, hashedPassword);
+};
 
 //get user with username, password
-const loginUser = async(req, res) =>{
-    const {Username, Password} = req.body;
-    
-    try{
-        // console.log(req.body);
-        // console.log(Username, Password);
-        if (!Username || !Password) {
-            throw Error('All fields must be filled')
-        }
-        const user = await User.findOne({Username})
-        if (!user) {
-            throw Error('Incorrect email')
-        }
-
-        console.log(user);
-          
-        // let match1 = await bcrypt.compare(Password, user.Password)     
-        // if (!match1) {
-        //     throw Error('Incorrect password')
-        // }
-        let match2 = (Password === user.Password)
-        if (!match2) {
-            throw Error('Incorrect password')
-        }
-        // const token = createToken(user._id)
-        // const p = user.Password
-        res.status(200).json({Username, Password})
-        console.log("logged in");
-        // res.status(200).json({p})
-    } catch (error){
-        res.status(400).json({error: error.message})
+export const loginUser = async (req, res) => {
+  try {
+    const { Email, Password } = req.body;
+    // check if our db has user with that email
+    const user = await User.findOne({ Email });
+    if (!user) {
+      return res.json({
+        error: "No user found",
+      });
     }
-
-}
+    // check password
+    const match = await comparePassword(Password, user.Password);
+    if (!match) {
+      return res.json({
+        error: "Wrong password",
+      });
+    }
+    // create signed token
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "5h",
+    });
+    user.Password = undefined;
+    user.secret = undefined;
+    res.json({
+      token,
+      user,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send("Error. Try again.");
+  }
+};
 
 // create new user
-const createUser = async (req, res) => {
-    const {Email, Username, Password, FirstName, LastName, ZipCode, SkillLevel, Bio, ProfilePhoto} = req.body;
+export const createUser = async (req, res) => {
+  const { FirstName, LastName, Email, Password } = req.body;
 
+  console.log(FirstName + " " + LastName + " " + Email + " " + Password);
 
-    // let duplEmail = await User.find({Email : req.body.Email});
-    // let duplUsername = await User.find({Username : req.body.Username});
+  if (!Email) {
+    return res.json({
+      error: "Email is required",
+    });
+  }
+  if (!FirstName) {
+    return res.json({
+      error: "First Name is required",
+    });
+  }
+  if (!LastName) {
+    return res.json({
+      error: "First Name is required",
+    });
+  }
+  if (!Password || Password.length < 6 || Password.length > 20) {
+    return res.json({
+      error: "Password should be between 6 and 20 characters long",
+    });
+  }
+  const exist = await User.findOne({ Email });
+  if (exist) {
+    return res.json({
+      error: "Email already exists",
+    });
+  }
+  const hashedPassword = await hashPassword(Password);
+  try {
+    const user = await new User({
+      Email,
+      Password: hashedPassword,
+      FirstName,
+      LastName,
+    }).save();
 
-    // if (duplUsername.length > 0) { // removed check for duplEmail here - since not in create for now
-    //     res.status(400).json({error : "Duplicate user", "duplUser" : duplUsername});
-    // } else 
-    // {
-        try {
-            // const newUser = await User.create({Email, Username, Password, FirstName, LastName, ZipCode, SkillLevel, Bio, ProfilePhoto});
-            const newUser = await User.create({Username, Password});
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "5h",
+    });
 
-            res.status(200).json(newUser);
-        } catch (error) {
-            res.status(400).json({error: error.message});
-        }
-    // }
-}
+    const { password, ...rest } = user._doc;
+    return res.json({
+      token,
+      user: rest,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+  // }
+};
 
+export const deleteUser = async (req, res) => {};
 
-// delete user by id
-const deleteUser = async (req, res) => {
-    await User.findByIdAndDelete(req.params.id)
-        .then((doc) => {
-            res.status(200).json(doc)
-        })
-        .catch((error) => {
-            res.status(400).json({error: error.message});
-        })
-} 
-
-
-// update name, email, username, password, content (zipcode, skilllevel, bio, profilephoto)
-const updateContent = async(req, res) => {
-    const filter = {_id : req.params.id};
-    const update = req.body;
-    await User.findByIdAndUpdate(filter, update, {new : true})
-        .then((doc) => {
-            res.status(200).json(doc);
-        })
-        .catch((error) => {
-            res.status(400).json({error : error.message});
-        })
-}
-
-
-
-
-
-module.exports = {
-    getUser,
-    createUser,
-    deleteUser,
-    updateContent,
-    loginUser
-}
+export const updateContent = async (req, res) => {};

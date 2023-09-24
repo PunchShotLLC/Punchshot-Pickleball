@@ -1,46 +1,33 @@
-const express = require('express');
-const cors = require('cors');
-const mongoose = require('mongoose');
+import dotenv from "dotenv";
+import express from "express";
+import cors from "cors";
+import mongoose from "mongoose";
 
-require('dotenv').config();
+import morgan from "morgan";
 
 const app = express();
-const port = process.env.PORT || 5001;
+dotenv.config();
 
-app.use(
-    cors({
-      origin: 'http://localhost:3000',
-      credentials: true,
-    })
-  );
+mongoose
+  .connect(process.env.DATABASE)
+  .then(() => console.log("DB connected"))
+  .catch((err) => console.log("DB connection error: ", err));
 
+// middlewares
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+app.use(morgan("dev"));
 
-const uri = process.env.ATLAS_TEST_URI;
-mongoose.connect(uri, {useNewUrlParser: true})
-    .then(() => {
-        console.log("connected to db");
-    })
-    .catch((err) => {
-        console.log(err);
-    })
-
-const connection = mongoose.connection;
-connection.once('open', () => {
-    console.log("MongoDB database connection established successfully");
-})
-
-const usersRouter = require('./routes/users');
-const tournamentsRouter = require('./routes/tournaments');
+import usersRouter from "./routes/users.js";
 
 //All routers (middleware) will be placed here
-app.use('/users', usersRouter)
-app.use('/tournaments', tournamentsRouter)
+app.use("/users", usersRouter);
 
-app.get('/',(req,res) =>{
-    res.json({mssg:'Welcome!'})
-})
+app.get("/", (req, res) => {
+  res.json({ mssg: "Welcome!" });
+});
 
-app.listen(port, () => {
-    console.log(`Server is running on port: ${port}`);
+app.listen(8000, () => {
+  console.log(`Server is running on port 8000`);
 });
