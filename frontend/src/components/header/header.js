@@ -67,6 +67,7 @@ export const Header = (props) => {
                     <Button href='/what' sx={{color:'black', fontSize:'calc(0.1em + 1vw)', padding:'0px', margin:'0px', '&:hover': {color: '#9146D8', fontWeight:'bold', backgroundColor:'transparent'}}}>WHAT IS PICKLEBALL?</Button>
                     <Button href='/play' sx={{color:'black', fontSize:'calc(0.1em + 1vw)', padding:'0px', margin:'0px', '&:hover': {color: '#9146D8', fontWeight:'bold', backgroundColor:'transparent'}}}>PLAY</Button>
                     <Button href='/tournaments' sx={{color:'black', fontSize:'calc(0.1em + 1vw)', padding:'0px', margin:'0px', '&:hover': {color: '#9146D8', fontWeight:'bold', backgroundColor:'transparent'}}}>TOURNAMENTS</Button>
+                    <Button href='/leagues' sx={{color:'black', fontSize:'calc(0.1em + 1vw)', padding:'0px', margin:'0px', '&:hover': {color: '#9146D8', fontWeight:'bold', backgroundColor:'transparent'}}}>LEAGUES</Button>
                 </Stack>
             </Box>
             <Box sx={{alignSelf: 'flex-start', display: 'flex', flexDirection: 'column', width: 'fit-content', top: '10.79%', right: '1.458%', position: 'relative', justifyContent:'space-around', height: '19vh'}}>

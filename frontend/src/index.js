@@ -12,6 +12,7 @@ import { Account } from "./pages/Account/account";
 import { What } from "./pages/what/what";
 import { Login } from "./components/login/login";
 import { SignUp } from "./components/SignUp/signup";
+import { League } from "./pages/League/league";
 
 const router = createBrowserRouter([
   {
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
       {
         path: "tournaments",
         element: <Tournaments />,
+      },
+      {
+        path: "leagues",
+        element: <League />,
       },
     ]
   },
