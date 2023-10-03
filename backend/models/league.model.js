@@ -24,7 +24,6 @@ const leagueSchema = new Schema({
   },
   Teams: {
     type: Array,
-    required: true,
   },
 });
 
