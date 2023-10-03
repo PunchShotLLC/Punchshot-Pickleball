@@ -1,7 +1,7 @@
 import User from "../models/league.model.js";
 import League from "../models/league.model.js";
 
-export const createLeague = async (req, body) => {
+export const createLeague = async (req, res, body) => {
   const {
     LeagueName,
     NumCompetitors,
@@ -67,7 +67,12 @@ export const createLeague = async (req, body) => {
     }).save();
 
     return res.json({ league });
-  } catch {
+  } catch (error) {
     console.log(error);
+    return res.error
   }
 };
+
+export const addTeamToLeague = async (req, res, body) => {
+
+}
