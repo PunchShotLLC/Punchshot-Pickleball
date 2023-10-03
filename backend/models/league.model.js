@@ -38,6 +38,6 @@ const leagueSchema = new Schema({
 
 });
 
-const User = mongoose.model('League', leagueSchema);
+const League = mongoose.model('League', leagueSchema);
 
-module.exports = User;
+module.exports = League;
