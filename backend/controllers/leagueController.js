@@ -2,15 +2,7 @@ import User from "../models/league.model.js";
 import League from "../models/league.model.js";
 
 export const createLeague = async (req, res, body) => {
-  const {
-    LeagueName,
-    NumCompetitors,
-    SkillLevel,
-    ZipCode,
-    City,
-    Prize,
-    Email,
-  } = req.body;
+  const { LeagueName, NumTeams, ZipCode, City, Teams } = req.body;
 
   if (!LeagueName) {
     return res.json({
@@ -18,15 +10,9 @@ export const createLeague = async (req, res, body) => {
     });
   }
 
-  if (!NumCompetitors) {
+  if (!NumTeams) {
     return res.json({
       error: "Number of Competitors is required",
-    });
-  }
-
-  if (!SkillLevel) {
-    return res.json({
-      error: "Skill Level is required",
     });
   }
 
@@ -42,37 +28,26 @@ export const createLeague = async (req, res, body) => {
     });
   }
 
-  if (!Email) {
+  if (Teams.length == NumTeams) {
     return res.json({
       error: "Email is required",
-    });
-  }
-
-  const exist = await User.findOne({ Email });
-  if (exist) {
-    return res.json({
-      error: "Tournament Already Created. Email already exists.",
     });
   }
 
   try {
     const league = await new League({
       LeagueName,
-      NumCompetitors,
-      SkillLevel,
+      NumTeams,
       ZipCode,
       City,
-      Prize,
-      Email,
+      Teams,
     }).save();
 
     return res.json({ league });
   } catch (error) {
     console.log(error);
-    return res.error
+    return res.error;
   }
 };
 
-export const addTeamToLeague = async (req, res, body) => {
-
-}
+export const addTeamToLeague = async (req, res, body) => {};
