@@ -20,9 +20,11 @@ app.use(cors());
 app.use(morgan("dev"));
 
 import usersRouter from "./routes/users.js";
+import leaguesRouter from "./routes/leagues.js"
 
 //All routers (middleware) will be placed here
 app.use("/users", usersRouter);
+app.use("/leagues", leaguesRouter)
 
 app.get("/", (req, res) => {
   res.json({ mssg: "Welcome!" });
@@ -31,3 +33,4 @@ app.get("/", (req, res) => {
 app.listen(8000, () => {
   console.log(`Server is running on port 8000`);
 });
+
