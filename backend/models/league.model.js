@@ -6,7 +6,6 @@ const leagueSchema = new Schema({
   LeagueName: {
     type: String,
     required: true,
-    unique: true,
   },
   NumTeams: {
     type: Number,
@@ -24,7 +23,6 @@ const leagueSchema = new Schema({
   },
   Teams: {
     type: Array,
-    required: true,
   },
 });
 
