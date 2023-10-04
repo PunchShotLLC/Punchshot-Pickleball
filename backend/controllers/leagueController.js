@@ -1,4 +1,3 @@
-import User from "../models/league.model.js";
 import League from "../models/league.model.js";
 
 export const createLeague = async (req, res, body) => {
