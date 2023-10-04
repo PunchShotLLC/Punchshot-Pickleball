@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+
 const hashPassword = (password) => {
   return new Promise((resolve, reject) => {
     bcrypt.genSalt(12, (err, salt) => {
@@ -111,6 +112,8 @@ export const createUser = async (req, res) => {
   }
   // }
 };
+
+export const joinLeague = async(req, rest) =>{}
 
 export const deleteUser = async (req, res) => {};
 
