@@ -42,4 +42,24 @@ export const createLeague = async (req, res, body) => {
   }
 };
 
-export const addTeamToLeague = async (req, res, body) => {};
+export const updateLeague = async(req, res, body) => {
+  /*
+  const {id} = req.params
+
+  if (!mongoose.Types.ObjectId.isValid(id)){
+      return res.status(404).json({error:'No such Tournament'})
+  }
+  const tourney = await Tournament.findOneAndUpdate({_id:id}, {...req.body})
+  if (!tourney){
+      return res.status(400).json({error:'No such Tournament'})
+  }
+  res.status(200).json(tourney)
+  */
+  await League.findByIdAndUpdate(req.params.id, req.body)
+      .then((doc) => {
+          res.status(200).json(doc)
+      })
+      .catch((error) => {
+          res.status(400).json({error: error.message});
+      })
+}
