@@ -38,33 +38,40 @@ const buttonTheme = createTheme({
   }
 })
 
-/*
-Function to create a league with the values currently in the input boxes
-*/
-const createLeague = async (leagueName, numTeams, zipCode, city) => {
-  // Put the parameters in the request body
-  const body = {
-    LeagueName: "Test league",
-    NumTeams: 4,
-    ZipCode: "99999",
-    City: "Atlanta"
-  }
-
-  // Create POST request
-  const rawResponse = await fetch('http://localhost:8000/leagues/createLeague', {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(body)
-  });
-  const content = await rawResponse.json();
-
-  console.log(content);
-}
-
 export const League = () => {
+
+  const [leagueName, setLeagueName] = useState(null)
+  const [numTeams, setNumTeams] = useState(null)
+  const [zipCode, setZipCode] = useState(null)
+  const [city, setCity] = useState(null)
+
+  /*
+  Function to create a league with the values currently in the input boxes
+  */
+  const createLeague = async () => {
+    // Put the parameters in the request body
+    const body = {
+      LeagueName: leagueName,
+      NumTeams: numTeams,
+      ZipCode: zipCode,
+      City: city
+    }
+
+    // Create POST request
+    // Catch error if exists
+    const rawResponse = await fetch('http://localhost:8000/leagues/createLeague', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    }).catch(err => console.log(err));
+
+    const content = await rawResponse.json();
+
+    console.log(content);
+  }
 
   return (
 
@@ -115,11 +122,11 @@ export const League = () => {
         <Box sx={{height:"70vh", width:'40vw', marginLeft:'5vw', borderLeft:'2px solid rgba(145, 70, 216, 1)'}} >
                     <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
                         <StyledLabel htmlFor="leagueName">League Name <span style={{color:"red"}}>*</span></StyledLabel>
-                        <StyledInput id="leagueName" placeholder="Atlanta Classic League" required />
+                        <StyledInput onChange={(event) => setLeagueName(event.target.value)} id="leagueName" placeholder="Atlanta Classic League" required />
                     </FormControl>
                     <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
                         <StyledLabel htmlFor="nbCompetitors">Number of Teams <span style={{color:"red"}}>*</span></StyledLabel>
-                        <StyledInput id="nbCompetitors" placeholder="5" required />
+                        <StyledInput onChange={(event) => setNumTeams(event.target.value)} id="nbCompetitors" placeholder="5" required />
                     </FormControl>
                     {/* <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
                         <StyledLabel htmlFor="skillLevel">Skill Level <span style={{color:"red"}}>*</span></StyledLabel>
@@ -127,11 +134,11 @@ export const League = () => {
                     </FormControl> */}
                     <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
                         <StyledLabel htmlFor="zipCode">Zip Code <span style={{color:"red"}}>*</span></StyledLabel>
-                        <StyledInput id="zipCode" placeholder="30332" required />
+                        <StyledInput onChange={(event) => setZipCode(event.target.value)} id="zipCode" placeholder="30332" required />
                     </FormControl>
                     <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
                         <StyledLabel htmlFor="city">City <span style={{color:"red"}}>*</span></StyledLabel>
-                        <StyledInput id="city" placeholder="Atlanta" required />
+                        <StyledInput onChange={(event) => setCity(event.target.value)} id="city" placeholder="Atlanta" required />
                     </FormControl>
                     {/* <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
                         <StyledLabel htmlFor="prize">Prize </StyledLabel>
