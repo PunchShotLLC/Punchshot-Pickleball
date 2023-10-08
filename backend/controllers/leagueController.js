@@ -68,3 +68,13 @@ export const getLeagues = async (req,res) => {
   const allLeagues = await League.find({}).sort({createdAt: -1})
   res.status(200).json(allLeagues)
 }
+
+export const getLeague = async (req, res) => {
+  const league = await League.findById(req.params.id)
+      .then((doc) => {
+          res.status(200).json(doc)
+      })
+      .catch((error) => {
+          res.status(400).json({error: error.message});
+      })
+}
