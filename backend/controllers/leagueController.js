@@ -78,3 +78,13 @@ export const getLeague = async (req, res) => {
           res.status(400).json({error: error.message});
       })
 }
+
+export const deleteLeague = async(req, res) => {
+  await League.findByIdAndDelete(req.params.id)
+      .then((doc) => {
+          res.status(200).json(doc)
+      })
+      .catch((error) => {
+          res.status(400).json({error: error.message});
+      })
+}
