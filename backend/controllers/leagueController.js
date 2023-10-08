@@ -63,3 +63,8 @@ export const updateLeague = async(req, res, body) => {
           res.status(400).json({error: error.message});
       })
 }
+
+export const getLeagues = async (req,res) => {
+  const allLeagues = await League.find({}).sort({createdAt: -1})
+  res.status(200).json(allLeagues)
+}
