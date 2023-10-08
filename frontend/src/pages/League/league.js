@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import * as React from 'react';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import '../League/league.scss'
 import "@fontsource/inter";
@@ -44,6 +44,7 @@ export const League = () => {
   const [numTeams, setNumTeams] = useState(null)
   const [zipCode, setZipCode] = useState(null)
   const [city, setCity] = useState(null)
+  const [leagues, setLeagues] = useState(null)
 
   /*
   Function to create a league with the values currently in the input boxes
@@ -73,6 +74,18 @@ export const League = () => {
     console.log(content);
   }
 
+  const getLeagues = async () => {
+    const rawResponse = await fetch('http://localhost:8000/leagues/').catch(err => console.log(err));
+    const content = await rawResponse.json();
+
+    console.log(content)
+    setLeagues(content)
+  }
+
+  useEffect(() => {
+    getLeagues()
+  }, []);
+
   return (
 
     <Box sx={{width: '80vw', height: '77.69vh', display: 'flex'}}>
@@ -86,7 +99,8 @@ export const League = () => {
           Atlanta Enthusiasts
         </Typography>
         <Box sx = {{position: "relative", left: '3svw'}}>
-        <LeagueGrid/>
+
+        {/* <LeagueGrid/> */}
 
   
         <Typography className="bodyText" sx={{fontSize: 'calc(0.5em + 1.5vw)', fontWeight: 'bold', align: 'center', marginLeft: '15vw', color: '#9146D8', marginTop: '1vh'}}>
