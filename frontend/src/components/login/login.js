@@ -76,24 +76,39 @@ export const Login = (props) => {
     }
     
     const handleCreate = async (e) => {
+        // trigger signup popup
+        props.setRender(false);
+        props.setRenderSignup(true);
         e.preventDefault();
+
         console.log(Username, Password)
 
-        var raw = JSON.stringify({
-            "Username": Username,
-            "Password": Password
-          });
+        let errorBool = false; 
+        let response = null;
 
-        const response = await fetch('http://localhost:5001/users/add', {
-            method: 'POST',
-            body: raw,
-            headers: {
-                'Content-Type': 'application/json'
-              }
-        });
-        console.log(response)
-        const json = await response.json()
-        console.log(json)
+        try {
+            var raw = JSON.stringify({
+                "Username": Username,
+                "Password": Password
+            });
+            
+            
+            response = await fetch('http://localhost:5001/users/signup', {
+                method: 'POST',
+                body: raw,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            console.log(response)
+            const json = await response.json()
+            console.log(json)
+
+        } catch (err) {
+            errorBool = true;
+            console.log(err.message);
+        }
     }
 
     if (props.render == true) {
