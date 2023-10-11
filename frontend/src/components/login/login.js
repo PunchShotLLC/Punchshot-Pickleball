@@ -7,7 +7,8 @@ import Button from '@mui/material/Button';
 import x_button from '../../assets/images/x_button.svg'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Link from '@mui/material/Link';
-import { useState } from "react"
+import { useState } from "react";
+import axios from 'axios';
 // import { useSignup } from "../../hooks/useSignup"
 // import { useAuthContext } from '../../hooks/useAuthContext';
 
@@ -30,85 +31,37 @@ export const Login = (props) => {
 
     const [Username, setUsername] = useState('')
     const [Password, setPassword] = useState('')
-    // const {signup, error, isLoading} = useSignup()
 
 
     const handleLogin = async (e) => {
-        e.preventDefault();
-        console.log(Username)
-        console.log(Password)
+      e.preventDefault();
+      console.log(Username);
+      console.log(Password);
+      let response = null;
 
-        let errorBool = false; 
-        let response = null;
-
-        try {
-            var raw = JSON.stringify({
-                "Username": Username,
-                "Password": Password
-              });
-            
-            response = await fetch('http://localhost:5001/users/login', {
-                method: 'POST',
-                body: raw,
-                headers: {
-                    'Content-Type': 'application/json'
-                  }
-            });
-
-            // console.log(response)
-            const json = await response.json();
-            console.log(json)
-
-            if (json.error == "Incorrect password") {
-                console.log("wrong password");
-            } else {
-                console.log("logged in");
-
-            }
-            
-            
-        } catch (err) {
-            errorBool = true;
-            console.log(err.message);
+      try {
+        const resp = await axios.post(`http://localhost:8000/users/login`, {
+          Username,
+          Password,
+        });
+        if (resp.data.error) {
+          alert(resp.data.error);
+        } else {
+          alert("Login successful!");
         }
-
-
-    }
+        // console.log(response)
+        const json = await response.json();
+        console.log(json);
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
     
     const handleCreate = async (e) => {
         // trigger signup popup
         props.setRender(false);
         props.setRenderSignup(true);
         e.preventDefault();
-
-        console.log(Username, Password)
-
-        let errorBool = false; 
-        let response = null;
-
-        try {
-            var raw = JSON.stringify({
-                "Username": Username,
-                "Password": Password
-            });
-            
-            
-            response = await fetch('http://localhost:5001/users/signup', {
-                method: 'POST',
-                body: raw,
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            console.log(response)
-            const json = await response.json()
-            console.log(json)
-
-        } catch (err) {
-            errorBool = true;
-            console.log(err.message);
-        }
     }
 
     if (props.render == true) {
