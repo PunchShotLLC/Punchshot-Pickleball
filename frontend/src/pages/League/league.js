@@ -14,6 +14,8 @@ import TextField from '@mui/material/InputBase';
 import { FormControl } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
+import { LeagueButton } from "./leagueButton";
+
 const StyledInput = styled(TextField)({
   borderRadius: '1em',
   border: '3px solid #000000',
@@ -101,15 +103,18 @@ export const League = () => {
         <Box sx = {{position: "relative", left: '3svw'}}>
 
         {/* <LeagueGrid/> */}
+        {leagues !== null ? leagues.map((item, index) => (
+          <LeagueButton name={leagues[index]['LeagueName']} city={leagues[index]['City']}/>
+        )) : null}
 
   
-        <Typography className="bodyText" sx={{fontSize: 'calc(0.5em + 1.5vw)', fontWeight: 'bold', align: 'center', marginLeft: '15vw', color: '#9146D8', marginTop: '1vh'}}>
+        {/* <Typography className="bodyText" sx={{fontSize: 'calc(0.5em + 1.5vw)', fontWeight: 'bold', align: 'center', marginLeft: '15vw', color: '#9146D8', marginTop: '1vh'}}>
           League statistics
-        </Typography>
+        </Typography> */}
     
         <Box sx = {{width: '45vw', height: '4vh', display: 'flex'}}>
 
-        <Typography className="bodyText" sx={{fontSize: 'calc(0.5em + 0.6vw)', fontWeight: 'bold', align: 'center', alignitems: 'baseline', display: 'flex', marginLeft: '4vw'}}>
+        {/* <Typography className="bodyText" sx={{fontSize: 'calc(0.5em + 0.6vw)', fontWeight: 'bold', align: 'center', alignitems: 'baseline', display: 'flex', marginLeft: '4vw'}}>
           Competitors: 25       
         </Typography>
         <Typography className="bodyText" sx={{fontSize: 'calc(0.5em + 0.6vw)', fontWeight: 'bold', align: 'center', alignitems: 'baseline', display: 'flex', marginLeft: '1.5vw'}}>
@@ -117,7 +122,7 @@ export const League = () => {
         </Typography>
         <Typography className="bodyText" sx={{fontSize: 'calc(0.5em + 0.6vw)', fontWeight: 'bold', align: 'center', alignitems: 'baseline', display: 'flex', marginLeft: '1.5vw'}}>
         League Participation: 98%
-        </Typography>
+        </Typography> */}
 
         </Box>
           <Box sx = {{position: "absolute", top: '102%', left: '9.5%', width: '100%', height: '100%', display: "flex", flexDirection: 'row'}}>
