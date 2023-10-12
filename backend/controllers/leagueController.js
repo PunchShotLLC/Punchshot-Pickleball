@@ -1,23 +1,28 @@
 import League from "../models/league.model.js";
+import User from "../models/user.model.js";
 
 export const createLeague = async (req, res, body) => {
-  const { LeagueName, NumTeams, ZipCode, City } = req.body;
+  const { LeagueName, LeagueOwner, NumTeams, ZipCode, City } = req.body;
 
   if (!LeagueName) {
     return res.json({
       error: "LeagueName is required",
     });
   }
-
+  if (!LeagueOwner) {
+    return res.json({
+      error: "LeagueOwner is required",
+    });
+  }
   if (!NumTeams) {
     return res.json({
-      error: "Number of Competitors is required",
+      error: "Number of Teams is required",
     });
   }
 
-  if (!ZipCode) {
+  if (!ZipCode || ZipCode.length !== 5) {
     return res.json({
-      error: "Zip Code is required",
+      error: "Valid zip code is required",
     });
   }
 
@@ -27,9 +32,17 @@ export const createLeague = async (req, res, body) => {
     });
   }
 
+  const existUsername = await User.findOne({ LeagueOwner });
+  if (!existUsername) {
+    return res.json({
+      error: "League owner does not exist",
+    });
+  }
+
   try {
     const league = await new League({
       LeagueName,
+      LeagueOwner,
       NumTeams,
       ZipCode,
       City,
@@ -42,7 +55,7 @@ export const createLeague = async (req, res, body) => {
   }
 };
 
-export const updateLeague = async(req, res, body) => {
+export const updateLeague = async (req, res, body) => {
   /*
   const {id} = req.params
 
@@ -56,35 +69,35 @@ export const updateLeague = async(req, res, body) => {
   res.status(200).json(tourney)
   */
   await League.findByIdAndUpdate(req.params.id, req.body)
-      .then((doc) => {
-          res.status(200).json(doc)
-      })
-      .catch((error) => {
-          res.status(400).json({error: error.message});
-      })
-}
+    .then((doc) => {
+      res.status(200).json(doc);
+    })
+    .catch((error) => {
+      res.status(400).json({ error: error.message });
+    });
+};
 
-export const getLeagues = async (req,res) => {
-  const allLeagues = await League.find({}).sort({createdAt: -1})
-  res.status(200).json(allLeagues)
-}
+export const getLeagues = async (req, res) => {
+  const allLeagues = await League.find({}).sort({ createdAt: -1 });
+  res.status(200).json(allLeagues);
+};
 
 export const getLeague = async (req, res) => {
   const league = await League.findById(req.params.id)
-      .then((doc) => {
-          res.status(200).json(doc)
-      })
-      .catch((error) => {
-          res.status(400).json({error: error.message});
-      })
-}
+    .then((doc) => {
+      res.status(200).json(doc);
+    })
+    .catch((error) => {
+      res.status(400).json({ error: error.message });
+    });
+};
 
-export const deleteLeague = async(req, res) => {
+export const deleteLeague = async (req, res) => {
   await League.findByIdAndDelete(req.params.id)
-      .then((doc) => {
-          res.status(200).json(doc)
-      })
-      .catch((error) => {
-          res.status(400).json({error: error.message});
-      })
-}
+    .then((doc) => {
+      res.status(200).json(doc);
+    })
+    .catch((error) => {
+      res.status(400).json({ error: error.message });
+    });
+};
