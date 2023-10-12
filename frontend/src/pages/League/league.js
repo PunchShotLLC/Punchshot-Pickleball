@@ -1,6 +1,7 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import * as React from 'react';
+import { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import '../League/league.scss'
 import "@fontsource/inter";
@@ -38,6 +39,53 @@ const buttonTheme = createTheme({
 })
 
 export const League = () => {
+
+  const [leagueName, setLeagueName] = useState(null)
+  const [numTeams, setNumTeams] = useState(null)
+  const [zipCode, setZipCode] = useState(null)
+  const [city, setCity] = useState(null)
+  const [leagues, setLeagues] = useState(null)
+
+  /*
+  Function to create a league with the values currently in the input boxes
+  */
+  const createLeague = async () => {
+    // Put the parameters in the request body
+    const body = {
+      LeagueName: leagueName,
+      NumTeams: numTeams,
+      ZipCode: zipCode,
+      City: city
+    }
+
+    // Create POST request
+    // Catch error if exists
+    const rawResponse = await fetch('http://localhost:8000/leagues/createLeague', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    }).catch(err => console.log(err));
+
+    const content = await rawResponse.json();
+
+    console.log(content);
+  }
+
+  const getLeagues = async () => {
+    const rawResponse = await fetch('http://localhost:8000/leagues/').catch(err => console.log(err));
+    const content = await rawResponse.json();
+
+    console.log(content)
+    setLeagues(content)
+  }
+
+  useEffect(() => {
+    getLeagues()
+  }, []);
+
   return (
 
     <Box sx={{width: '80vw', height: '77.69vh', display: 'flex'}}>
@@ -51,7 +99,8 @@ export const League = () => {
           Atlanta Enthusiasts
         </Typography>
         <Box sx = {{position: "relative", left: '3svw'}}>
-        <LeagueGrid/>
+
+        {/* <LeagueGrid/> */}
 
   
         <Typography className="bodyText" sx={{fontSize: 'calc(0.5em + 1.5vw)', fontWeight: 'bold', align: 'center', marginLeft: '15vw', color: '#9146D8', marginTop: '1vh'}}>
@@ -87,36 +136,36 @@ export const League = () => {
         <Box sx={{height:"70vh", width:'40vw', marginLeft:'5vw', borderLeft:'2px solid rgba(145, 70, 216, 1)'}} >
                     <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
                         <StyledLabel htmlFor="leagueName">League Name <span style={{color:"red"}}>*</span></StyledLabel>
-                        <StyledInput id="leagueName" placeholder="Atlanta Classic League" required />
+                        <StyledInput onChange={(event) => setLeagueName(event.target.value)} id="leagueName" placeholder="Atlanta Classic League" required />
                     </FormControl>
                     <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
-                        <StyledLabel htmlFor="nbCompetitors">Number of Competitors <span style={{color:"red"}}>*</span></StyledLabel>
-                        <StyledInput id="nbCompetitors" placeholder="5" required />
+                        <StyledLabel htmlFor="nbCompetitors">Number of Teams <span style={{color:"red"}}>*</span></StyledLabel>
+                        <StyledInput onChange={(event) => setNumTeams(event.target.value)} id="nbCompetitors" placeholder="5" required />
                     </FormControl>
-                    <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
+                    {/* <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
                         <StyledLabel htmlFor="skillLevel">Skill Level <span style={{color:"red"}}>*</span></StyledLabel>
                         <StyledInput id="skillLevel" placeholder="Beginner" required />
-                    </FormControl>
+                    </FormControl> */}
                     <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
                         <StyledLabel htmlFor="zipCode">Zip Code <span style={{color:"red"}}>*</span></StyledLabel>
-                        <StyledInput id="zipCode" placeholder="30332" required />
+                        <StyledInput onChange={(event) => setZipCode(event.target.value)} id="zipCode" placeholder="30332" required />
                     </FormControl>
                     <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
                         <StyledLabel htmlFor="city">City <span style={{color:"red"}}>*</span></StyledLabel>
-                        <StyledInput id="city" placeholder="Atlanta" required />
+                        <StyledInput onChange={(event) => setCity(event.target.value)} id="city" placeholder="Atlanta" required />
                     </FormControl>
-                    <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
+                    {/* <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
                         <StyledLabel htmlFor="prize">Prize </StyledLabel>
                         <StyledInput id="prize" placeholder="$1000" required />
-                    </FormControl>
-                    <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
+                    </FormControl> */}
+                    {/* <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
                         <StyledLabel htmlFor="email">Email <span style={{color:"red"}}>*</span></StyledLabel>
                         <StyledInput id="email" placeholder="email@example.com" required />
-                    </FormControl>
+                    </FormControl> */}
                     <ThemeProvider theme={buttonTheme}>
                     <div className='login_button_grid'>
                         <Button variant='contained' color='secondary' sx={{ position: 'relative', borderRadius: 'calc(0.1em + 0.5vw)', pl: 'calc(1.5vw)', pr: 'calc(1.8vw)'}}>Clear Inputs</Button>
-                        <Button variant='contained' color='primary' sx={{ position: 'relative', borderRadius: 'calc(0.1em + 0.5vw)', pl: 'calc(1.5vw)', pr: 'calc(1.8vw)'}}>Create League</Button>
+                        <Button onClick={createLeague} variant='contained' color='primary' sx={{ position: 'relative', borderRadius: 'calc(0.1em + 0.5vw)', pl: 'calc(1.5vw)', pr: 'calc(1.8vw)'}}>Create League</Button>
                     </div>
                     </ThemeProvider>
           </Box>
