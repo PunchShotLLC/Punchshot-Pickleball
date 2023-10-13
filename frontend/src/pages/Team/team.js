@@ -13,6 +13,8 @@ import TextField from '@mui/material/InputBase';
 import { FormControl } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
+import { TeamSelectButton } from "./teamSelectButton";
+
 const StyledInput = styled(TextField)({
     borderRadius: '1em',
     border: '3px solid #000000',
@@ -92,6 +94,12 @@ export const TeamSelect = (props) => {
             {props.league['LeagueName']}
           </Typography>
           <Box sx = {{position: "relative", left: '3svw'}}>
+
+
+          {/* Dynamically renders the teams within the league */}
+          {props.league['Teams'] !== null ? props.league['Teams'].map((item, index) => (
+            <TeamSelectButton onClick={() => {}} name={props.league['Teams'][index]["TeamName"]} city={props.league['Teams'][index]["City"]}/>
+          )) : null}
       
           <Box sx = {{width: '45vw', height: '4vh', display: 'flex'}}>
 
