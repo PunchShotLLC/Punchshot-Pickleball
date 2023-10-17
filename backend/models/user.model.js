@@ -7,6 +7,11 @@ const userSchema = new Schema({
     required: true,
     unique: true,
   },
+  Username: {
+    type: String,
+    required: true,
+    unique: true,
+  },
   Password: {
     type: String,
     required: true,
@@ -35,22 +40,7 @@ const userSchema = new Schema({
   ProfilePhoto: {
     type: String,
   },
-  Friends: [
-    {
-      Email: {
-        type: String,
-      },
-      FirstName: {
-        type: String,
-      },
-      LastName: {
-        type: String,
-      },
-      ProfilePhoto: {
-        type: String,
-      },
-    },
-  ],
+  Leagues: [],
 });
 
 export default mongoose.model("User", userSchema);

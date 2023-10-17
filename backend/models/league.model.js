@@ -7,6 +7,10 @@ const leagueSchema = new Schema({
     type: String,
     required: true,
   },
+  LeagueOwner: {
+    type: String,
+    required: true,
+  },
   NumTeams: {
     type: Number,
     required: true,
