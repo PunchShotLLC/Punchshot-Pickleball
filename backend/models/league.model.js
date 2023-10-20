@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { SchemaType, SchemaTypes } from "mongoose";
 
 const Schema = mongoose.Schema;
 
@@ -15,19 +15,32 @@ const leagueSchema = new Schema({
     type: Number,
     required: true,
   },
-  ZipCode: {
+  ZipCode: [{
     type: String,
     required: true,
     minLength: 5,
     maxLength: 5,
-  },
+  }],
   City: {
     type: String,
     required: true,
   },
-  Teams: {
-    type: Array,
-  },
+  Teams: [{
+    Name: {
+      type: String,
+      required: true,
+    },
+    TeamCaptain: {
+      type: SchemaTypes.ObjectId,
+      required: true,
+    },
+    TeamMembers: [
+      SchemaTypes.ObjectId,
+    ],
+    TeamFee: Number
+  }],
+  StartDate: Date,
+  EndDate: Date,
 });
 
 export default mongoose.model("League", leagueSchema);
