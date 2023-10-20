@@ -13,6 +13,7 @@ import { What } from "./pages/what/what";
 import { Login } from "./components/login/login";
 import { SignUp } from "./components/SignUp/signup";
 import { League } from "./pages/League/league";
+import { TeamSelect } from "./pages/Team/team";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
         path: "leagues",
         element: <League />,
       },
+      {
+        path: "leagueInfo",
+        element: <TeamSelect/>
+      }
     ]
   },
   {

@@ -1,5 +1,6 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import { useLocation } from 'react-router-dom';
 import * as React from 'react';
 import { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
@@ -12,6 +13,7 @@ import { styled } from '@mui/material/styles';
 import TextField from '@mui/material/InputBase';
 import { FormControl } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { v4 as uuidv4 } from 'uuid';
 
 import { TeamSelectButton } from "./teamSelectButton";
 
@@ -23,25 +25,32 @@ const StyledInput = styled(TextField)({
     paddingLeft: "1vw"
   });
   
-  const StyledLabel = styled('label')({
-    paddingLeft: "1vw",
-    marginBottom: "0.5vh",
-  });
-  
-  const buttonTheme = createTheme({
-    palette: {
-        primary: {
-            main: '#9146D8',
-        },
-        secondary: {
-            main: '#D9D9D9',
-        }
-    }
-  })
+const StyledLabel = styled('label')({
+  paddingLeft: "1vw",
+  marginBottom: "0.5vh",
+});
 
-// This component renders when a user clicks on the league
+const buttonTheme = createTheme({
+  palette: {
+      primary: {
+          main: '#9146D8',
+      },
+      secondary: {
+          main: '#D9D9D9',
+      }
+  }
+})
+
+const generateRandomName = () => {
+  return uuidv4().slice(0, 9);
+}
+
 export const TeamSelect = (props) => {
 
+    // location.state holds the info about the league
+    const location = useLocation();
+
+    // Three states for the input for a new team
     const [teamName, setTeamName] = useState(null)
     const [numPlayers, setNumPlayers] = useState(null)
     const [city, setCity] = useState(null)
@@ -50,12 +59,15 @@ export const TeamSelect = (props) => {
     const addTeamToLeague = () => {
 
         // Make a copy of the league, add the new team
-        const leagueInfo = props.league
+        const leagueInfo = location.state
+        console.log(leagueInfo)
         leagueInfo['Teams'].push(
             {
                 'TeamName': teamName,
                 'NumPlayers': numPlayers,
-                'City': city
+                'City': city,
+                'Captain': generateRandomName(),
+                'Players': []
             }
         )
 
@@ -69,7 +81,7 @@ export const TeamSelect = (props) => {
           };
 
         // Make the PATCH request to update the leagues
-        const apiUrl = `http://localhost:8000/leagues/updateLeague/${props.league["_id"]}`
+        const apiUrl = `http://localhost:8000/leagues/updateLeague/${location.state["_id"]}`
         
         fetch(apiUrl, requestOptions)
             .then((response) => response.json())
@@ -81,24 +93,63 @@ export const TeamSelect = (props) => {
             });
     }
 
+    // Adds a player to a team
+    const addPlayerToTeam = (teamIndex) => {
+      // Add the player to the team's player list
+      let playerList = location.state['Teams'][teamIndex]['Players']
+      playerList.push(generateRandomName())
+
+      // Make the PATCH request to update the leagues
+      const apiUrl = `http://localhost:8000/leagues/updateLeague/${location.state["_id"]}`
+
+      const requestOptions = {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(location.state),
+      };
+        
+      fetch(apiUrl, requestOptions)
+          .then((response) => response.json())
+          .then((responseData) => {
+              console.log(responseData)
+          })
+          .catch((error) => {
+              console.error('Error:', error);
+          });
+    }
+
     return (
-        <Box sx={{width: '80vw', height: '77.69vh', display: 'flex'}}>
+        <Box sx={{width: '80vw', height: '77.69vh', display: 'flex', overflow: 'scroll'}}>
 
 
         <Box sx = {{position: "relative", width: '100%', height: '100%', display: "flex", flexDirection: "column"}}>
 
           <Typography className="titleText" sx={{ display: "flex", fontSize: 'calc(0.7em + 1vw)', fontWeight: 'bold', pt: '1%', align: 'center', marginLeft: '10vw'}}>
-            MY LEAGUE
+          {location.state['LeagueName']}
           </Typography>
           <Typography className="bodyText" sx={{ display: "absolute", fontSize: 'calc(0.5em + 1vw)', fontWeight: 'bold', align: 'center', marginLeft: '10vw'}}>
-            {props.league['LeagueName']}
+            Number of Teams: {location.state['NumTeams']}
+          </Typography>
+          <Typography className="bodyText" sx={{ display: "absolute", fontSize: 'calc(0.5em + 1vw)', fontWeight: 'bold', align: 'center', marginLeft: '10vw'}}>
+            Zip Code: {location.state['ZipCode']}
+          </Typography>
+          <Typography className="bodyText" sx={{ display: "absolute", fontSize: 'calc(0.5em + 1vw)', fontWeight: 'bold', align: 'center', marginLeft: '10vw'}}>
+            City: {location.state['City']}
           </Typography>
           <Box sx = {{position: "relative", left: '3svw'}}>
 
 
           {/* Dynamically renders the teams within the league */}
-          {props.league['Teams'] !== null ? props.league['Teams'].map((item, index) => (
-            <TeamSelectButton onClick={() => {}} name={props.league['Teams'][index]["TeamName"]} city={props.league['Teams'][index]["City"]}/>
+          {location.state['Teams'] !== null ? location.state['Teams'].map((item, index) => (
+            <TeamSelectButton 
+              onClick={() => {addPlayerToTeam(index)}} 
+              name={location.state['Teams'][index]["TeamName"]} 
+              city={location.state['Teams'][index]["City"]} 
+              captain={location.state['Teams'][index]["Captain"]}
+              players={location.state['Teams'][index]["Players"]}
+            />
           )) : null}
       
           <Box sx = {{width: '45vw', height: '4vh', display: 'flex'}}>

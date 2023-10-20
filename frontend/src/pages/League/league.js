@@ -1,5 +1,6 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
 import * as React from "react";
 import { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
@@ -48,6 +49,8 @@ export const League = () => {
   const [city, setCity] = useState(null);
   const [leagues, setLeagues] = useState(null);
 
+  const navigate = useNavigate();
+
   // These two states activate when a user selects a league
   const [teamSelection, setTeamSelection] = useState(false);
   const [teamSelectLeagueIndex, setTeamSelectLeagueIndex] = useState(null);
@@ -59,6 +62,15 @@ export const League = () => {
     setTeamSelectLeagueIndex(teamIndex);
   };
 
+  const navigateToLeagueInfo = (teamIndex) => {
+    const dataToPass = {
+      key: "value",
+    };
+    
+    // Navigate to the new page with the data in the route's state
+    navigate("/leagueInfo", {state:leagues[teamIndex]});
+  }
+
   /*
   Function to create a league with the values currently in the input boxes
   */
@@ -69,6 +81,7 @@ export const League = () => {
       NumTeams: numTeams,
       ZipCode: zipCode,
       City: city,
+      LeagueOwner: 'tempOwner'
     };
 
     // Create POST request
@@ -152,9 +165,10 @@ export const League = () => {
             {leagues !== null
               ? leagues.map((item, index) => (
                   <LeagueButton
-                    onClick={() => switchToTeamSelectionMode(index)}
+                    // onClick={() => switchToTeamSelectionMode(index)}
                     name={leagues[index]["LeagueName"]}
                     city={leagues[index]["City"]}
+                    onClick={()=>{navigateToLeagueInfo(index)}}
                   />
                 ))
               : null}
