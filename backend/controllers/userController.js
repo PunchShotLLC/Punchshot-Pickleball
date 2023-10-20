@@ -54,6 +54,14 @@ export const loginUser = async (req, res) => {
    
     user.Password = undefined;
     user.secret = undefined;
+    console.log(
+      {
+        token,
+        user,
+      } 
+    )
+
+    // console.log(res.cookie.get('token'))
     res.json({
       token,
       user,
@@ -167,6 +175,10 @@ export const createUser = async (req, res) => {
     });
 
     const { password, ...rest } = user._doc;
+    console.log({
+      token,
+      user: rest,
+    })
     return res.json({
       token,
       user: rest,
@@ -179,6 +191,8 @@ export const createUser = async (req, res) => {
 
 export const verifyUser = async (req, res) => {
   const token = req.cookies.token
+
+  console.log(token)
   
   if (!token) {
     return res.json({ status: false })

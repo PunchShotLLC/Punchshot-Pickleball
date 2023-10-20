@@ -6,8 +6,40 @@ import { requirePropFactory } from "@mui/material";
 import home from "../../assets/images/home.svg";
 import { styled } from "@mui/system";
 import "./home.css";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
 
 export const Home = () => {
+
+  // const navigate = useNavigate();
+  const [cookies, removeCookie] = useCookies([]);
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    const verifyCookie = async () => {
+      console.log(cookies)
+      if (!cookies.token) {
+        console.log("not Signed IN")
+      }
+      const { data } = await axios.post(
+        "http://localhost:8000/users/verify"
+      );
+
+      console.log(data); 
+      const { status, user } = data;
+
+      setUsername(user);
+      return status
+        ? toast(`Hello ${user}`, {
+            position: "top-right",
+          })
+        : (removeCookie("token"));
+    };
+    verifyCookie();
+  }, [cookies, removeCookie]);
 
   return (
     <Box>
