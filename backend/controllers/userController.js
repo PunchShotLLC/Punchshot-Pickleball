@@ -1,6 +1,8 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import createSecretToken from "../util/secretToken.js"; 
+
 
 const hashPassword = (password) => {
   return new Promise((resolve, reject) => {
@@ -28,6 +30,7 @@ export const loginUser = async (req, res) => {
     const { Username, Password } = req.body;
     // check if our db has user with that email
     const user = await User.findOne({ Username });
+
     if (!user) {
       console.log("hi");
       return res.json({
@@ -41,10 +44,14 @@ export const loginUser = async (req, res) => {
         error: "Wrong password",
       });
     }
+
     // create signed token
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "5h",
+    const token = createSecretToken(user._id); 
+    res.cookie("token", token, {
+      withCredentials: true,
+      httpOnly: false,
     });
+   
     user.Password = undefined;
     user.secret = undefined;
     res.json({
@@ -147,8 +154,16 @@ export const createUser = async (req, res) => {
       SkillLevel,
     }).save();
 
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "5h",
+
+    // replace with function in secretToken.js
+    const token = createSecretToken(user._id); 
+    // const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+    //   expiresIn: "5h",
+    // });
+
+    res.cookie("token", token, {
+      withCredentials: true,
+      httpOnly: false,
     });
 
     const { password, ...rest } = user._doc;
@@ -162,7 +177,25 @@ export const createUser = async (req, res) => {
   // }
 };
 
-export const joinLeague = async (req, rest) => {};
+export const verifyUser = async (req, res) => {
+  const token = req.cookies.token
+  
+  if (!token) {
+    return res.json({ status: false })
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, async (err, data) => {
+    if (err) {
+     return res.json({ status: false })
+    } else {
+      const user = await User.findById(data.id)
+      if (user) return res.json({ status: true, user: user.Username })
+      else return res.json({ status: false })
+    }
+  })
+}; 
+
+export const joinLeague = async (req, res) => {};
 
 export const deleteUser = async (req, res) => {};
 

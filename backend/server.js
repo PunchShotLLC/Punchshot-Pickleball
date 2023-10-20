@@ -2,7 +2,8 @@ import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
-
+import cookieParser from "cookie-parser"; 
+// const cookieParser = require();
 import morgan from "morgan";
 
 const app = express();
@@ -18,6 +19,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(morgan("dev"));
+app.use(cookieParser());
+
 
 import usersRouter from "./routes/users.js";
 import leaguesRouter from "./routes/leagues.js"
