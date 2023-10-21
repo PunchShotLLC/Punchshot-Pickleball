@@ -52,8 +52,6 @@ export const TeamSelect = (props) => {
 
     // Three states for the input for a new team
     const [teamName, setTeamName] = useState(null)
-    const [numPlayers, setNumPlayers] = useState(null)
-    const [city, setCity] = useState(null)
 
     // Adds the team to the league
     const addTeamToLeague = () => {
@@ -63,11 +61,10 @@ export const TeamSelect = (props) => {
         console.log(leagueInfo)
         leagueInfo['Teams'].push(
             {
-                'TeamName': teamName,
-                'NumPlayers': numPlayers,
-                'City': city,
-                'Captain': generateRandomName(),
-                'Players': []
+                TeamName: teamName,
+                TeamCaptain: generateRandomName(),
+                TeamMembers: [],
+                TeamFee: 20
             }
         )
 
@@ -96,7 +93,7 @@ export const TeamSelect = (props) => {
     // Adds a player to a team
     const addPlayerToTeam = (teamIndex) => {
       // Add the player to the team's player list
-      let playerList = location.state['Teams'][teamIndex]['Players']
+      let playerList = location.state.Teams[teamIndex].TeamMembers
       playerList.push(generateRandomName())
 
       // Make the PATCH request to update the leagues
@@ -120,35 +117,42 @@ export const TeamSelect = (props) => {
           });
     }
 
+    console.log(location.state)
+
     return (
-        <Box sx={{width: '80vw', height: '77.69vh', display: 'flex', overflow: 'scroll'}}>
+        <Box sx={{width: '80vw', height: '77.69vh', display: 'flex'}}>
 
 
         <Box sx = {{position: "relative", width: '100%', height: '100%', display: "flex", flexDirection: "column"}}>
 
           <Typography className="titleText" sx={{ display: "flex", fontSize: 'calc(0.7em + 1vw)', fontWeight: 'bold', pt: '1%', align: 'center', marginLeft: '10vw'}}>
-          {location.state['LeagueName']}
+            {location.state.LeagueName}
           </Typography>
           <Typography className="bodyText" sx={{ display: "absolute", fontSize: 'calc(0.5em + 1vw)', fontWeight: 'bold', align: 'center', marginLeft: '10vw'}}>
-            Number of Teams: {location.state['NumTeams']}
+            Number of Teams: {location.state.Teams.length}
           </Typography>
           <Typography className="bodyText" sx={{ display: "absolute", fontSize: 'calc(0.5em + 1vw)', fontWeight: 'bold', align: 'center', marginLeft: '10vw'}}>
-            Zip Code: {location.state['ZipCode']}
+            Zip Code: {location.state.ZipCode}
           </Typography>
           <Typography className="bodyText" sx={{ display: "absolute", fontSize: 'calc(0.5em + 1vw)', fontWeight: 'bold', align: 'center', marginLeft: '10vw'}}>
-            City: {location.state['City']}
+            City: {location.state.City}
+          </Typography>
+          <Typography className="bodyText" sx={{ display: "absolute", fontSize: 'calc(0.5em + 1vw)', fontWeight: 'bold', align: 'center', marginLeft: '10vw'}}>
+            Start Date: {location.state.StartDate}
+          </Typography>
+          <Typography className="bodyText" sx={{ display: "absolute", fontSize: 'calc(0.5em + 1vw)', fontWeight: 'bold', align: 'center', marginLeft: '10vw'}}>
+            End Date: {location.state.EndDate}
           </Typography>
           <Box sx = {{position: "relative", left: '3svw'}}>
 
 
           {/* Dynamically renders the teams within the league */}
-          {location.state['Teams'] !== null ? location.state['Teams'].map((item, index) => (
+          {location.state.Teams !== null ? location.state.Teams.map((item, index) => (
             <TeamSelectButton 
               onClick={() => {addPlayerToTeam(index)}} 
-              name={location.state['Teams'][index]["TeamName"]} 
-              city={location.state['Teams'][index]["City"]} 
-              captain={location.state['Teams'][index]["Captain"]}
-              players={location.state['Teams'][index]["Players"]}
+              name={location.state.Teams[index].TeamName} 
+              captain={location.state.Teams[index].TeamCaptain}
+              players={location.state.Teams[index].TeamMembers}
             />
           )) : null}
       
@@ -173,30 +177,6 @@ export const TeamSelect = (props) => {
                           <StyledLabel htmlFor="leagueName">Team Name<span style={{color:"red"}}>*</span></StyledLabel>
                           <StyledInput onChange={(event) => setTeamName(event.target.value)} id="leagueName" placeholder="Atlanta Classic Team" required />
                       </FormControl>
-                      <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
-                          <StyledLabel htmlFor="nbCompetitors">Number of Players<span style={{color:"red"}}>*</span></StyledLabel>
-                          <StyledInput onChange={(event) => setNumPlayers(event.target.value)} id="nbCompetitors" placeholder="5" required />
-                      </FormControl>
-                      {/* <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
-                          <StyledLabel htmlFor="skillLevel">Skill Level <span style={{color:"red"}}>*</span></StyledLabel>
-                          <StyledInput id="skillLevel" placeholder="Beginner" required />
-                      </FormControl> */}
-                      {/* <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
-                          <StyledLabel htmlFor="zipCode">Zip Code<span style={{color:"red"}}>*</span></StyledLabel>
-                          <StyledInput onChange={(event) => setZipCode(event.target.value)} id="zipCode" placeholder="30332" required />
-                      </FormControl> */}
-                      <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
-                          <StyledLabel htmlFor="city">City <span style={{color:"red"}}>*</span></StyledLabel>
-                          <StyledInput onChange={(event) => setCity(event.target.value)} id="city" placeholder="Atlanta" required />
-                      </FormControl>
-                      {/* <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
-                          <StyledLabel htmlFor="prize">Prize </StyledLabel>
-                          <StyledInput id="prize" placeholder="$1000" required />
-                      </FormControl> */}
-                      {/* <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
-                          <StyledLabel htmlFor="email">Email <span style={{color:"red"}}>*</span></StyledLabel>
-                          <StyledInput id="email" placeholder="email@example.com" required />
-                      </FormControl> */}
                       <ThemeProvider theme={buttonTheme}>
                       <div className='login_button_grid'>
                           <Button variant='contained' color='secondary' sx={{ position: 'relative', borderRadius: 'calc(0.1em + 0.5vw)', pl: 'calc(1.5vw)', pr: 'calc(1.8vw)'}}>Clear Inputs</Button>

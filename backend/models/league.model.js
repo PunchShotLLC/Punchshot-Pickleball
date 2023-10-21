@@ -26,16 +26,16 @@ const leagueSchema = new Schema({
     required: true,
   },
   Teams: [{
-    Name: {
+    TeamName: {
       type: String,
       required: true,
     },
     TeamCaptain: {
-      type: SchemaTypes.ObjectId,
+      type: String, // SchemaTypes.ObjectId when users functionality complete
       required: true,
     },
     TeamMembers: [
-      SchemaTypes.ObjectId,
+      String, // SchemaTypes.ObjectId when users functionality complete
     ],
     TeamFee: Number
   }],

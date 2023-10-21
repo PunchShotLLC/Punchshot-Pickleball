@@ -47,6 +47,9 @@ export const League = () => {
   const [numTeams, setNumTeams] = useState(null);
   const [zipCode, setZipCode] = useState(null);
   const [city, setCity] = useState(null);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
   const [leagues, setLeagues] = useState(null);
 
   const navigate = useNavigate();
@@ -71,6 +74,26 @@ export const League = () => {
     navigate("/leagueInfo", {state:leagues[teamIndex]});
   }
 
+  // Dates are inputted as mm-dd-yyyy
+  // MongoDB requires ISO string whtvr format
+  function convertDateToMongoFormat(dateString) {
+    const parts = dateString.split('-');
+    if (parts.length === 3) {
+      const year = parseInt(parts[0]);
+      const month = parseInt(parts[1]) - 1; // Months are zero-based (0-11)
+      const day = parseInt(parts[2]);
+  
+      if (!isNaN(year) && !isNaN(month) && !isNaN(day)) {
+        const date = new Date(Date.UTC(year, month, day));
+        if (!isNaN(date)) {
+          return date.toISOString(); // Convert to ISO 8601 format
+        }
+      }
+    }
+  
+    return null; // Invalid date format
+  }
+
   /*
   Function to create a league with the values currently in the input boxes
   */
@@ -81,8 +104,12 @@ export const League = () => {
       NumTeams: numTeams,
       ZipCode: zipCode,
       City: city,
-      LeagueOwner: 'tempOwner'
+      LeagueOwner: 'tempOwner',
+      StartDate: startDate,
+      EndDate: endDate
     };
+
+    console.log(body)
 
     // Create POST request
     // Catch error if exists
@@ -276,6 +303,28 @@ export const League = () => {
                 onChange={(event) => setCity(event.target.value)}
                 id="city"
                 placeholder="Atlanta"
+                required
+              />
+            </FormControl>
+            <FormControl sx={{ height: "5vw", marginLeft: "1.5vw" }}>
+              <StyledLabel htmlFor="city">
+                Start Date <span style={{ color: "red" }}>*</span>
+              </StyledLabel>
+              <StyledInput
+                type="date"
+                onChange={(event) => setStartDate(event.target.value)}
+                id="city"
+                required
+              />
+            </FormControl>
+            <FormControl sx={{ height: "5vw", marginLeft: "1.5vw" }}>
+              <StyledLabel htmlFor="city">
+                End Date <span style={{ color: "red" }}>*</span>
+              </StyledLabel>
+              <StyledInput
+                type="date"
+                onChange={(event) => setEndDate(event.target.value)}
+                id="city"
                 required
               />
             </FormControl>
