@@ -15,32 +15,40 @@ const leagueSchema = new Schema({
     type: Number,
     required: true,
   },
-  ZipCode: [{
+  ZipCode: {
     type: String,
     required: true,
     minLength: 5,
     maxLength: 5,
-  }],
+  },
   City: {
     type: String,
     required: true,
   },
-  Teams: [{
-    TeamName: {
-      type: String,
-      required: true,
+  Teams: [
+    {
+      TeamName: {
+        type: String,
+        required: true,
+      },
+      TeamCaptain: {
+        type: String, // SchemaTypes.ObjectId when users functionality complete
+        required: true,
+      },
+      TeamMembers: [
+        String, // SchemaTypes.ObjectId when users functionality complete
+      ],
+      TeamFee: Number,
     },
-    TeamCaptain: {
-      type: String, // SchemaTypes.ObjectId when users functionality complete
-      required: true,
-    },
-    TeamMembers: [
-      String, // SchemaTypes.ObjectId when users functionality complete
-    ],
-    TeamFee: Number
-  }],
-  StartDate: Date,
-  EndDate: Date,
+  ],
+  StartDate: {
+    type: Date,
+    required: true,
+  },
+  EndDate: {
+    type: Date,
+    required: true,
+  },
 });
 
 export default mongoose.model("League", leagueSchema);

@@ -2,7 +2,15 @@ import League from "../models/league.model.js";
 import User from "../models/user.model.js";
 
 export const createLeague = async (req, res, body) => {
-  const { LeagueName, LeagueOwner, NumTeams, ZipCode, City, StartDate, EndDate } = req.body;
+  const {
+    LeagueName,
+    LeagueOwner,
+    NumTeams,
+    ZipCode,
+    City,
+    StartDate,
+    EndDate,
+  } = req.body;
 
   if (!LeagueName) {
     return res.json({
@@ -58,9 +66,8 @@ export const createLeague = async (req, res, body) => {
       NumTeams,
       ZipCode,
       City,
-      Teams,
       StartDate,
-      EndDate
+      EndDate,
     }).save();
 
     return res.json({ league });
