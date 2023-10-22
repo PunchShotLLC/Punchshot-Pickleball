@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
-import cookieParser from "cookie-parser"; 
+import cookieParser from "cookie-parser";
 // const cookieParser = require();
 import morgan from "morgan";
 
@@ -27,13 +27,12 @@ app.use(
 app.use(morgan("dev"));
 app.use(cookieParser());
 
-
 import usersRouter from "./routes/users.js";
-import leaguesRouter from "./routes/leagues.js"
+import leaguesRouter from "./routes/leagues.js";
 
 //All routers (middleware) will be placed here
 app.use("/users", usersRouter);
-app.use("/leagues", leaguesRouter)
+app.use("/leagues", leaguesRouter);
 
 app.get("/", (req, res) => {
   res.json({ mssg: "Welcome!" });
@@ -42,4 +41,3 @@ app.get("/", (req, res) => {
 app.listen(8000, () => {
   console.log(`Server is running on port 8000`);
 });
-
