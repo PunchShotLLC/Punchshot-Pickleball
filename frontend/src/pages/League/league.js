@@ -1,5 +1,6 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
 import * as React from "react";
 import { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
@@ -46,7 +47,12 @@ export const League = () => {
   const [numTeams, setNumTeams] = useState(null);
   const [zipCode, setZipCode] = useState(null);
   const [city, setCity] = useState(null);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
   const [leagues, setLeagues] = useState(null);
+
+  const navigate = useNavigate();
 
   // These two states activate when a user selects a league
   const [teamSelection, setTeamSelection] = useState(false);
@@ -59,6 +65,31 @@ export const League = () => {
     setTeamSelectLeagueIndex(teamIndex);
   };
 
+  const navigateToLeagueInfo = (teamIndex) => {
+    // Navigate to the new page with the data in the route's state
+    navigate("/leagueInfo", { state: leagues[teamIndex] });
+  };
+
+  // Dates are inputted as mm-dd-yyyy
+  // MongoDB requires ISO string whtvr format
+  function convertDateToMongoFormat(dateString) {
+    const parts = dateString.split("-");
+    if (parts.length === 3) {
+      const year = parseInt(parts[0]);
+      const month = parseInt(parts[1]) - 1; // Months are zero-based (0-11)
+      const day = parseInt(parts[2]);
+
+      if (!isNaN(year) && !isNaN(month) && !isNaN(day)) {
+        const date = new Date(Date.UTC(year, month, day));
+        if (!isNaN(date)) {
+          return date.toISOString(); // Convert to ISO 8601 format
+        }
+      }
+    }
+
+    return null; // Invalid date format
+  }
+
   /*
   Function to create a league with the values currently in the input boxes
   */
@@ -69,7 +100,12 @@ export const League = () => {
       NumTeams: numTeams,
       ZipCode: zipCode,
       City: city,
+      LeagueOwner: "tempOwner",
+      StartDate: startDate,
+      EndDate: endDate,
     };
+
+    console.log(body);
 
     // Create POST request
     // Catch error if exists
@@ -112,7 +148,7 @@ export const League = () => {
     return <TeamSelect league={leagues[teamSelectLeagueIndex]} />;
   } else {
     return (
-      <Box sx={{ width: "80vw", height: "77.69vh", display: "flex" }}>
+      <Box sx={{ width: "100vw", height: "77.69vh", display: "flex" }}>
         <Box
           sx={{
             position: "relative",
@@ -133,7 +169,7 @@ export const League = () => {
               marginLeft: "10vw",
             }}
           >
-            MY LEAGUE
+            LEAGUES
           </Typography>
           <Typography
             className="bodyText"
@@ -144,36 +180,25 @@ export const League = () => {
               align: "center",
               marginLeft: "10vw",
             }}
-          >
-            Atlanta Enthusiasts
-          </Typography>
-          <Box sx={{ position: "relative", left: "3svw" }}>
+          ></Typography>
+          <Box sx={{ position: "relative", height: "100%", left: "3svw" }}>
             {/* <LeagueGrid/> */}
             {leagues !== null
               ? leagues.map((item, index) => (
                   <LeagueButton
-                    onClick={() => switchToTeamSelectionMode(index)}
+                    // onClick={() => switchToTeamSelectionMode(index)}
                     name={leagues[index]["LeagueName"]}
+                    numberOfTeams={leagues[index]["NumTeams"]}
+                    teamsSignedUp={leagues[index]["Teams"].length}
+                    startDate={leagues[index]["StartDate"]}
+                    endDate={leagues[index]["EndDate"]}
                     city={leagues[index]["City"]}
+                    onClick={() => {
+                      navigateToLeagueInfo(index);
+                    }}
                   />
                 ))
               : null}
-
-            {/* <Typography className="bodyText" sx={{fontSize: 'calc(0.5em + 1.5vw)', fontWeight: 'bold', align: 'center', marginLeft: '15vw', color: '#9146D8', marginTop: '1vh'}}>
-            League statistics
-          </Typography> */}
-
-            <Box sx={{ width: "45vw", height: "4vh", display: "flex" }}>
-              {/* <Typography className="bodyText" sx={{fontSize: 'calc(0.5em + 0.6vw)', fontWeight: 'bold', align: 'center', alignitems: 'baseline', display: 'flex', marginLeft: '4vw'}}>
-            Competitors: 25       
-          </Typography>
-          <Typography className="bodyText" sx={{fontSize: 'calc(0.5em + 0.6vw)', fontWeight: 'bold', align: 'center', alignitems: 'baseline', display: 'flex', marginLeft: '1.5vw'}}>
-          Games Played: 125           
-          </Typography>
-          <Typography className="bodyText" sx={{fontSize: 'calc(0.5em + 0.6vw)', fontWeight: 'bold', align: 'center', alignitems: 'baseline', display: 'flex', marginLeft: '1.5vw'}}>
-          League Participation: 98%
-          </Typography> */}
-            </Box>
             <Box
               sx={{
                 position: "absolute",
@@ -212,7 +237,7 @@ export const League = () => {
           <Box
             sx={{
               height: "70vh",
-              width: "40vw",
+              width: "35vw",
               marginLeft: "5vw",
               borderLeft: "2px solid rgba(145, 70, 216, 1)",
             }}
@@ -265,43 +290,49 @@ export const League = () => {
                 required
               />
             </FormControl>
-            {/* <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
-                          <StyledLabel htmlFor="prize">Prize </StyledLabel>
-                          <StyledInput id="prize" placeholder="$1000" required />
-                      </FormControl> */}
-            {/* <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
-                          <StyledLabel htmlFor="email">Email <span style={{color:"red"}}>*</span></StyledLabel>
-                          <StyledInput id="email" placeholder="email@example.com" required />
-                      </FormControl> */}
-            <ThemeProvider theme={buttonTheme}>
-              <div className="login_button_grid">
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  sx={{
-                    position: "relative",
-                    borderRadius: "calc(0.1em + 0.5vw)",
-                    pl: "calc(1.5vw)",
-                    pr: "calc(1.8vw)",
-                  }}
-                >
-                  Clear Inputs
-                </Button>
+            <FormControl sx={{ height: "5vw", marginLeft: "1.5vw" }}>
+              <StyledLabel htmlFor="city">
+                Start Date <span style={{ color: "red" }}>*</span>
+              </StyledLabel>
+              <StyledInput
+                type="date"
+                onChange={(event) => setStartDate(event.target.value)}
+                id="city"
+                required
+              />
+            </FormControl>
+            <FormControl sx={{ height: "5vw", marginLeft: "1.5vw" }}>
+              <StyledLabel htmlFor="city">
+                End Date <span style={{ color: "red" }}>*</span>
+              </StyledLabel>
+              <StyledInput
+                type="date"
+                onChange={(event) => setEndDate(event.target.value)}
+                id="city"
+                required
+              />
+            </FormControl>
+            <FormControl sx={{ height: "10vw", marginLeft: "1.5vw" }}>
+              <ThemeProvider theme={buttonTheme}>
                 <Button
                   onClick={createLeague}
                   variant="contained"
                   color="primary"
                   sx={{
                     position: "relative",
-                    borderRadius: "calc(0.1em + 0.5vw)",
+                    borderRadius: "calc(0.1em + 1vw)",
                     pl: "calc(1.5vw)",
                     pr: "calc(1.8vw)",
                   }}
                 >
                   Create League
                 </Button>
-              </div>
-            </ThemeProvider>
+              </ThemeProvider>
+            </FormControl>
+            {/* <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
+                          <StyledLabel htmlFor="email">Email <span style={{color:"red"}}>*</span></StyledLabel>
+                          <StyledInput id="email" placeholder="email@example.com" required />
+                      </FormControl> */}
           </Box>
         </Box>
       </Box>

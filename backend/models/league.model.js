@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { SchemaType, SchemaTypes } from "mongoose";
 
 const Schema = mongoose.Schema;
 
@@ -25,8 +25,29 @@ const leagueSchema = new Schema({
     type: String,
     required: true,
   },
-  Teams: {
-    type: Array,
+  Teams: [
+    {
+      TeamName: {
+        type: String,
+        required: true,
+      },
+      TeamCaptain: {
+        type: String, // SchemaTypes.ObjectId when users functionality complete
+        required: true,
+      },
+      TeamMembers: [
+        String, // SchemaTypes.ObjectId when users functionality complete
+      ],
+      TeamFee: Number,
+    },
+  ],
+  StartDate: {
+    type: Date,
+    required: true,
+  },
+  EndDate: {
+    type: Date,
+    required: true,
   },
 });
 

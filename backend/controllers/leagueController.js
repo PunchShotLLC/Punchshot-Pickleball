@@ -2,7 +2,15 @@ import League from "../models/league.model.js";
 import User from "../models/user.model.js";
 
 export const createLeague = async (req, res, body) => {
-  const { LeagueName, LeagueOwner, NumTeams, ZipCode, City } = req.body;
+  const {
+    LeagueName,
+    LeagueOwner,
+    NumTeams,
+    ZipCode,
+    City,
+    StartDate,
+    EndDate,
+  } = req.body;
 
   if (!LeagueName) {
     return res.json({
@@ -32,6 +40,18 @@ export const createLeague = async (req, res, body) => {
     });
   }
 
+  if (!StartDate) {
+    return res.json({
+      error: "Start Date is required",
+    });
+  }
+
+  if (!EndDate) {
+    return res.json({
+      error: "End Date is required",
+    });
+  }
+
   const existUsername = await User.findOne({ LeagueOwner });
   if (!existUsername) {
     return res.json({
@@ -46,6 +66,8 @@ export const createLeague = async (req, res, body) => {
       NumTeams,
       ZipCode,
       City,
+      StartDate,
+      EndDate,
     }).save();
 
     return res.json({ league });
