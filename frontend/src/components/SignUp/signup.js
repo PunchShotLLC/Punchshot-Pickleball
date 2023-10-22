@@ -80,19 +80,23 @@ export const SignUp = (props) => {
       alert("Passwords don't match!");
       return;
     }
-    const resp = await axios.post(`http://localhost:8000/users/signup`, {
-      Email: email,
-      Username: username,
-      FirstName: firstName,
-      LastName: lastName,
-      Password: password,
-      ZipCode: zipCode,
-      SkillLevel: skillLevel,
-    });
+    const resp = await axios.post(
+      `http://localhost:8000/users/signup`,
+      {
+        Email: email,
+        Username: username,
+        FirstName: firstName,
+        LastName: lastName,
+        Password: password,
+        ZipCode: zipCode,
+        SkillLevel: skillLevel,
+      },
+      { withCredentials: true }
+    );
     if (resp.data.error) {
       alert(resp.data.error);
     } else {
-      alert("Signup successful!");
+      window.location.reload(false);
     }
   };
 
