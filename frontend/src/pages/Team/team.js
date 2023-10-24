@@ -13,7 +13,9 @@ import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/InputBase";
 import { FormControl } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useCookies } from "react-cookie";
 import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
 
 import { TeamSelectButton } from "./teamSelectButton";
 
@@ -46,6 +48,9 @@ const generateRandomName = () => {
 };
 
 export const TeamSelect = (props) => {
+  // Grab the cookies
+  const [cookies, removeCookie] = useCookies([]);
+
   // location.state holds the info about the league
   const location = useLocation();
 
@@ -86,10 +91,21 @@ export const TeamSelect = (props) => {
   };
 
   // Adds a player to a team
-  const addPlayerToTeam = (teamIndex) => {
+  const addPlayerToTeam = async (teamIndex) => {
+
+    // This part of the code was ripped from header.js
+    if (!cookies.token) {
+      console.log("not signed in");
+    }
+    const { data } = await axios.post(
+      "http://localhost:8000/users/verify",
+      {},
+      { withCredentials: true }
+    );
+
     // Add the player to the team's player list
     let playerList = location.state.Teams[teamIndex].TeamMembers;
-    playerList.push(generateRandomName());
+    playerList.push(data.user);
 
     // Make the PATCH request to update the leagues
     const apiUrl = `http://localhost:8000/leagues/updateLeague/${location.state["_id"]}`;
@@ -113,6 +129,7 @@ export const TeamSelect = (props) => {
   };
 
   console.log(location.state);
+  console.log(cookies);
 
   return (
     <Box sx={{ width: "80vw", height: "77.69vh", display: "flex" }}>
