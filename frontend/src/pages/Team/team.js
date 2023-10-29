@@ -58,14 +58,25 @@ export const TeamSelect = (props) => {
   const [teamName, setTeamName] = useState(null);
 
   // Adds the team to the league
-  const addTeamToLeague = () => {
+  const addTeamToLeague = async () => {
     // Make a copy of the league, add the new team
     const leagueInfo = location.state;
     console.log(leagueInfo);
+
+    if (!cookies.token) {
+      console.log("not signed in");
+    }
+    const { data } = await axios.post(
+      "http://localhost:8000/users/verify",
+      {},
+      { withCredentials: true }
+    );
+
     leagueInfo["Teams"].push({
       TeamName: teamName,
-      TeamCaptain: generateRandomName(),
+      TeamCaptain: data.user,
       TeamMembers: [],
+      PotentialTeamMembers: []
     });
 
     // Make a patch request to the leagues API with the updated league object
@@ -90,12 +101,49 @@ export const TeamSelect = (props) => {
       });
   };
 
+  const addPlayerToPotentialList = async (teamIndex) => {
+    if (!cookies.token) {
+      console.log("not signed in");
+      return
+    }
+
+    const { data } = await axios.post(
+      "http://localhost:8000/users/verify",
+      {},
+      { withCredentials: true }
+    );
+
+    let potentialPlayerList = location.state.Teams[teamIndex].PotentialTeamMembers;
+    potentialPlayerList.push(data.user)
+
+    // Make the PATCH request to update the leagues
+    const apiUrl = `http://localhost:8000/leagues/updateLeague/${location.state["_id"]}`;
+
+    const requestOptions = {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(location.state),
+    };
+
+    fetch(apiUrl, requestOptions)
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(responseData);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+
   // Adds a player to a team
   const addPlayerToTeam = async (teamIndex) => {
 
     // This part of the code was ripped from header.js
     if (!cookies.token) {
       console.log("not signed in");
+      return
     }
     const { data } = await axios.post(
       "http://localhost:8000/users/verify",
@@ -229,7 +277,7 @@ export const TeamSelect = (props) => {
             ? location.state.Teams.map((item, index) => (
                 <TeamSelectButton
                   onClick={() => {
-                    addPlayerToTeam(index);
+                    addPlayerToPotentialList(index);
                   }}
                   name={location.state.Teams[index].TeamName}
                   captain={location.state.Teams[index].TeamCaptain}
