@@ -14,9 +14,9 @@ import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/InputBase";
 import { FormControl } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-
 import { LeagueButton } from "./leagueButton";
 import { TeamSelect } from "../Team/team";
+import { LeagueComp } from "../../components/LeagueComp/LeagueComp.js";
 
 const StyledInput = styled(TextField)({
   borderRadius: "1em",
@@ -148,7 +148,7 @@ export const League = () => {
     return <TeamSelect league={leagues[teamSelectLeagueIndex]} />;
   } else {
     return (
-      <Box sx={{ width: "100vw", height: "77.69vh", display: "flex" }}>
+      <Box sx={{ width: "100vw", height: "77.69vh", display: "flex"}}>
         <Box
           sx={{
             position: "relative",
@@ -156,6 +156,7 @@ export const League = () => {
             height: "100%",
             display: "flex",
             flexDirection: "column",
+            alignItems:'center',
           }}
         >
           <Typography
@@ -165,8 +166,7 @@ export const League = () => {
               fontSize: "calc(0.7em + 1vw)",
               fontWeight: "bold",
               pt: "1%",
-              align: "center",
-              marginLeft: "10vw",
+              marginBottom: '2%'
             }}
           >
             LEAGUES
@@ -177,25 +177,23 @@ export const League = () => {
               display: "absolute",
               fontSize: "calc(0.5em + 1vw)",
               fontWeight: "bold",
-              align: "center",
-              marginLeft: "10vw",
             }}
           ></Typography>
-          <Box sx={{ position: "relative", height: "100%", left: "3svw" }}>
+          <Box sx={{ position: "relative", height: "100%", width:"90%"}}>
             {/* <LeagueGrid/> */}
             {leagues !== null
               ? leagues.map((item, index) => (
-                  <LeagueButton
-                    // onClick={() => switchToTeamSelectionMode(index)}
-                    name={leagues[index]["LeagueName"]}
-                    numberOfTeams={leagues[index]["NumTeams"]}
-                    teamsSignedUp={leagues[index]["Teams"].length}
-                    startDate={leagues[index]["StartDate"]}
-                    endDate={leagues[index]["EndDate"]}
-                    city={leagues[index]["City"]}
-                    onClick={() => {
-                      navigateToLeagueInfo(index);
-                    }}
+                  <LeagueComp 
+                  logo={require('../../assets/images/ATL1.png')}
+                  name={leagues[index]["LeagueName"]}
+                  numberOfTeams={leagues[index]["NumTeams"]}
+                  teamsSignedUp={leagues[index]["Teams"].length}
+                  startDate={leagues[index]["StartDate"]}
+                  endDate={leagues[index]["EndDate"]}
+                  city={leagues[index]["City"]}
+                  onClick={() => {
+                    navigateToLeagueInfo(index);
+                  }}
                   />
                 ))
               : null}
@@ -238,7 +236,6 @@ export const League = () => {
             sx={{
               height: "70vh",
               width: "35vw",
-              marginLeft: "5vw",
               borderLeft: "2px solid rgba(145, 70, 216, 1)",
             }}
           >

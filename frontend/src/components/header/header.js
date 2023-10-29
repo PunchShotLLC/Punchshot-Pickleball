@@ -162,7 +162,7 @@ export const Header = (props) => {
               },
             }}
           >
-            WHAT IS PICKLEBALL?
+            PICKLEBALL?
           </Button>
           <Button
             href="/play"
