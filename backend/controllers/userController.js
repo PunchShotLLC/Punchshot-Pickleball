@@ -75,16 +75,16 @@ export const createUser = async (req, res) => {
 
   console.log(
     FirstName +
-      " " +
-      LastName +
-      " " +
-      Email +
-      " " +
-      Username +
-      " " +
-      Password +
-      " " +
-      SkillLevel
+    " " +
+    LastName +
+    " " +
+    Email +
+    " " +
+    Username +
+    " " +
+    Password +
+    " " +
+    SkillLevel
   );
 
   if (!Email) {
@@ -176,14 +176,14 @@ export const verifyUser = async (req, res) => {
       return res.json({ status: false });
     } else {
       const user = await User.findById(data.id);
-      if (user) return res.json({ status: true, user: user.Username });
+      if (user) return res.json({ status: true, user });
       else return res.json({ status: false });
     }
   });
 };
 
-export const joinLeague = async (req, res) => {};
+export const joinLeague = async (req, res) => { };
 
-export const deleteUser = async (req, res) => {};
+export const deleteUser = async (req, res) => { };
 
-export const updateContent = async (req, res) => {};
+export const updateContent = async (req, res) => { };

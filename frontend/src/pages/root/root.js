@@ -4,17 +4,19 @@ import { Login } from "../../components/login/login.js";
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { SignUp } from "../../components/SignUp/signup";
-
+import { UserProvider } from "../../components/UserContext/usercontext";
 export const Root = () => {
   const [renderLoginPopup, setRenderLoginPopup] = useState(false);
   const [renderSignupPopup, setRenderSignupPopup] = useState(false);
 
   return (
-    <Box>
-      {renderLoginPopup && <Login render={renderLoginPopup} setRender={setRenderLoginPopup} setRenderSignup={setRenderSignupPopup} />}
-      {renderSignupPopup && <SignUp render={renderSignupPopup} setRender={setRenderSignupPopup} />}
-      <Header setRender={setRenderLoginPopup} />
-      <Outlet />
-    </Box>
+    <UserProvider>
+      <Box>
+        {renderLoginPopup && <Login render={renderLoginPopup} setRender={setRenderLoginPopup} setRenderSignup={setRenderSignupPopup} />}
+        {renderSignupPopup && <SignUp render={renderSignupPopup} setRender={setRenderSignupPopup} />}
+        <Header setRender={setRenderLoginPopup} />
+        <Outlet />
+      </Box>
+    </UserProvider>
   );
 };
