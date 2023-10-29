@@ -14,7 +14,6 @@ import TextField from "@mui/material/InputBase";
 import { FormControl } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useCookies } from "react-cookie";
-import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 
 import { TeamSelectButton } from "./teamSelectButton";
@@ -43,10 +42,6 @@ const buttonTheme = createTheme({
   },
 });
 
-const generateRandomName = () => {
-  return uuidv4().slice(0, 9);
-};
-
 export const TeamSelect = (props) => {
   // Grab the cookies
   const [cookies, removeCookie] = useCookies([]);
@@ -54,8 +49,12 @@ export const TeamSelect = (props) => {
   // location.state holds the info about the league
   const location = useLocation();
 
-  // Three states for the input for a new team
+  // For the input for a new team
   const [teamName, setTeamName] = useState(null);
+
+  // State for user data
+  // Important for the app to know whether to show potential team members
+  const [userData, setUserData] = useState({user: null})
 
   // Adds the team to the league
   const addTeamToLeague = async () => {
@@ -101,6 +100,7 @@ export const TeamSelect = (props) => {
       });
   };
 
+  // Adds a player to the potential team member list of a team
   const addPlayerToPotentialList = async (teamIndex) => {
     if (!cookies.token) {
       console.log("not signed in");
@@ -175,6 +175,25 @@ export const TeamSelect = (props) => {
         console.error("Error:", error);
       });
   };
+
+  // Sets the userdata state
+  const setUserState = async () => {
+    if (!cookies.token) {
+      setUserData({user: null})
+      return
+    }
+    const { data } = await axios.post(
+      "http://localhost:8000/users/verify",
+      {},
+      { withCredentials: true }
+    );
+
+    setUserData(data)
+  }
+
+  useEffect(() => {
+    setUserState()
+  }, []);
 
   console.log(location.state);
   console.log(cookies);
@@ -277,11 +296,16 @@ export const TeamSelect = (props) => {
             ? location.state.Teams.map((item, index) => (
                 <TeamSelectButton
                   onClick={() => {
+                    console.log("THIS IS RUNNING")
                     addPlayerToPotentialList(index);
                   }}
                   name={location.state.Teams[index].TeamName}
                   captain={location.state.Teams[index].TeamCaptain}
-                  players={location.state.Teams[index].TeamMembers}
+                  members={location.state.Teams[index].TeamMembers}
+                  potentialMembers={location.state.Teams[index].PotentialTeamMembers}
+                  showPotentialMembers={userData.user === location.state.Teams[index].TeamCaptain}
+                  leagueInfo={location.state}
+                  teamIndex={index}
                 />
               ))
             : null}
