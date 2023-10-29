@@ -100,7 +100,7 @@ export const League = () => {
     const body = {
       LeagueName: leagueName,
       NumTeams: numTeams,
-      ZipCode: zipCode,
+      ZipCodes: zipCode.split(",").map((e) => e.trim()).filter((e) => e),
       City: city,
       LeagueOwner: "tempOwner",
       StartDate: startDate,
@@ -134,6 +134,7 @@ export const League = () => {
     if (!zip) {
       zip = user?.ZipCode
     }
+    console.log(zip)
     const rawResponse = await fetch(`http://localhost:8000/leagues/${zip}`).catch(
       (err) => console.log(err)
     );

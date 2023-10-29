@@ -6,7 +6,7 @@ export const createLeague = async (req, res, body) => {
     LeagueName,
     LeagueOwner,
     NumTeams,
-    ZipCode,
+    ZipCodes,
     City,
     StartDate,
     EndDate,
@@ -28,12 +28,11 @@ export const createLeague = async (req, res, body) => {
     });
   }
 
-  if (!ZipCode || ZipCode.length !== 5) {
+  if (!ZipCodes || ZipCodes.some((e) => e.length !== 5)) {
     return res.json({
       error: "Valid zip code is required",
     });
   }
-
   if (!City) {
     return res.json({
       error: "City is required",
@@ -64,7 +63,7 @@ export const createLeague = async (req, res, body) => {
       LeagueName,
       LeagueOwner,
       NumTeams,
-      ZipCode,
+      ZipCodes,
       City,
       StartDate,
       EndDate,
@@ -105,7 +104,7 @@ export const getLeagues = async (req, res) => {
 };
 
 export const getLeague = async (req, res) => {
-  const leagues = await League.find({ ZipCode: req.params.zip })
+  const leagues = await League.find({ ZipCodes: req.params.zip })
     .then((docs) => {
       res.status(200).json(docs);
     })
