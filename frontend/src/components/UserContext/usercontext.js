@@ -9,7 +9,6 @@ const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [cookies, removeCookie] = useCookies([]);
     useEffect(() => {
-        console.log("ran")
         const verifyCookie = async () => {
             const { data } = await axios.post(
                 "http://localhost:8000/users/verify",

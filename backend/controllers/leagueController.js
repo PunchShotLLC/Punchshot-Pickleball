@@ -105,9 +105,9 @@ export const getLeagues = async (req, res) => {
 };
 
 export const getLeague = async (req, res) => {
-  const league = await League.findById(req.params.id)
-    .then((doc) => {
-      res.status(200).json(doc);
+  const leagues = await League.find({ ZipCode: req.params.zip })
+    .then((docs) => {
+      res.status(200).json(docs);
     })
     .catch((error) => {
       res.status(400).json({ error: error.message });

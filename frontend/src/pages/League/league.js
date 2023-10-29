@@ -17,6 +17,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { LeagueButton } from "./leagueButton";
 import { TeamSelect } from "../Team/team";
 import { LeagueComp } from "../../components/LeagueComp/LeagueComp.js";
+import { useContext } from "react";
+import { UserContext } from "../../components/UserContext/usercontext";
 
 const StyledInput = styled(TextField)({
   borderRadius: "1em",
@@ -51,7 +53,7 @@ export const League = () => {
   const [endDate, setEndDate] = useState(null);
 
   const [leagues, setLeagues] = useState(null);
-
+  const user = useContext(UserContext)
   const navigate = useNavigate();
 
   // These two states activate when a user selects a league
@@ -128,8 +130,11 @@ export const League = () => {
 
   // Make a get request to retrieve all the leagues
   // Set the state so that it includes the leagues and dynamically renders
-  const getLeagues = async () => {
-    const rawResponse = await fetch("http://localhost:8000/leagues/").catch(
+  const getLeagues = async (zip) => {
+    if (!zip) {
+      zip = user?.ZipCode
+    }
+    const rawResponse = await fetch(`http://localhost:8000/leagues/${zip}`).catch(
       (err) => console.log(err)
     );
     const content = await rawResponse.json();
@@ -140,15 +145,15 @@ export const League = () => {
 
   // Make a get request to get the leagues on the component loading
   useEffect(() => {
-    getLeagues();
-  }, []);
+    getLeagues(user?.ZipCode);
+  }, [user?.ZipCode]);
 
   // If the team selection state is true, render the team create/join component
   if (teamSelection) {
     return <TeamSelect league={leagues[teamSelectLeagueIndex]} />;
   } else {
     return (
-      <Box sx={{ width: "100vw", height: "77.69vh", display: "flex"}}>
+      <Box sx={{ width: "100vw", height: "77.69vh", display: "flex" }}>
         <Box
           sx={{
             position: "relative",
@@ -156,7 +161,7 @@ export const League = () => {
             height: "100%",
             display: "flex",
             flexDirection: "column",
-            alignItems:'center',
+            alignItems: 'center',
           }}
         >
           <Typography
@@ -179,11 +184,16 @@ export const League = () => {
               fontWeight: "bold",
             }}
           ></Typography>
-          <Box sx={{ position: "relative", height: "100%", width:"90%"}}>
+          <Box sx={{ position: "relative", height: "100%", width: "90%" }}>
             {/* <LeagueGrid/> */}
+            <StyledInput
+              onChange={(event) => getLeagues(event.target.value)}
+              id="zipcode"
+              placeholder="Search zipcodes"
+            />
             {leagues !== null
               ? leagues.map((item, index) => (
-                  <LeagueComp 
+                <LeagueComp
                   logo={require('../../assets/images/ATL1.png')}
                   name={leagues[index]["LeagueName"]}
                   numberOfTeams={leagues[index]["NumTeams"]}
@@ -194,8 +204,8 @@ export const League = () => {
                   onClick={() => {
                     navigateToLeagueInfo(index);
                   }}
-                  />
-                ))
+                />
+              ))
               : null}
             <Box
               sx={{
@@ -211,7 +221,7 @@ export const League = () => {
           </Box>
         </Box>
 
-        <Box
+        {user?.Username === "test" ? <Box
           sx={{
             width: "45vw",
             height: "77.69vh",
@@ -331,7 +341,7 @@ export const League = () => {
                           <StyledInput id="email" placeholder="email@example.com" required />
                       </FormControl> */}
           </Box>
-        </Box>
+        </Box> : null}
       </Box>
     );
   }
