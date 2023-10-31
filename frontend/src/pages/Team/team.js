@@ -103,6 +103,7 @@ export const TeamSelect = (props) => {
       { withCredentials: true }
     );
 
+    //TODO: remove this code to call API 
     // Add the player to the team's player list
     let playerList = location.state.Teams[teamIndex].TeamMembers;
     playerList.push(data.user);

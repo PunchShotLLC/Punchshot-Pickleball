@@ -8,6 +8,6 @@ router.post("/createLeague", createLeague);
 router.route("/").get(getLeagues)
 router.route("/:id").get(getLeague)
 router.route("/updateLeague/:id").patch(updateLeague)
-router.route("/deleteLeague/:id").delete(deleteLeague)
+router.route("/deleteLeague/:id").delete(deleteLeague)  
 
 export default router;
