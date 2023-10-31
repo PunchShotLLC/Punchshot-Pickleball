@@ -13,7 +13,6 @@ import { useContext } from "react";
 import { useCookies } from "react-cookie";
 import { UserContext } from "../UserContext/usercontext";
 
-
 function homeRedirect() {
   window.location.href = "/";
 }
@@ -47,12 +46,12 @@ const StyledTitle = styled("header")({
 
 export const Header = (props) => {
   const [cookies, removeCookie] = useCookies([]);
-  const user = useContext(UserContext)
+  const user = useContext(UserContext);
 
   const handleUser = () => {
     if (user) {
       removeCookie("token");
-      window.location.reload(false);
+      window.location.href = "/";
     } else {
       props.setRender((oldRender) => !oldRender);
     }

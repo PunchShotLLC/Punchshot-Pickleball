@@ -2,7 +2,8 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { useLocation } from "react-router-dom";
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
+import { UserContext } from "../../components/UserContext/usercontext";
 import Typography from "@mui/material/Typography";
 import "../League/league.scss";
 import "@fontsource/inter";
@@ -44,7 +45,7 @@ const buttonTheme = createTheme({
 
 export const TeamSelect = (props) => {
   // Grab the cookies
-  const [cookies, removeCookie] = useCookies([]);
+  const user = useContext(UserContext);
 
   // location.state holds the info about the league
   const location = useLocation();
@@ -52,30 +53,21 @@ export const TeamSelect = (props) => {
   // For the input for a new team
   const [teamName, setTeamName] = useState(null);
 
-  // State for user data
-  // Important for the app to know whether to show potential team members
-  const [userData, setUserData] = useState({user: null})
-
   // Adds the team to the league
   const addTeamToLeague = async () => {
     // Make a copy of the league, add the new team
     const leagueInfo = location.state;
-    console.log(leagueInfo);
-
-    if (!cookies.token) {
+    // console.log(leagueInfo);
+    console.log(user);
+    if (!user) {
       console.log("not signed in");
     }
-    const { data } = await axios.post(
-      "http://localhost:8000/users/verify",
-      {},
-      { withCredentials: true }
-    );
 
     leagueInfo["Teams"].push({
       TeamName: teamName,
-      TeamCaptain: data.user,
+      TeamCaptain: user.Username,
       TeamMembers: [],
-      PotentialTeamMembers: []
+      PotentialTeamMembers: [],
     });
 
     // Make a patch request to the leagues API with the updated league object
@@ -102,58 +94,14 @@ export const TeamSelect = (props) => {
 
   // Adds a player to the potential team member list of a team
   const addPlayerToPotentialList = async (teamIndex) => {
-    if (!cookies.token) {
+    if (!user) {
       console.log("not signed in");
-      return
+      return;
     }
 
-    const { data } = await axios.post(
-      "http://localhost:8000/users/verify",
-      {},
-      { withCredentials: true }
-    );
-
-    let potentialPlayerList = location.state.Teams[teamIndex].PotentialTeamMembers;
-    potentialPlayerList.push(data.user)
-
-    // Make the PATCH request to update the leagues
-    const apiUrl = `http://localhost:8000/leagues/updateLeague/${location.state["_id"]}`;
-
-    const requestOptions = {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(location.state),
-    };
-
-    fetch(apiUrl, requestOptions)
-      .then((response) => response.json())
-      .then((responseData) => {
-        console.log(responseData);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }
-
-  // Adds a player to a team
-  const addPlayerToTeam = async (teamIndex) => {
-
-    // This part of the code was ripped from header.js
-    if (!cookies.token) {
-      console.log("not signed in");
-      return
-    }
-    const { data } = await axios.post(
-      "http://localhost:8000/users/verify",
-      {},
-      { withCredentials: true }
-    );
-
-    // Add the player to the team's player list
-    let playerList = location.state.Teams[teamIndex].TeamMembers;
-    playerList.push(data.user);
+    let potentialPlayerList =
+      location.state.Teams[teamIndex].PotentialTeamMembers;
+    potentialPlayerList.push(user.Username);
 
     // Make the PATCH request to update the leagues
     const apiUrl = `http://localhost:8000/leagues/updateLeague/${location.state["_id"]}`;
@@ -175,28 +123,6 @@ export const TeamSelect = (props) => {
         console.error("Error:", error);
       });
   };
-
-  // Sets the userdata state
-  const setUserState = async () => {
-    if (!cookies.token) {
-      setUserData({user: null})
-      return
-    }
-    const { data } = await axios.post(
-      "http://localhost:8000/users/verify",
-      {},
-      { withCredentials: true }
-    );
-
-    setUserData(data)
-  }
-
-  useEffect(() => {
-    setUserState()
-  }, []);
-
-  console.log(location.state);
-  console.log(cookies);
 
   return (
     <Box sx={{ width: "80vw", height: "77.69vh", display: "flex" }}>
@@ -296,14 +222,18 @@ export const TeamSelect = (props) => {
             ? location.state.Teams.map((item, index) => (
                 <TeamSelectButton
                   onClick={() => {
-                    console.log("THIS IS RUNNING")
+                    console.log("THIS IS RUNNING");
                     addPlayerToPotentialList(index);
                   }}
                   name={location.state.Teams[index].TeamName}
                   captain={location.state.Teams[index].TeamCaptain}
                   members={location.state.Teams[index].TeamMembers}
-                  potentialMembers={location.state.Teams[index].PotentialTeamMembers}
-                  showPotentialMembers={userData.user === location.state.Teams[index].TeamCaptain}
+                  potentialMembers={
+                    location.state.Teams[index].PotentialTeamMembers
+                  }
+                  showPotentialMembers={user &&
+                    user.Username === location.state.Teams[index].TeamCaptain
+                  }
                   leagueInfo={location.state}
                   teamIndex={index}
                 />
