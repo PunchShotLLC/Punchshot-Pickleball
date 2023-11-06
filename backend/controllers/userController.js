@@ -181,7 +181,7 @@ export const verifyUser = async (req, res) => {
         return res.json({
           status: true,
           user: user.Username,
-          userId: user._id,
+          userId: user._id
         });
       else return res.json({ status: false });
     }
