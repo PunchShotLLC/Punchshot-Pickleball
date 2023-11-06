@@ -244,13 +244,6 @@ export const joinTeam = async (req, res) => {
   });
 
   return res.status(200).json({ messsage: "User added successfully" });
-
-  // if member array empty, add this user's name as the captain
-  // else, add this memeber in the member list
-  // if memeber list > 6 send error
-  // in body, put in leage and team that you want to join
-  // adds the user into the team
-  // if first person,
 };
 
 export const deleteUser = async (req, res) => {};
