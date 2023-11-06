@@ -76,16 +76,16 @@ export const createUser = async (req, res) => {
 
   console.log(
     FirstName +
-      " " +
-      LastName +
-      " " +
-      Email +
-      " " +
-      Username +
-      " " +
-      Password +
-      " " +
-      SkillLevel
+    " " +
+    LastName +
+    " " +
+    Email +
+    " " +
+    Username +
+    " " +
+    Password +
+    " " +
+    SkillLevel
   );
 
   if (!Email) {
@@ -248,4 +248,4 @@ export const joinTeam = async (req, res) => {
 
 export const deleteUser = async (req, res) => {};
 
-export const updateContent = async (req, res) => {};
+export const updateContent = async (req, res) => { };

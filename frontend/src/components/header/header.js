@@ -9,10 +9,9 @@ import search from "../../assets/images/search.svg";
 import shop from "../../assets/images/shop.svg";
 import Button from "@mui/material/Button";
 import "./header.scss";
-import { useEffect, useState } from "react";
+import { useContext } from "react";
 import { useCookies } from "react-cookie";
-import axios from "axios";
-
+import { UserContext } from "../UserContext/usercontext";
 
 function homeRedirect() {
   window.location.href = "/";
@@ -47,41 +46,16 @@ const StyledTitle = styled("header")({
 
 export const Header = (props) => {
   const [cookies, removeCookie] = useCookies([]);
-  const [loginButton, setLoginButton] = useState("LOGIN/SIGNUP");
-
-  useEffect(() => {
-    const verifyCookie = async () => {
-      console.log(cookies);
-      if (!cookies.token) {
-        console.log("not signed in");
-      }
-      const { data } = await axios.post(
-        "http://localhost:8000/users/verify",
-        {},
-        { withCredentials: true }
-      );
-
-      console.log(data);
-      const { status, user } = data;
-      console.log(status);
-      if (status) {
-        setLoginButton("LOGOUT");
-      } else {
-        setLoginButton("LOGIN/SIGNUP");
-      }
-    };
-    verifyCookie();
-  }, [cookies]);
+  const user = useContext(UserContext);
 
   const handleUser = () => {
-    if (loginButton === "LOGOUT") {
+    if (user) {
       removeCookie("token");
-      window.location.reload(false);
+      window.location.href = "/";
     } else {
       props.setRender((oldRender) => !oldRender);
     }
   };
-
   return (
     <StyledHeader>
       <img className="logo_image" src={logo} alt="logo" />
@@ -209,6 +183,7 @@ export const Header = (props) => {
                 backgroundColor: "transparent",
               },
             }}
+            disabled={!user}
           >
             LEAGUES
           </Button>
@@ -244,7 +219,7 @@ export const Header = (props) => {
               fontSize: "calc(0.1em + 1vw)",
             }}
           >
-            {loginButton}
+            {user ? "LOGOUT" : "LOGIN/SIGNUP"}
           </Box>
           <img className="icon_image" src={login} />
         </Button>

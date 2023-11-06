@@ -2,7 +2,8 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { useLocation } from "react-router-dom";
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
+import { UserContext } from "../../components/UserContext/usercontext";
 import Typography from "@mui/material/Typography";
 import "../League/league.scss";
 import "@fontsource/inter";
@@ -14,7 +15,6 @@ import TextField from "@mui/material/InputBase";
 import { FormControl } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useCookies } from "react-cookie";
-import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 
 import { TeamSelectButton } from "./teamSelectButton";
@@ -43,29 +43,31 @@ const buttonTheme = createTheme({
   },
 });
 
-const generateRandomName = () => {
-  return uuidv4().slice(0, 9);
-};
-
 export const TeamSelect = (props) => {
   // Grab the cookies
-  const [cookies, removeCookie] = useCookies([]);
+  const user = useContext(UserContext);
 
   // location.state holds the info about the league
   const location = useLocation();
 
-  // Three states for the input for a new team
+  // For the input for a new team
   const [teamName, setTeamName] = useState(null);
 
   // Adds the team to the league
-  const addTeamToLeague = () => {
+  const addTeamToLeague = async () => {
     // Make a copy of the league, add the new team
     const leagueInfo = location.state;
-    console.log(leagueInfo);
+    // console.log(leagueInfo);
+    console.log(user);
+    if (!user) {
+      console.log("not signed in");
+    }
+
     leagueInfo["Teams"].push({
       TeamName: teamName,
-      TeamCaptain: generateRandomName(),
+      TeamCaptain: user.Username,
       TeamMembers: [],
+      PotentialTeamMembers: [],
     });
 
     // Make a patch request to the leagues API with the updated league object
@@ -90,24 +92,16 @@ export const TeamSelect = (props) => {
       });
   };
 
-  // Adds a player to a team
-  const addPlayerToTeam = async (teamIndex) => {
-
-    // This part of the code was ripped from header.js
-    if (!cookies.token) {
+  // Adds a player to the potential team member list of a team
+  const addPlayerToPotentialList = async (teamIndex) => {
+    if (!user) {
       console.log("not signed in");
+      return;
     }
-    const { data } = await axios.post(
-      "http://localhost:8000/users/verify",
-      {},
-      { withCredentials: true }
-    );
 
-
-    //TODO: remove this code to call API 
-    // Add the player to the team's player list
-    let playerList = location.state.Teams[teamIndex].TeamMembers;
-    playerList.push(data.user);
+    let potentialPlayerList =
+      location.state.Teams[teamIndex].PotentialTeamMembers;
+    potentialPlayerList.push(user.Username);
 
     // Make the PATCH request to update the leagues
     const apiUrl = `http://localhost:8000/leagues/updateLeague/${location.state["_id"]}`;
@@ -129,9 +123,6 @@ export const TeamSelect = (props) => {
         console.error("Error:", error);
       });
   };
-
-  console.log(location.state);
-  console.log(cookies);
 
   return (
     <Box sx={{ width: "80vw", height: "77.69vh", display: "flex" }}>
@@ -231,11 +222,20 @@ export const TeamSelect = (props) => {
             ? location.state.Teams.map((item, index) => (
                 <TeamSelectButton
                   onClick={() => {
-                    addPlayerToTeam(index);
+                    console.log("THIS IS RUNNING");
+                    addPlayerToPotentialList(index);
                   }}
                   name={location.state.Teams[index].TeamName}
                   captain={location.state.Teams[index].TeamCaptain}
-                  players={location.state.Teams[index].TeamMembers}
+                  members={location.state.Teams[index].TeamMembers}
+                  potentialMembers={
+                    location.state.Teams[index].PotentialTeamMembers
+                  }
+                  showPotentialMembers={user &&
+                    user.Username === location.state.Teams[index].TeamCaptain
+                  }
+                  leagueInfo={location.state}
+                  teamIndex={index}
                 />
               ))
             : null}
