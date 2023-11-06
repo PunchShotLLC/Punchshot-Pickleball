@@ -47,7 +47,6 @@ const StyledTitle = styled("header")({
 export const Header = (props) => {
   const [cookies, removeCookie] = useCookies([]);
   const user = useContext(UserContext);
-
   const handleUser = () => {
     if (user) {
       removeCookie("token");
