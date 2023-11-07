@@ -63,9 +63,19 @@ export const TeamSelect = (props) => {
       console.log("not signed in");
     }
 
+    let isCaptain = leagueInfo["Teams"].find((obj) => obj.TeamCaptain === user);
+    console.log("Creating Team");
+    console.log("userName" + user);
+    console.log("is captain " + JSON.stringify(isCaptain));
+
+    if (isCaptain) {
+      alert("Cannot make new team as captain of another team");
+      return;
+    }
+
     leagueInfo["Teams"].push({
       TeamName: teamName,
-      TeamCaptain: user.Username,
+      TeamCaptain: user,
       TeamMembers: [],
       PotentialTeamMembers: [],
     });
@@ -92,6 +102,58 @@ export const TeamSelect = (props) => {
       });
   };
 
+  const removePlayerFromTeam = async (teamIndex) => {
+    if (!user) {
+      console.log("not signed in");
+      return;
+    }
+
+    let PlayerList = location.state.Teams[teamIndex].TeamMembers;
+    console.log(PlayerList);
+
+    let teamCaptain = location.state.Teams[teamIndex].TeamCaptain;
+
+    if (teamCaptain === user) {
+      
+      if(PlayerList.length === 0){
+        alert("No team members in team to replace you as captain");
+        return;
+      }
+
+      // removeCaptain and set first player to Captain
+      location.state.Teams[teamIndex].TeamCaptain = PlayerList[0];
+    } else {
+      //find user in memberlist and remove from memberlist
+      console.log("in filter");
+      let inMemberList = PlayerList.find((item) => item === user);
+      if (!inMemberList) {
+        alert("User already not in team");
+        return;
+      }
+      let filteredArray = PlayerList.filter((item) => item !== user);
+      location.state.Teams[teamIndex].TeamMembers = filteredArray;
+    }
+
+    const apiUrl = `http://localhost:8000/leagues/updateLeague/${location.state["_id"]}`;
+
+    const requestOptions = {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(location.state),
+    };
+
+    fetch(apiUrl, requestOptions)
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(responseData);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
   // Adds a player to the potential team member list of a team
   const addPlayerToPotentialList = async (teamIndex) => {
     if (!user) {
@@ -101,7 +163,25 @@ export const TeamSelect = (props) => {
 
     let potentialPlayerList =
       location.state.Teams[teamIndex].PotentialTeamMembers;
-    potentialPlayerList.push(user.Username);
+    console.log(potentialPlayerList);
+
+    let isCaptain = location.state["Teams"].find(
+      (obj) => obj.TeamCaptain === user
+    );
+
+    if (isCaptain) {
+      alert("Cannot request to join new team as captain of this/another team");
+      return;
+    }
+
+    let inTeam = potentialPlayerList.find(obj => obj === user); 
+
+    if(inTeam){
+      alert("Alredy in potential player list");
+      return;
+    }
+
+    potentialPlayerList.push(user);
 
     // Make the PATCH request to update the leagues
     const apiUrl = `http://localhost:8000/leagues/updateLeague/${location.state["_id"]}`;
@@ -225,13 +305,18 @@ export const TeamSelect = (props) => {
                     console.log("THIS IS RUNNING");
                     addPlayerToPotentialList(index);
                   }}
+                  onClickRemoveUser={() => {
+                    console.log("Remove User Is Running");
+                    removePlayerFromTeam(index);
+                  }}
                   name={location.state.Teams[index].TeamName}
                   captain={location.state.Teams[index].TeamCaptain}
                   members={location.state.Teams[index].TeamMembers}
                   potentialMembers={
                     location.state.Teams[index].PotentialTeamMembers
                   }
-                  showPotentialMembers={user &&
+                  showPotentialMembers={
+                    user &&
                     user.Username === location.state.Teams[index].TeamCaptain
                   }
                   leagueInfo={location.state}

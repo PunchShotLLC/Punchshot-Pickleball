@@ -180,16 +180,17 @@ export const verifyUser = async (req, res) => {
       if (user)
         return res.json({
           status: true,
-          user: user.Username,
-          userId: user._id
+          user: user.Username
         });
       else return res.json({ status: false });
     }
   });
 };
 
+
+// not used 
 export const joinTeam = async (req, res) => {
-  const { leagueID, teamID, userID } = req.body; // get userId though cookies in front end code?
+  const { leagueID, teamID, userName } = req.body; 
 
   // find league by ID
   const league = await League.findById(leagueID);
@@ -210,12 +211,12 @@ export const joinTeam = async (req, res) => {
   }
 
   // get user user name
-  const user = await User.findById(userID);
-  if (!user) {
-    return res.json({
-      error: "User not found",
-    });
-  }
+  // const user = await User.findById(userID);
+  // if (!user) {
+  //   return res.json({
+  //     error: "User not found",
+  //   });
+  // }
 
   const query = { _id: leagueID, "Teams._id": teamID };
   let newValues = {};
