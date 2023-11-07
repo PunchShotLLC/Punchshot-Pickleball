@@ -1,4 +1,5 @@
 import User from "../models/user.model.js";
+import League from "../models/league.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import createSecretToken from "../util/secretToken.js";
@@ -176,14 +177,76 @@ export const verifyUser = async (req, res) => {
       return res.json({ status: false });
     } else {
       const user = await User.findById(data.id);
-      if (user) return res.json({ status: true, user });
+      if (user)
+        return res.json({
+          status: true,
+          user: user.Username
+        });
       else return res.json({ status: false });
     }
   });
 };
 
-export const joinLeague = async (req, res) => { };
 
-export const deleteUser = async (req, res) => { };
+// not used 
+export const joinTeam = async (req, res) => {
+  const { leagueID, teamID, userName } = req.body; 
+
+  // find league by ID
+  const league = await League.findById(leagueID);
+  if (!league) {
+    return res.json({
+      error: "League not found",
+    });
+  }
+
+  // find team by ID
+  const team = league.Teams.find((team) => team._id == teamID);
+  console.log(league.Teams);
+  console.log(team);
+  if (!team) {
+    return res.json({
+      error: "Team not found",
+    });
+  }
+
+  // get user user name
+  // const user = await User.findById(userID);
+  // if (!user) {
+  //   return res.json({
+  //     error: "User not found",
+  //   });
+  // }
+
+  const query = { _id: leagueID, "Teams._id": teamID };
+  let newValues = {};
+
+  let membersArray = team.TeamMembers;
+  membersArray = membersArray.filter((value) => value !== null);
+  if (membersArray.length >= 6) {
+    return res.json({
+      error: "Team is full",
+    });
+  }
+
+  if (membersArray.length == 0) {
+    newValues.set("TeamCaptain", user.Username);
+  }
+
+  membersArray.push(user.Username);
+  console.log(membersArray);
+  newValues["TeamMembers"] = membersArray;
+  newValues = { $set: newValues };
+
+  console.log(newValues);
+
+  League.updateOne(query, newValues, { // not working 
+    arrayFilters: [{ "xxx._id": teamID}],
+  });
+
+  return res.status(200).json({ messsage: "User added successfully" });
+};
+
+export const deleteUser = async (req, res) => {};
 
 export const updateContent = async (req, res) => { };

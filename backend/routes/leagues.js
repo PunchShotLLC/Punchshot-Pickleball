@@ -7,7 +7,7 @@ import { createLeague, updateLeague, getLeagues, getLeague, deleteLeague } from 
 router.post("/createLeague", createLeague);
 router.route("/:zip").get(getLeague)
 router.route("/updateLeague/:id").patch(updateLeague)
-router.route("/deleteLeague/:id").delete(deleteLeague)
+router.route("/deleteLeague/:id").delete(deleteLeague)  
 router.route("/").get(getLeagues)
 
 export default router;
