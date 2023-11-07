@@ -41,6 +41,9 @@ const leagueSchema = new Schema({
       PotentialTeamMembers: [
         String, // SchemaTypes.ObjectId when users functionality complete
       ],
+      HomeCourtAddress: { 
+        courtSchema,
+      },
       TeamFee: Number,
     },
   ],

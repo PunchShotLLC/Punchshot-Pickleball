@@ -29,10 +29,12 @@ app.use(cookieParser());
 
 import usersRouter from "./routes/users.js";
 import leaguesRouter from "./routes/leagues.js";
+import courtRoutes from './routes/courts.js';
 
 //All routers (middleware) will be placed here
 app.use("/users", usersRouter);
 app.use("/leagues", leaguesRouter);
+app.use('/courts', courtRoutes);
 
 app.get("/", (req, res) => {
   res.json({ mssg: "Welcome!" });
