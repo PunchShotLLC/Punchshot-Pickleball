@@ -39,6 +39,15 @@ export const TeamSelectButton = (props) => {
       });
   };
 
+  // There are nulls in the potential members list for some reason
+  // This filters the nulls out
+  let potentials = []
+  for (let i = 0; i < props.potentialMembers.length; i++) {
+    if (props.potentialMembers[i] !== null) {
+      potentials.push(props.potentialMembers[i])
+    }
+  }
+
   return (
     <div className="team-select-button">
       <h2 className="team-select-text">{props.name}</h2>
@@ -55,7 +64,7 @@ export const TeamSelectButton = (props) => {
       {props.showPotentialMembers === true ? 
       <>
         <p className="team-select-text">Potential Members (Click on a user to allow them into your team): </p>
-        {props.potentialMembers.map((item, index) => (
+        {potentials.map((item, index) => (
           <div class='team-username-container' onClick={()=>addPlayerToTeam(props.teamIndex, props.potentialMembers[index])}>
             <p className="potential-team-member">{props.potentialMembers[index]}</p>
           </div>
