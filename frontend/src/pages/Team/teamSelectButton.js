@@ -32,6 +32,7 @@ export const TeamSelectButton = (props) => {
       .then((response) => response.json())
       .then((responseData) => {
         console.log(responseData);
+        alert("User has been successfully added")
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -41,20 +42,28 @@ export const TeamSelectButton = (props) => {
   return (
     <div className="team-select-button">
       <h2 className="team-select-text">{props.name}</h2>
-      <p className="team-select-text">Captain: {props.captain}</p>
+      <h3 className="team-select-text">Captain:</h3>
+      <div class='team-username-container'>
+          <p>{props.captain}</p>
+        </div>
       <p className="team-select-text">Members: </p>
       {props.members.map((item, index) => (
-        <p>{props.members[index]}</p>
+        <div class='team-username-container'>
+          <p>{props.members[index]}</p>
+        </div>
       ))}
       {props.showPotentialMembers === true ? 
       <>
-        <p className="team-select-text">Potential Members: </p>
+        <p className="team-select-text">Potential Members (Click on a user to allow them into your team): </p>
         {props.potentialMembers.map((item, index) => (
-          <p onClick={()=>addPlayerToTeam(props.teamIndex, props.potentialMembers[index])} className="potential-team-member">{props.potentialMembers[index]}</p>
+          <div class='team-username-container' onClick={()=>addPlayerToTeam(props.teamIndex, props.potentialMembers[index])}>
+            <p className="potential-team-member">{props.potentialMembers[index]}</p>
+          </div>
         ))}
       </> :
       null
       }
+      <br></br>
       <Button onClick={props.onClick}>Request to Join</Button>
     </div>
   );
