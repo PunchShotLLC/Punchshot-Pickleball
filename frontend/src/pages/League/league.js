@@ -72,6 +72,7 @@ export const League = () => {
     navigate("/leagueInfo", { state: leagues[teamIndex] });
   };
 
+  
   // Dates are inputted as mm-dd-yyyy
   // MongoDB requires ISO string whtvr format
   function convertDateToMongoFormat(dateString) {

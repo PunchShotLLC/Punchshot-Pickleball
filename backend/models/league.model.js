@@ -35,6 +35,10 @@ const leagueSchema = new Schema({
         type: String, // SchemaTypes.ObjectId when users functionality complete
         required: true,
       },
+      CaptainEmail: {
+        type: String, 
+        required: true,
+      },
       TeamMembers: [
         String, // SchemaTypes.ObjectId when users functionality complete
       ],

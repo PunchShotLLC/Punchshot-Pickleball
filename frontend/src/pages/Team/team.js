@@ -66,6 +66,7 @@ export const TeamSelect = (props) => {
     leagueInfo["Teams"].push({
       TeamName: teamName,
       TeamCaptain: user.Username,
+      CaptainEmail: user.Email,
       TeamMembers: [],
       PotentialTeamMembers: [],
     });
@@ -122,7 +123,21 @@ export const TeamSelect = (props) => {
       .catch((error) => {
         console.error("Error:", error);
       });
+
+    // Make the GET request to send an email
+    const emailApiUrl = `http://localhost:8000/leagues/sendRequestEmail?sendTo=${location.state.Teams[teamIndex].CaptainEmail}&user=${user.Username}`;
+
+    fetch(emailApiUrl)
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(responseData);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
+
+  console.log(location.state)
 
   return (
     <Box sx={{ width: "80vw", height: "77.69vh", display: "flex" }}>
@@ -222,7 +237,6 @@ export const TeamSelect = (props) => {
             ? location.state.Teams.map((item, index) => (
                 <TeamSelectButton
                   onClick={() => {
-                    console.log("THIS IS RUNNING");
                     addPlayerToPotentialList(index);
                   }}
                   name={location.state.Teams[index].TeamName}
