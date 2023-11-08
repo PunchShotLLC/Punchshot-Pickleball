@@ -49,18 +49,48 @@ export const TeamSelect = (props) => {
 
   // location.state holds the info about the league
   const location = useLocation();
+  console.log(user);
 
   // For the input for a new team
   const [teamName, setTeamName] = useState(null);
+
+  const [homeCourtAddress, setHomeCourtAddress] = useState(null);
 
   // Adds the team to the league
   const addTeamToLeague = async () => {
     // Make a copy of the league, add the new team
     const leagueInfo = location.state;
+
+    // check if the team name or home court address is already taken
+    const isTeamNameTaken = leagueInfo.Teams.some(team => team.TeamName === teamName);
+    const isHomeCourtAddressTaken = leagueInfo.Teams.some(team => team.HomeCourtAddress === homeCourtAddress);
+
+    if (isTeamNameTaken) {
+      alert('This team name is already taken. Please choose another one.');
+      return;
+    }
+  
+    if (isHomeCourtAddressTaken) {
+      alert('This home court address is already taken. Please choose another one.');
+      return;
+    }
+
     // console.log(leagueInfo);
     console.log(user);
     if (!user) {
       console.log("not signed in");
+    }
+
+    let isCaptain = leagueInfo["Teams"].find(
+      (obj) => obj.TeamCaptain === user.Username
+    );
+    console.log("Creating Team");
+    console.log("userName" + user.Username);
+    console.log("is captain " + JSON.stringify(isCaptain));
+
+    if (isCaptain) {
+      alert("Cannot make new team as captain of another team");
+      return;
     }
 
     leagueInfo["Teams"].push({
@@ -68,6 +98,7 @@ export const TeamSelect = (props) => {
       TeamCaptain: user.Username,
       TeamMembers: [],
       PotentialTeamMembers: [],
+      HomeCourtAddress: homeCourtAddress,
     });
 
     // Make a patch request to the leagues API with the updated league object
@@ -92,6 +123,57 @@ export const TeamSelect = (props) => {
       });
   };
 
+  const removePlayerFromTeam = async (teamIndex) => {
+    if (!user) {
+      console.log("not signed in");
+      return;
+    }
+
+    let PlayerList = location.state.Teams[teamIndex].TeamMembers;
+    console.log(PlayerList);
+
+    let teamCaptain = location.state.Teams[teamIndex].TeamCaptain;
+
+    if (teamCaptain === user.Username) {
+      if (PlayerList.length === 0) {
+        alert("No team members in team to replace you as captain");
+        return;
+      }
+
+      // removeCaptain and set first player to Captain
+      location.state.Teams[teamIndex].TeamCaptain = PlayerList[0];
+    } else {
+      //find user in memberlist and remove from memberlist
+      console.log("in filter");
+      let inMemberList = PlayerList.find((item) => item === user.Username);
+      if (!inMemberList) {
+        alert("User already not in team");
+        return;
+      }
+      let filteredArray = PlayerList.filter((item) => item !== user.Username);
+      location.state.Teams[teamIndex].TeamMembers = filteredArray;
+    }
+
+    const apiUrl = `http://localhost:8000/leagues/updateLeague/${location.state["_id"]}`;
+
+    const requestOptions = {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(location.state),
+    };
+
+    fetch(apiUrl, requestOptions)
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(responseData);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
   // Adds a player to the potential team member list of a team
   const addPlayerToPotentialList = async (teamIndex) => {
     if (!user) {
@@ -101,6 +183,24 @@ export const TeamSelect = (props) => {
 
     let potentialPlayerList =
       location.state.Teams[teamIndex].PotentialTeamMembers;
+    console.log(potentialPlayerList);
+
+    let isCaptain = location.state["Teams"].find(
+      (obj) => obj.TeamCaptain === user.Username
+    );
+
+    if (isCaptain) {
+      alert("Cannot request to join new team as captain of this/another team");
+      return;
+    }
+
+    let inTeam = potentialPlayerList.find((obj) => obj === user.Username);
+
+    if (inTeam) {
+      alert("Already in potential player list");
+      return;
+    }
+
     potentialPlayerList.push(user.Username);
 
     // Make the PATCH request to update the leagues
@@ -188,6 +288,7 @@ export const TeamSelect = (props) => {
             fontSize: "calc(0.1em + 1vw)",
             align: "left",
             marginLeft: "10vw",
+            marginBottom: "3em",
           }}
         >
           <FormControl sx={{ height: "7vw", marginLeft: "1.5vw" }}>
@@ -198,6 +299,15 @@ export const TeamSelect = (props) => {
               onChange={(event) => setTeamName(event.target.value)}
               id="leagueName"
               placeholder="Team1"
+              required
+            />
+            <StyledLabel htmlFor="homeCourtAddress">
+              Home Court Address<span style={{ color: "red" }}>*</span>
+            </StyledLabel>
+            <StyledInput
+              onChange={(event) => setHomeCourtAddress(event.target.value)}
+              id="homeCourtAddress"
+              placeholder="123 Main St"
               required
             />
             <Button
@@ -225,13 +335,19 @@ export const TeamSelect = (props) => {
                     console.log("THIS IS RUNNING");
                     addPlayerToPotentialList(index);
                   }}
+                  onClickRemoveUser={() => {
+                    console.log("Remove User Is Running");
+                    removePlayerFromTeam(index);
+                  }}
                   name={location.state.Teams[index].TeamName}
                   captain={location.state.Teams[index].TeamCaptain}
                   members={location.state.Teams[index].TeamMembers}
+                  home={location.state.Teams[index].HomeCourtAddress}
                   potentialMembers={
                     location.state.Teams[index].PotentialTeamMembers
                   }
-                  showPotentialMembers={user &&
+                  showPotentialMembers={
+                    user &&
                     user.Username === location.state.Teams[index].TeamCaptain
                   }
                   leagueInfo={location.state}
