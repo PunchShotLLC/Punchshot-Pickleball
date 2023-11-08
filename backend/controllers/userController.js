@@ -249,4 +249,44 @@ export const joinTeam = async (req, res) => {
 
 export const deleteUser = async (req, res) => {};
 
-export const updateContent = async (req, res) => {};
+export const updateContent = async (req, res) => { };
+
+export const updatePassword = async (req, res) => {
+  try {
+    const { Username, OldPassword, NewPassword } = req.body;
+    // check if our db has user with that email
+    const user = await User.findOne({ Username });
+
+    if (!user) {
+      return res.json({
+        error: "No user found",
+      });
+    }
+    // check password
+    const match = await comparePassword(OldPassword, user.Password);
+    if (!match) {
+      return res.json({
+        error: "Wrong password",
+      });
+    }
+    if (!NewPassword || NewPassword.length < 6 || NewPassword.length > 20) {
+      return res.json({
+        error: "New Password should be between 6 and 20 characters long",
+      });
+    }
+    const hashedPassword = await hashPassword(NewPassword);
+    const updateRes = await User.updateOne({ Username }, { Password: hashedPassword, });
+    // create signed token
+    const token = createSecretToken(user._id);
+    res.cookie("token", token, {
+      withCredentials: true,
+      httpOnly: false,
+    });
+    res
+      .status(201)
+      .json({ message: "Password changed successfully", success: true, user });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send("Error. Try again.");
+  }
+};

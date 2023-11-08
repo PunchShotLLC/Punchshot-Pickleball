@@ -46,14 +46,15 @@ const router = createBrowserRouter([
       },
       {
         path: "leagueInfo",
-        element: <TeamSelect/>
-      }
+        element: <TeamSelect />
+      },
+      {
+        path: "account",
+        element: <Account />,
+      },
     ]
   },
-  {
-    path: "account",
-    element: <Account />,
-  },
+
   {
     path: "login",
     element: <Login render={true} />,
