@@ -256,6 +256,7 @@ export const TeamSelect = (props) => {
                   name={location.state.Teams[index].TeamName}
                   captain={location.state.Teams[index].TeamCaptain}
                   members={location.state.Teams[index].TeamMembers}
+                  home={location.state.Teams[index].HomeCourtAddress}
                   potentialMembers={
                     location.state.Teams[index].PotentialTeamMembers
                   }
