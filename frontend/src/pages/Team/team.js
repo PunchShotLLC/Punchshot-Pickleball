@@ -53,10 +53,27 @@ export const TeamSelect = (props) => {
   // For the input for a new team
   const [teamName, setTeamName] = useState(null);
 
+  const [homeCourtAddress, setHomeCourtAddress] = useState(null);
+
   // Adds the team to the league
   const addTeamToLeague = async () => {
     // Make a copy of the league, add the new team
     const leagueInfo = location.state;
+
+    // check if the team name or home court address is already taken
+    const isTeamNameTaken = leagueInfo.Teams.some(team => team.TeamName === teamName);
+    const isHomeCourtAddressTaken = leagueInfo.Teams.some(team => team.HomeCourtAddress === homeCourtAddress);
+
+    if (isTeamNameTaken) {
+      alert('This team name is already taken. Please choose another one.');
+      return;
+    }
+  
+    if (isHomeCourtAddressTaken) {
+      alert('This home court address is already taken. Please choose another one.');
+      return;
+    }
+
     // console.log(leagueInfo);
     console.log(user);
     if (!user) {
@@ -78,6 +95,7 @@ export const TeamSelect = (props) => {
       TeamCaptain: user,
       TeamMembers: [],
       PotentialTeamMembers: [],
+      HomeCourtAddress: homeCourtAddress,
     });
 
     // Make a patch request to the leagues API with the updated league object
@@ -268,6 +286,7 @@ export const TeamSelect = (props) => {
             fontSize: "calc(0.1em + 1vw)",
             align: "left",
             marginLeft: "10vw",
+            marginBottom: "3em",
           }}
         >
           <FormControl sx={{ height: "7vw", marginLeft: "1.5vw" }}>
@@ -278,6 +297,15 @@ export const TeamSelect = (props) => {
               onChange={(event) => setTeamName(event.target.value)}
               id="leagueName"
               placeholder="Team1"
+              required
+            />
+            <StyledLabel htmlFor="homeCourtAddress">
+              Home Court Address<span style={{ color: "red" }}>*</span>
+            </StyledLabel>
+            <StyledInput
+              onChange={(event) => setHomeCourtAddress(event.target.value)}
+              id="homeCourtAddress"
+              placeholder="123 Main St"
               required
             />
             <Button
@@ -312,6 +340,7 @@ export const TeamSelect = (props) => {
                   name={location.state.Teams[index].TeamName}
                   captain={location.state.Teams[index].TeamCaptain}
                   members={location.state.Teams[index].TeamMembers}
+                  home={location.state.Teams[index].HomeCourtAddress}
                   potentialMembers={
                     location.state.Teams[index].PotentialTeamMembers
                   }

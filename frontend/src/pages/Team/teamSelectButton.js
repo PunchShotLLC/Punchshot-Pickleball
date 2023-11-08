@@ -59,6 +59,7 @@ export const TeamSelectButton = (props) => {
       {props.members.map((item, index) => (
         <p>{props.members[index]}</p>
       ))}
+      <p className="team-select-text">Home Court Address: {props.home} </p>
       {props.showPotentialMembers === true ? 
       <>
         <p className="team-select-text">Potential Members: </p>
