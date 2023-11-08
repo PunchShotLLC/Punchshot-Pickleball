@@ -49,6 +49,7 @@ export const TeamSelect = (props) => {
 
   // location.state holds the info about the league
   const location = useLocation();
+  console.log(user);
 
   // For the input for a new team
   const [teamName, setTeamName] = useState(null);
@@ -80,9 +81,11 @@ export const TeamSelect = (props) => {
       console.log("not signed in");
     }
 
-    let isCaptain = leagueInfo["Teams"].find((obj) => obj.TeamCaptain === user);
+    let isCaptain = leagueInfo["Teams"].find(
+      (obj) => obj.TeamCaptain === user.Username
+    );
     console.log("Creating Team");
-    console.log("userName" + user);
+    console.log("userName" + user.Username);
     console.log("is captain " + JSON.stringify(isCaptain));
 
     if (isCaptain) {
@@ -92,7 +95,7 @@ export const TeamSelect = (props) => {
 
     leagueInfo["Teams"].push({
       TeamName: teamName,
-      TeamCaptain: user,
+      TeamCaptain: user.Username,
       TeamMembers: [],
       PotentialTeamMembers: [],
       HomeCourtAddress: homeCourtAddress,
@@ -131,9 +134,8 @@ export const TeamSelect = (props) => {
 
     let teamCaptain = location.state.Teams[teamIndex].TeamCaptain;
 
-    if (teamCaptain === user) {
-      
-      if(PlayerList.length === 0){
+    if (teamCaptain === user.Username) {
+      if (PlayerList.length === 0) {
         alert("No team members in team to replace you as captain");
         return;
       }
@@ -143,12 +145,12 @@ export const TeamSelect = (props) => {
     } else {
       //find user in memberlist and remove from memberlist
       console.log("in filter");
-      let inMemberList = PlayerList.find((item) => item === user);
+      let inMemberList = PlayerList.find((item) => item === user.Username);
       if (!inMemberList) {
         alert("User already not in team");
         return;
       }
-      let filteredArray = PlayerList.filter((item) => item !== user);
+      let filteredArray = PlayerList.filter((item) => item !== user.Username);
       location.state.Teams[teamIndex].TeamMembers = filteredArray;
     }
 
@@ -184,7 +186,7 @@ export const TeamSelect = (props) => {
     console.log(potentialPlayerList);
 
     let isCaptain = location.state["Teams"].find(
-      (obj) => obj.TeamCaptain === user
+      (obj) => obj.TeamCaptain === user.Username
     );
 
     if (isCaptain) {
@@ -192,14 +194,14 @@ export const TeamSelect = (props) => {
       return;
     }
 
-    let inTeam = potentialPlayerList.find(obj => obj === user); 
+    let inTeam = potentialPlayerList.find((obj) => obj === user.Username);
 
-    if(inTeam){
-      alert("Alredy in potential player list");
+    if (inTeam) {
+      alert("Already in potential player list");
       return;
     }
 
-    potentialPlayerList.push(user);
+    potentialPlayerList.push(user.Username);
 
     // Make the PATCH request to update the leagues
     const apiUrl = `http://localhost:8000/leagues/updateLeague/${location.state["_id"]}`;
