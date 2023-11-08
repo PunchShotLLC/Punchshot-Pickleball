@@ -76,16 +76,16 @@ export const createUser = async (req, res) => {
 
   console.log(
     FirstName +
-    " " +
-    LastName +
-    " " +
-    Email +
-    " " +
-    Username +
-    " " +
-    Password +
-    " " +
-    SkillLevel
+      " " +
+      LastName +
+      " " +
+      Email +
+      " " +
+      Username +
+      " " +
+      Password +
+      " " +
+      SkillLevel
   );
 
   if (!Email) {
@@ -180,17 +180,16 @@ export const verifyUser = async (req, res) => {
       if (user)
         return res.json({
           status: true,
-          user: user.Username
+          user: user,
         });
       else return res.json({ status: false });
     }
   });
 };
 
-
-// not used 
+// not used
 export const joinTeam = async (req, res) => {
-  const { leagueID, teamID, userName } = req.body; 
+  const { leagueID, teamID, userName } = req.body;
 
   // find league by ID
   const league = await League.findById(leagueID);
@@ -240,8 +239,9 @@ export const joinTeam = async (req, res) => {
 
   console.log(newValues);
 
-  League.updateOne(query, newValues, { // not working 
-    arrayFilters: [{ "xxx._id": teamID}],
+  League.updateOne(query, newValues, {
+    // not working
+    arrayFilters: [{ "xxx._id": teamID }],
   });
 
   return res.status(200).json({ messsage: "User added successfully" });
@@ -249,4 +249,4 @@ export const joinTeam = async (req, res) => {
 
 export const deleteUser = async (req, res) => {};
 
-export const updateContent = async (req, res) => { };
+export const updateContent = async (req, res) => {};
