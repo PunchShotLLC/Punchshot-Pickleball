@@ -5,11 +5,12 @@
 Install dependencies:  
 Run `npm install` in the `frontend` folder and the `backend` folder.
 
-Add `.env` file to the `backend` directory (if it does not exist) and include the connection to the MongoDB cluster and the JWT_SECRET as shown below:
+Add `.env` file to the `backend` directory and include the connection to the MongoDB cluster and the JWT_SECRET as shown below:
 
 ```
 DATABASE=mongodb+srv://<USER>:<PASSWORD>@pickleballdb.iuwzm8g.mongodb.net/PunchshotPickleball?retryWrites=true&w=majority
 JWT_SECRET=<SECRET>
+SENDGRID=<SENGRID_API_KEY>
 ```
 
 ## Running the app
