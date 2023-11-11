@@ -1,6 +1,11 @@
 import League from "../models/league.model.js";
 import User from "../models/user.model.js";
 
+import sgMail from '@sendgrid/mail';
+
+import dotenv from 'dotenv'
+dotenv.config();
+
 export const createLeague = async (req, res, body) => {
   const {
     LeagueName,
@@ -132,3 +137,28 @@ export const deleteLeague = async (req, res) => {
       res.status(400).json({ error: error.message });
     });
 };
+
+/*
+Sends a request to the captain of the team
+Captain of the team should be in req.params
+*/
+export const sendRequestEmail = async (req, res) => {
+  console.log(`Going to send email to ${req.query.sendTo}`)
+
+  sgMail.setApiKey(process.env.SENDGRID)
+
+  const message = {
+    to: `${req.query.sendTo}`,
+    from:'tcolina3@gatech.edu',
+    subject:`${req.query.user} wants to join your team`,
+    text: `${req.query.user} has requested to join your team! Log onto Punchshot Pickleball to accept this user.`
+  }
+
+  sgMail.send(message)
+    .then(response => console.log('Email sent...'))
+    .catch(error => console.log(error.response.body))
+}
+
+export const testroute = async (req, res) => {
+  console.log("got here")
+}
