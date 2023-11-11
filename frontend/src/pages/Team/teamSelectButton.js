@@ -10,6 +10,19 @@ export const TeamSelectButton = (props) => {
 
     // Add the player to the team's player list
     let playerList = props.leagueInfo.Teams[teamIndex].TeamMembers;
+
+    let inTeam = playerList.find(name => name === username ); 
+
+    if(inTeam){
+      alert("Already in team")
+      return; 
+    }
+
+    if (playerList.length >= 5){
+      alert("Team is full")
+      return; 
+    }
+
     playerList.push(username);
 
     // Remove the player from the potential player list
@@ -61,6 +74,7 @@ export const TeamSelectButton = (props) => {
           <p>{props.members[index]}</p>
         </div>
       ))}
+      <p className="team-select-text">Home Court Address: {props.home} </p>
       {props.showPotentialMembers === true ? 
       <>
         <p className="team-select-text">Potential Members (Click on a user to allow them into your team): </p>
@@ -74,6 +88,7 @@ export const TeamSelectButton = (props) => {
       }
       <br></br>
       <Button onClick={props.onClick}>Request to Join</Button>
+      <Button onClick={props.onClickRemoveUser}> Leave Team </Button>
     </div>
   );
 };

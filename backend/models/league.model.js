@@ -15,12 +15,14 @@ const leagueSchema = new Schema({
     type: Number,
     required: true,
   },
-  ZipCodes: [{
-    type: String,
-    required: true,
-    minLength: 5,
-    maxLength: 5,
-  }],
+  ZipCodes: [
+    {
+      type: String,
+      required: true,
+      minLength: 5,
+      maxLength: 5,
+    },
+  ],
   City: {
     type: String,
     required: true,
@@ -45,6 +47,10 @@ const leagueSchema = new Schema({
       PotentialTeamMembers: [
         String, // SchemaTypes.ObjectId when users functionality complete
       ],
+      HomeCourtAddress: {
+        type: String,
+        required: true,
+      },
       TeamFee: Number,
     },
   ],

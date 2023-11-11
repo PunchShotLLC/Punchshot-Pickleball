@@ -16,6 +16,7 @@ import { requirePropFactory } from "@mui/material";
 import home from "../../assets/images/home.svg";
 import { styled } from "@mui/system";
 import * as React from "react";
+import { AccountLeague } from "../League/accountLeague.js";
 
 const StyledTab = styled((props) => <Tab disableRipple {...props} />)(
   ({ theme }) => ({
@@ -38,7 +39,6 @@ export const Account = () => {
 
   return (
     <Box>
-      <Header />
       <Box sx={{ display: "flex", height: "77.69vh", width: "100vw" }}>
         <Tabs
           orientation="vertical"
@@ -56,20 +56,12 @@ export const Account = () => {
           }}
         >
           <StyledTab label="PROFILE" />
-          <StyledTab label="UPCOMING" />
-          <StyledTab label="TOURNAMENTS" />
           <StyledTab label="LEAGUE" />
           <StyledTab label="RESULTS" />
-          <StyledTab label="FRIENDS" />
-          <StyledTab label="SETTINGS" />
         </Tabs>
         {value === 0 && <Profile />}
-        {value === 1 && <Upcoming />}
-        {value === 2 && <MyTournaments />}
-        {value === 3 && <League />}
-        {value === 4 && <Results />}
-        {value === 5 && <Friends />}
-        {value === 6 && <Settings />}
+        {value === 1 && <AccountLeague />}
+        {value === 2 && <Results />}
       </Box>
     </Box>
   );
