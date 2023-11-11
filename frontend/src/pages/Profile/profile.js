@@ -150,9 +150,7 @@ export const Profile = () => {
             </Box>
             <Box sx={{ display: "flex" }}>
               <FormControl sx={{ width: "30vw" }}>
-                <StyledLabel htmlFor="password">
-                  Old Password
-                </StyledLabel>
+                <StyledLabel htmlFor="password">Old Password</StyledLabel>
                 <StyledInput
                   id="password"
                   placeholder="********"
@@ -197,7 +195,11 @@ export const Profile = () => {
                         onClick={handleClickConfirmPassword}
                         onMouseDown={handleMouseDownPassword}
                       >
-                        {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                        {showConfirmPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
                       </IconButton>
                     </InputAdornment>
                   }
@@ -271,41 +273,6 @@ export const Profile = () => {
             </Box>
           </Box>
         </Box> */}
-      </Box>
-      <Box
-        sx={{
-          height: "75vh",
-          width: "30vw",
-          borderLeft: "2px solid rgba(145, 70, 216, 1)",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Typography
-          sx={{
-            color: "rgba(145, 70, 216, 1)",
-            fontSize: "calc(1.2em + 1vw)",
-            marginBottom: "2vh",
-          }}
-        >
-          YOUR NEWS FEED
-        </Typography>
-        <FeedItem
-          message="Sudhakar, Wong win Men’s Doubles at the Atlanta Invitational"
-          date="9/12/2022"
-          author="Jason Lattimore"
-        />
-        <FeedItem
-          message="Sudhakar, Wong win Men’s Doubles at the Atlanta Invitational"
-          date="9/12/2022"
-          author="Jason Lattimore"
-        />
-        <FeedItem
-          message="Sudhakar, Wong win Men’s Doubles at the Atlanta Invitational"
-          date="9/12/2022"
-          author="Jason Lattimore"
-        />
       </Box>
     </Box>
   );
