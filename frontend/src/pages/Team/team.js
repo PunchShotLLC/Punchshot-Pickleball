@@ -16,8 +16,6 @@ import { FormControl } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useCookies } from "react-cookie";
 import axios from "axios";
-// import AddressAutocomplete from './AddressAutocomplete';
-
 import { TeamSelectButton } from "./teamSelectButton";
 
 const StyledInput = styled(TextField)({
@@ -65,8 +63,8 @@ export const TeamSelect = (props) => {
 
     // check if the team name or home court address is already taken
     const isTeamNameTaken = leagueInfo.Teams.some(team => team.TeamName === teamName);
-    const homeCourtAddressCount = leagueInfo.Teams.filter(team => team.HomeCourtAddress === homeCourtAddress).length;
 
+    // alerts if team is taken
     if (isTeamNameTaken) {
       alert('This team name is already taken. Please choose a different one.');
       return;
@@ -120,76 +118,6 @@ export const TeamSelect = (props) => {
         console.error("Error:", error);
       });
   };
-
-  const fetchAddressSuggestions = (input) => {
-    if (input.length > 2) {
-      const requestOptions = {
-        method: 'GET',
-      };
-      fetch(`https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(input)}&apiKey=14cea0e3ba0c4d108d7ac029bd20ab00`, requestOptions)
-        .then(response => response.json())
-        .then(result => {
-          setSuggestions(result.features);
-        })
-        .catch(error => console.log('error', error));
-    } else {
-      setSuggestions([]);
-    }
-  };
-
-  // Event handler for homeCourtAddress input changes
-  const handleHomeCourtAddressChange = (event) => {
-    const input = event.target.value;
-    setHomeCourtAddress(input);
-    fetchAddressSuggestions(input);
-  };
-
-  // Function to handle suggestion click
-  const handleSuggestionClick = (suggestion) => {
-    setHomeCourtAddress(suggestion.properties.formatted); // Assuming the suggestion has a 'properties.formatted' field
-    setSuggestions([]);
-  };
-
-  const checkHomeCourtAddress = () => {
-    const leagueInfo = location.state;
-    const homeCourtAddressCount = leagueInfo.Teams.filter(team => team.HomeCourtAddress === homeCourtAddress).length;
-    if (homeCourtAddressCount > 0) {
-      const teamWord1 = homeCourtAddressCount === 1 ? 'is' : 'are';
-      const teamWord2 = homeCourtAddressCount === 1 ? '' : 's';
-      const teamWord3 = homeCourtAddressCount === 1 ? 'has' : 'have';
-      setHomeCourtMessage(`FYI: There ${teamWord1} ${homeCourtAddressCount} other team${teamWord2} that ${teamWord3} this home court address.`);
-    } else {
-      setHomeCourtMessage('');
-    }
-  };
-
-  const SuggestionsList = styled('ul')({
-    listStyleType: 'none',
-    margin: 0,
-    padding: 0,
-    position: 'absolute',
-    zIndex: 1000, // Ensure the list appears above other content
-    backgroundColor: '#fff',
-    width: '30vw', // Match the width of the input
-    borderRadius: '0 0 1em 1em', // Round the bottom corners
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', // Add a subtle shadow
-  });
-  
-  // Define a styled component for the suggestions list items
-  const SuggestionItem = styled('li')({
-    padding: '10px 20px',
-    cursor: 'pointer',
-    fontSize: '0.8em', // Smaller text size for suggestions
-  
-    '&:hover': {
-      backgroundColor: '#f0f0f0', // Highlight on hover
-    },
-  });
-  
-  // call checkHomeCourtAddress when the homeCourtAddress state changes
-  useEffect(() => {
-    checkHomeCourtAddress();
-  }, [homeCourtAddress]);
 
   const removePlayerFromTeam = async (teamIndex) => {
     if (!user) {
@@ -304,6 +232,81 @@ export const TeamSelect = (props) => {
       });
   };
 
+  // autocomplete address API integration
+  const fetchAddressSuggestions = (input) => {
+    if (input.length > 2) {
+      const requestOptions = {
+        method: 'GET',
+      };
+      fetch(`https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(input)}&apiKey=14cea0e3ba0c4d108d7ac029bd20ab00`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+          setSuggestions(result.features);
+        })
+        .catch(error => console.log('error', error));
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  // event handler for homeCourtAddress input changes
+  const handleHomeCourtAddressChange = (event) => {
+    const input = event.target.value;
+    setHomeCourtAddress(input);
+    fetchAddressSuggestions(input);
+  };
+
+  // function to handle suggestion click
+  const handleSuggestionClick = (suggestion) => {
+    setHomeCourtAddress(suggestion.properties.formatted);
+    setSuggestions([]);
+  };
+
+  // checking if multiple home court addresses
+  const checkHomeCourtAddress = () => {
+    const leagueInfo = location.state;
+    const homeCourtAddressCount = leagueInfo.Teams.filter(team => team.HomeCourtAddress === homeCourtAddress).length;
+    if (homeCourtAddressCount > 0) {
+      const teamWord1 = homeCourtAddressCount === 1 ? 'is' : 'are';
+      const teamWord2 = homeCourtAddressCount === 1 ? '' : 's';
+      const teamWord3 = homeCourtAddressCount === 1 ? 'has' : 'have';
+      setHomeCourtMessage(`FYI: There ${teamWord1} ${homeCourtAddressCount} other team${teamWord2} that ${teamWord3} this home court address`);
+    } else {
+      setHomeCourtMessage('');
+    }
+  };
+
+  // call checkHomeCourtAddress when the homeCourtAddress state changes
+  useEffect(() => {
+    checkHomeCourtAddress();
+  }, [homeCourtAddress]);
+
+  // formatting for suggestions
+  const SuggestionsList = styled('ul')({
+    listStyleType: 'none',
+    margin: 0,
+    padding: 0,
+    position: 'absolute',
+    zIndex: 1000,
+    backgroundColor: '#fff',
+    width: '30vw',
+    borderRadius: '0 0 1em 1em', 
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    top: 'calc(100% + 25px)',
+    left: 0,
+  });
+  
+  // define a styled component for the suggestions list items
+  const SuggestionItem = styled('li')({
+    padding: '10px 20px',
+    cursor: 'pointer',
+    fontSize: '0.8em',
+  
+    '&:hover': {
+      backgroundColor: '#f0f0f0',
+    },
+  });
+
   console.log(location.state)
 
   return (
@@ -409,10 +412,10 @@ export const TeamSelect = (props) => {
                 fontSize: "calc(0.5em + 0.5vw)",
                 color: "gray",
                 marginTop: "0.25em",
-                marginBottom: "1em"
+                marginBottom: "0.5em"
               }}
             >
-              * Ensuring court availability is the team’s responsibility.
+              * Ensuring court availability is your team’s responsibility.
             </Typography>
             <Typography
               sx={{
