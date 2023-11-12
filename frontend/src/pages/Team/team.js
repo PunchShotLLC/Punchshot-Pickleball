@@ -245,17 +245,15 @@ export const TeamSelect = (props) => {
   };
 
   // autocomplete address API integration
-  const fetchAddressSuggestions = (input) => {
+  const fetchAddressSuggestions = async (input) => {
     if (input.length > 2) {
-      const requestOptions = {
-        method: 'GET',
-      };
-      fetch(`https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(input)}&apiKey=14cea0e3ba0c4d108d7ac029bd20ab00`, requestOptions)
-        .then(response => response.json())
-        .then(result => {
-          setSuggestions(result.features);
-        })
-        .catch(error => console.log('error', error));
+      try {
+        // Call your backend endpoint instead of the address API directly
+        const response = await axios.get(`http://localhost:8000/address/${encodeURIComponent(input)}`);
+        setSuggestions(response.data); // Assuming the backend returns the suggestions in the response body
+      } catch (error) {
+        console.error('Error fetching address suggestions:', error);
+      }
     } else {
       setSuggestions([]);
     }
