@@ -1,15 +1,19 @@
+// backend/controllers/addressController.js
+
 import axios from 'axios';
 import dotenv from 'dotenv';
 dotenv.config();
 
 export const getAddressInfo = async (address) => {
-  // Use the provided Geoapify API key directly in the code for demonstration purposes
-  // In production, you should use an environment variable for the API key
-  const apiKey = '14cea0e3ba0c4d108d7ac029bd20ab00';
-  const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(address)}&apiKey=${apiKey}`;
+  const apiKey = process.env.GEOAPIFY_API_KEY; // Use the environment variable
+  const config = {
+    method: 'get',
+    url: `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(address)}&apiKey=${apiKey}`,
+    headers: {}
+  };
 
   try {
-    const response = await axios.get(url);
+    const response = await axios(config);
     return response.data;
   } catch (error) {
     console.error('Error fetching address information:', error);
