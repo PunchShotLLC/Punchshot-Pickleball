@@ -10,7 +10,6 @@
   "type": "module",
   "author": "",
   "license": "ISC",
-  "proxy": "http://localhost:8000",
   "dependencies": {
     "@sendgrid/mail": "^7.7.0",
     "bcrypt": "^5.1.0",

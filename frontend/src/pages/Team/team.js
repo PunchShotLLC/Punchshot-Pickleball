@@ -247,10 +247,8 @@ export const TeamSelect = (props) => {
   // autocomplete address API integration
   const fetchAddressSuggestions = (input) => {
     if (input.length > 2) {
-      const requestOptions = {
-        method: 'GET',
-      };
-      fetch(`http://localhost:8000/address`, requestOptions)
+      const apiUrl = `http://localhost:8000/leagues/address/${encodeURIComponent(input)}`;
+      fetch(apiUrl)
         .then(response => response.json())
         .then(result => {
           setSuggestions(result.features);
@@ -260,19 +258,22 @@ export const TeamSelect = (props) => {
       setSuggestions([]);
     }
   }
+
   // const fetchAddressSuggestions = (input) => {
   //   if (input.length > 2) {
-  //     // Call your backend endpoint instead of the external API
-  //     axios.get(`/address/${encodeURIComponent(input)}`)
-  //       .then(response => {
-  //         // Assuming the backend returns the suggestions in the expected format
-  //         setSuggestions(response.data.features);
+  //     const requestOptions = {
+  //       method: 'GET',
+  //     };
+  //     fetch(`https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(input)}&apiKey=14cea0e3ba0c4d108d7ac029bd20ab00`, requestOptions)
+  //       .then(response => response.json())
+  //       .then(result => {
+  //         setSuggestions(result.features);
   //       })
   //       .catch(error => console.log('error', error));
   //   } else {
   //     setSuggestions([]);
   //   }
-  // }
+	
 
   // event handler for homeCourtAddress input changes
   const handleHomeCourtAddressChange = (event) => {
