@@ -61,6 +61,18 @@ export const TeamSelect = (props) => {
     // Make a copy of the league, add the new team
     const leagueInfo = location.state;
 
+    // alerts if team name is blank
+    if (!teamName || teamName.trim() === "") {
+      alert('Please enter a team name.');
+      return;
+    }
+  
+    // alerts if home court address is blank
+    if (!homeCourtAddress || homeCourtAddress.trim() === "") {
+      alert('Please enter a home court address.');
+      return;
+    }
+
     // check if the team name or home court address is already taken
     const isTeamNameTaken = leagueInfo.Teams.some(team => team.TeamName === teamName);
 
