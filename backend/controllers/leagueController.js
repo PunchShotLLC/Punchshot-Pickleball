@@ -118,16 +118,6 @@ export const getLeague = async (req, res) => {
     });
 };
 
-export const getCourts = async (req, res) => {
-  try {
-    const leagues = await League.find();
-    const courts = leagues.map(league => league.Courts).flat();
-    res.json(courts);
-  } catch (error) {
-    res.status(500).send(error);
-  }
-};
-
 export const deleteLeague = async (req, res) => {
   await League.findByIdAndDelete(req.params.id)
     .then((doc) => {
