@@ -16,6 +16,7 @@ import { FormControl } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useCookies } from "react-cookie";
 import axios from "axios";
+// import AddressAutocomplete from './AddressAutocomplete';
 
 import { TeamSelectButton } from "./teamSelectButton";
 
@@ -53,8 +54,9 @@ export const TeamSelect = (props) => {
 
   // For the input for a new team
   const [teamName, setTeamName] = useState(null);
-
   const [homeCourtAddress, setHomeCourtAddress] = useState(null);
+  const [homeCourtMessage, setHomeCourtMessage] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
 
   // Adds the team to the league
   const addTeamToLeague = async () => {
@@ -63,15 +65,10 @@ export const TeamSelect = (props) => {
 
     // check if the team name or home court address is already taken
     const isTeamNameTaken = leagueInfo.Teams.some(team => team.TeamName === teamName);
-    const isHomeCourtAddressTaken = leagueInfo.Teams.some(team => team.HomeCourtAddress === homeCourtAddress);
+    const homeCourtAddressCount = leagueInfo.Teams.filter(team => team.HomeCourtAddress === homeCourtAddress).length;
 
     if (isTeamNameTaken) {
-      alert('This team name is already taken. Please choose another one.');
-      return;
-    }
-  
-    if (isHomeCourtAddressTaken) {
-      alert('This home court address is already taken. Please choose another one.');
+      alert('This team name is already taken. Please choose a different one.');
       return;
     }
 
@@ -123,6 +120,76 @@ export const TeamSelect = (props) => {
         console.error("Error:", error);
       });
   };
+
+  const fetchAddressSuggestions = (input) => {
+    if (input.length > 2) {
+      const requestOptions = {
+        method: 'GET',
+      };
+      fetch(`https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(input)}&apiKey=14cea0e3ba0c4d108d7ac029bd20ab00`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+          setSuggestions(result.features);
+        })
+        .catch(error => console.log('error', error));
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  // Event handler for homeCourtAddress input changes
+  const handleHomeCourtAddressChange = (event) => {
+    const input = event.target.value;
+    setHomeCourtAddress(input);
+    fetchAddressSuggestions(input);
+  };
+
+  // Function to handle suggestion click
+  const handleSuggestionClick = (suggestion) => {
+    setHomeCourtAddress(suggestion.properties.formatted); // Assuming the suggestion has a 'properties.formatted' field
+    setSuggestions([]);
+  };
+
+  const checkHomeCourtAddress = () => {
+    const leagueInfo = location.state;
+    const homeCourtAddressCount = leagueInfo.Teams.filter(team => team.HomeCourtAddress === homeCourtAddress).length;
+    if (homeCourtAddressCount > 0) {
+      const teamWord1 = homeCourtAddressCount === 1 ? 'is' : 'are';
+      const teamWord2 = homeCourtAddressCount === 1 ? '' : 's';
+      const teamWord3 = homeCourtAddressCount === 1 ? 'has' : 'have';
+      setHomeCourtMessage(`FYI: There ${teamWord1} ${homeCourtAddressCount} other team${teamWord2} that ${teamWord3} this home court address.`);
+    } else {
+      setHomeCourtMessage('');
+    }
+  };
+
+  const SuggestionsList = styled('ul')({
+    listStyleType: 'none',
+    margin: 0,
+    padding: 0,
+    position: 'absolute',
+    zIndex: 1000, // Ensure the list appears above other content
+    backgroundColor: '#fff',
+    width: '30vw', // Match the width of the input
+    borderRadius: '0 0 1em 1em', // Round the bottom corners
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', // Add a subtle shadow
+  });
+  
+  // Define a styled component for the suggestions list items
+  const SuggestionItem = styled('li')({
+    padding: '10px 20px',
+    cursor: 'pointer',
+    fontSize: '0.8em', // Smaller text size for suggestions
+  
+    '&:hover': {
+      backgroundColor: '#f0f0f0', // Highlight on hover
+    },
+  });
+  
+  // call checkHomeCourtAddress when the homeCourtAddress state changes
+  useEffect(() => {
+    checkHomeCourtAddress();
+  }, [homeCourtAddress]);
 
   const removePlayerFromTeam = async (teamIndex) => {
     if (!user) {
@@ -303,10 +370,10 @@ export const TeamSelect = (props) => {
             fontSize: "calc(0.1em + 1vw)",
             align: "left",
             marginLeft: "10vw",
-            marginBottom: "3em",
+            marginBottom: "8em",
           }}
         >
-          <FormControl sx={{ height: "7vw", marginLeft: "1.5vw" }}>
+          <FormControl sx={{ height: "7vw", marginLeft: "1.5vw", position: 'relative'}}>
             <StyledLabel htmlFor="leagueName">
               Team Name<span style={{ color: "red" }}>*</span>
             </StyledLabel>
@@ -320,11 +387,45 @@ export const TeamSelect = (props) => {
               Home Court Address<span style={{ color: "red" }}>*</span>
             </StyledLabel>
             <StyledInput
-              onChange={(event) => setHomeCourtAddress(event.target.value)}
+              value={homeCourtAddress}
+              onChange={handleHomeCourtAddressChange}
               id="homeCourtAddress"
               placeholder="123 Main St"
               required
             />
+            {suggestions.length > 0 && (
+              <SuggestionsList>
+                {suggestions.map((suggestion, index) => (
+                  <SuggestionItem key={index} onClick={() => handleSuggestionClick(suggestion)}>
+                    {suggestion.properties.formatted}
+                  </SuggestionItem>
+                ))}
+              </SuggestionsList>
+            )}
+            {/* Disclaimer text */}
+            <Typography
+              sx={{
+                display: "block",
+                fontSize: "calc(0.5em + 0.5vw)",
+                color: "gray",
+                marginTop: "0.25em",
+                marginBottom: "1em"
+              }}
+            >
+              * Ensuring court availability is the team’s responsibility.
+            </Typography>
+            <Typography
+              sx={{
+                height: "20px",
+                fontSize: "calc(0.5em + 0.5vw)",
+                color: "primary",
+                marginTop: "0.5em",
+                marginBottom: "0.5em",
+                visibility: homeCourtMessage ? 'visible' : 'hidden', 
+              }}
+            >
+              {homeCourtMessage}
+            </Typography>
             <Button
               onClick={addTeamToLeague}
               variant="contained"
@@ -334,6 +435,7 @@ export const TeamSelect = (props) => {
                 borderRadius: "calc(0.1em + 0.5vw)",
                 pl: "calc(1.5vw)",
                 pr: "calc(1.8vw)",
+                marginTop: "1em",
               }}
             >
               Create Team
