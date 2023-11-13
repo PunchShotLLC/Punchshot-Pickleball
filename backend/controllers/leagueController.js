@@ -170,18 +170,11 @@ Captain of the team should be in req.params
 export const sendRequestEmail = async (req, res) => {
   console.log(`Going to send email to ${req.query.sendTo}`)
 
-  sgMail.setApiKey(process.env.SENDGRID)
-
-  const message = {
-    to: `${req.query.sendTo}`,
-    from:'tcolina3@gatech.edu',
-    subject:`${req.query.user} wants to join your team`,
-    text: `${req.query.user} has requested to join your team! Log onto Punchshot Pickleball to accept this user.`
-  }
-
-  sgMail.send(message)
-    .then(response => console.log('Email sent...'))
-    .catch(error => console.log(error.response.body))
+  sendEmail(
+    req.query.sendTo, 
+    `${req.query.user} wants to join your team`,
+    `${req.query.user} has requested to join your team! Log onto Punchshot Pickleball to accept this user.`
+  )
 }
 
 const sendEmail = async (reciever, subject, emailBody) => {
