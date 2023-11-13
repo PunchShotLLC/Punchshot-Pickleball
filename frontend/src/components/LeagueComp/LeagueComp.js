@@ -28,14 +28,14 @@ export const LeagueComp = (props) => {
         console.log("Starting league")
 
         const rawResponse = await fetch(
-            `http://localhost:8000/leagues/updateLeague/${props.id}`,
+            `http://localhost:8000/leagues/startLeague/${props.id}`,
             {
               method: "PATCH",
               headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ Status: "ONGOING" }),
+              body: JSON.stringify({ }),
             }
         ).catch((err) => console.log(err));
     }
