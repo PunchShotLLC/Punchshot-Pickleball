@@ -106,8 +106,10 @@ export const League = () => {
         .filter((e) => e),
       City: city,
       LeagueOwner: "tempOwner",
+      LeagueOwnerEmail: 'tiberius.colina@gmail.com', // change in production,
       StartDate: startDate,
       EndDate: endDate,
+      Status: "PENDING"
     };
 
     console.log(body);
@@ -151,6 +153,8 @@ export const League = () => {
   useEffect(() => {
     getLeagues(user?.ZipCode);
   }, [user?.ZipCode]);
+
+  console.log(leagues)
 
   // If the team selection state is true, render the team create/join component
   if (teamSelection) {
@@ -205,6 +209,8 @@ export const League = () => {
                     startDate={leagues[index]["StartDate"]}
                     endDate={leagues[index]["EndDate"]}
                     city={leagues[index]["City"]}
+                    id={leagues[index]["_id"]}
+                    allowStart={user?.Username === "test"}
                     onClick={() => {
                       navigateToLeagueInfo(index);
                     }}

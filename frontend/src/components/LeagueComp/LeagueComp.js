@@ -2,8 +2,44 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import * as React from "react";
 import { borderRadius } from "@mui/system";
+import { Button } from "@mui/material";
 
 export const LeagueComp = (props) => {
+    /*
+    * Function that checks if a date is before the current date
+    * Needed for the league start date warning message
+    * Written by chatgpt
+    */
+    function isBeforeToday(dateStr) {
+        // Convert date string to Date object
+        const givenDate = new Date(dateStr);
+    
+        // Get today's date
+        const today = new Date();
+    
+        // Set hours, minutes, seconds, and milliseconds to 0 for accurate comparison
+        today.setHours(0, 0, 0, 0);
+    
+        // Compare the dates
+        return givenDate < today;
+    }
+
+    const startLeague = async () => {
+        console.log("Starting league")
+
+        const rawResponse = await fetch(
+            `http://localhost:8000/leagues/updateLeague/${props.id}`,
+            {
+              method: "PATCH",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ Status: "ONGOING" }),
+            }
+        ).catch((err) => console.log(err));
+    }
+
   return (
     <Box sx={styles.main}>
         <img
@@ -12,6 +48,7 @@ export const LeagueComp = (props) => {
               height={'120vh'}
               style={{borderRadius:'20%', marginLeft:'2%'}}
         />
+        
         <Box onClick={props.onClick} sx={styles.side}>
             <Typography sx={styles.name}>{props.name}</Typography>
             <Box sx={styles.row}>
@@ -29,6 +66,19 @@ export const LeagueComp = (props) => {
                 </Box>
             </Box>
         </Box>
+
+        {/* Render the starting stuff if the user is 'test'
+        Render the date warning message if the date is passed the starting date of the league */}
+        {props.allowStart ? 
+            <>
+             <Button sx={styles.button} onClick={startLeague}>START</Button> 
+             {isBeforeToday(props.startDate) ? <div style={styles.warning1div}><p>Note: The start date of this league has passed.</p></div> : null}
+             {props.teamsSignedUp < props.numberOfTeams ? <div style={styles.warning2div}><p>Note: League is not at capacity</p></div> : null}
+             </>
+             :
+             null
+        }
+       
     </Box>
   );
 };
@@ -84,5 +134,20 @@ const styles = {
         marginLeft: '2%',
         marginRight: '0%',
         fontSize: '1.2em'
+    },
+    button: {
+        position:'relative',
+        right:'80px',
+        alignItems:'center'
+    },
+    warning1div: {
+        position:'relative',
+        right:'260px',
+        fontSize:'10px'
+    },
+    warning2div: {
+        position:'relative',
+        right:'240px',
+        fontSize:'10px'
     }
 }
