@@ -205,11 +205,12 @@ export const testroute = async (req, res) => {
 
 /**
  * Cron functionality to send emails out to league owners 
+ * Happens once per day
  */
-// import cron from 'node-cron'
-// cron.schedule('* * * * *', () => {
-//   startLeagues()
-// });
+import cron from 'node-cron'
+cron.schedule('0 0 * * *', () => {
+  sendLeagueStartEmails()
+});
 
 function isDayBeforeCurrentDate(targetDate) {
   // Get the current date
@@ -225,7 +226,7 @@ function isDayBeforeCurrentDate(targetDate) {
   return currentDate.substring(0,15) === targetDate.substring(0,15)
 }
     
-const startLeagues = async () => {
+const sendLeagueStartEmails = async () => {
   // Get all of the leagues
   const allLeagues = await League.find({}).sort({ createdAt: -1 });
 
