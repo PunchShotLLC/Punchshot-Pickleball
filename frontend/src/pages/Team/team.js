@@ -46,11 +46,10 @@ const buttonTheme = createTheme({
 export const TeamSelect = (props) => {
   // Grab the cookies
   const user = useContext(UserContext);
-
   // location.state holds the info about the league
   const location = useLocation();
   console.log(user);
-
+  console.log(location)
   // For the input for a new team
   const [teamName, setTeamName] = useState(null);
 
@@ -69,7 +68,7 @@ export const TeamSelect = (props) => {
       alert('This team name is already taken. Please choose another one.');
       return;
     }
-  
+
     if (isHomeCourtAddressTaken) {
       alert('This home court address is already taken. Please choose another one.');
       return;
@@ -137,8 +136,29 @@ export const TeamSelect = (props) => {
 
     if (teamCaptain === user.Username) {
       if (PlayerList.length === 0) {
-        alert("No team members in team to replace you as captain");
-        return;
+        const leagueInfo = location.state;
+        leagueInfo.Teams.splice(teamIndex, 1)
+        const requestOptions = {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(leagueInfo),
+        };
+
+        // Make the PATCH request to update the leagues
+        const apiUrl = `http://localhost:8000/leagues/updateLeague/${location.state["_id"]}`;
+
+        fetch(apiUrl, requestOptions)
+          .then((response) => response.json())
+          .then((responseData) => {
+            console.log(responseData);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+        alert("Dropping team");
+        return
       }
 
       // removeCaptain and set first player to Captain
@@ -345,29 +365,29 @@ export const TeamSelect = (props) => {
           {/* Dynamically renders the teams within the league */}
           {location.state.Teams !== null
             ? location.state.Teams.map((item, index) => (
-                <TeamSelectButton
-                  onClick={() => {
-                    addPlayerToPotentialList(index);
-                  }}
-                  onClickRemoveUser={() => {
-                    console.log("Remove User Is Running");
-                    removePlayerFromTeam(index);
-                  }}
-                  name={location.state.Teams[index].TeamName}
-                  captain={location.state.Teams[index].TeamCaptain}
-                  members={location.state.Teams[index].TeamMembers}
-                  home={location.state.Teams[index].HomeCourtAddress}
-                  potentialMembers={
-                    location.state.Teams[index].PotentialTeamMembers
-                  }
-                  showPotentialMembers={
-                    user &&
-                    user.Username === location.state.Teams[index].TeamCaptain
-                  }
-                  leagueInfo={location.state}
-                  teamIndex={index}
-                />
-              ))
+              <TeamSelectButton
+                onClick={() => {
+                  addPlayerToPotentialList(index);
+                }}
+                onClickRemoveUser={() => {
+                  console.log("Remove User Is Running");
+                  removePlayerFromTeam(index);
+                }}
+                name={location.state.Teams[index].TeamName}
+                captain={location.state.Teams[index].TeamCaptain}
+                members={location.state.Teams[index].TeamMembers}
+                home={location.state.Teams[index].HomeCourtAddress}
+                potentialMembers={
+                  location.state.Teams[index].PotentialTeamMembers
+                }
+                showPotentialMembers={
+                  user &&
+                  user.Username === location.state.Teams[index].TeamCaptain
+                }
+                leagueInfo={location.state}
+                teamIndex={index}
+              />
+            ))
             : null}
 
           <Box sx={{ width: "45vw", height: "4vh", display: "flex" }}></Box>
