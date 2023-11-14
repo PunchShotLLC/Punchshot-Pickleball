@@ -46,11 +46,10 @@ const StyledTitle = styled("header")({
 
 export const Header = (props) => {
   const [cookies, removeCookie] = useCookies([]);
-  const user = useContext(UserContext);
+  const {loading, user }= useContext(UserContext);
   const handleUser = () => {
     if (user) {
-      removeCookie("token");
-      window.location.href = "/";
+      window.location.href = "/account";
     } else {
       props.setRender((oldRender) => !oldRender);
     }
@@ -218,7 +217,7 @@ export const Header = (props) => {
               fontSize: "calc(0.1em + 1vw)",
             }}
           >
-            {user ? "LOGOUT" : "LOGIN/SIGNUP"}
+            {user ? "YOUR PROFILE" : "LOGIN/SIGNUP"}
           </Box>
           <img className="icon_image" src={login} />
         </Button>
