@@ -245,12 +245,50 @@ export const TeamSelect = (props) => {
   };
 
   // autocomplete address API integration
+  // const fetchAddressSuggestions = (input) => {
+  //   if (input.length > 2) {
+  //     var apiKey = process.env.GEOAPIFY;
+  //     const config = {
+  //       method: 'get',
+  //       url: `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(input)}&apiKey=${apiKey}`,
+  //       headers: { }
+  //     };
+  
+  //     axios(config)
+  //       .then(function (response) {
+  //         setSuggestions(response.data.features);
+  //       })
+  //       .catch(function (error) {
+  //         console.log(error);
+  //       });
+  //   } else {
+  //     setSuggestions([]);
+  //   }
+  // }
+
+  // const fetchAddressSuggestions = (input) => {
+  //   if (input.length > 2) {
+  //     const requestOptions = {
+  //       method: 'GET',
+  //     };
+  //     fetch(`https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(input)}&apiKey=14cea0e3ba0c4d108d7ac029bd20ab00`, requestOptions)
+  //       .then(response => response.json())
+  //       .then(result => {
+  //         setSuggestions(result.features);
+  //       })
+  //       .catch(error => console.log('error', error));
+  //   } else {
+  //     setSuggestions([]);
+  //   }
+  // }
+
   const fetchAddressSuggestions = (input) => {
     if (input.length > 2) {
       const requestOptions = {
         method: 'GET',
       };
-      fetch(`https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(input)}&apiKey=14cea0e3ba0c4d108d7ac029bd20ab00`, requestOptions)
+      const suggestionsApiUrl = `http://localhost:8000/leagues/address?input=${encodeURIComponent(input)}`;
+      fetch(suggestionsApiUrl, requestOptions)
         .then(response => response.json())
         .then(result => {
           setSuggestions(result.features);
