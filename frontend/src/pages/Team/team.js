@@ -247,8 +247,10 @@ export const TeamSelect = (props) => {
   // autocomplete address API integration
   const fetchAddressSuggestions = (input) => {
     if (input.length > 2) {
-      const apiUrl = `http://localhost:8000/leagues/address/${encodeURIComponent(input)}`;
-      fetch(apiUrl)
+      const requestOptions = {
+        method: 'GET',
+      };
+      fetch(`https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(input)}&apiKey=14cea0e3ba0c4d108d7ac029bd20ab00`, requestOptions)
         .then(response => response.json())
         .then(result => {
           setSuggestions(result.features);
@@ -258,22 +260,6 @@ export const TeamSelect = (props) => {
       setSuggestions([]);
     }
   }
-
-  // const fetchAddressSuggestions = (input) => {
-  //   if (input.length > 2) {
-  //     const requestOptions = {
-  //       method: 'GET',
-  //     };
-  //     fetch(`https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(input)}&apiKey=14cea0e3ba0c4d108d7ac029bd20ab00`, requestOptions)
-  //       .then(response => response.json())
-  //       .then(result => {
-  //         setSuggestions(result.features);
-  //       })
-  //       .catch(error => console.log('error', error));
-  //   } else {
-  //     setSuggestions([]);
-  //   }
-	
 
   // event handler for homeCourtAddress input changes
   const handleHomeCourtAddressChange = (event) => {
