@@ -51,12 +51,12 @@ export const Account = () => {
             height: "77.69vh",
             "& button.Mui-selected": {
               backgroundColor: "black",
-              color: "white",
+              color: "white", 
             },
           }}
         >
           <StyledTab label="PROFILE" />
-          <StyledTab label="LEAGUE" />
+          <StyledTab label="LEAGUES" />
           <StyledTab label="RESULTS" />
         </Tabs>
         {value === 0 && <Profile />}

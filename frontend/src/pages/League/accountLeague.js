@@ -7,12 +7,12 @@ import "@fontsource/inter";
 import "@fontsource/inter/200.css";
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/700.css";
-import { LeagueComp } from "../../components/LeagueComp/LeagueComp.js";
+import { LeagueComp } from "../../components/LeagueComp/LeagueCompSimplified.js";
 import { useContext } from "react";
 import { UserContext } from "../../components/UserContext/usercontext";
 export const AccountLeague = () => {
-    const user = useContext(UserContext);
-    const leagues = user?.leagues
+    const {loading, user }= useContext(UserContext);
+    const leagues = user["Leagues"]
     const navigate = useNavigate();
     const navigateToLeagueInfo = (teamIndex) => {
         // Navigate to the new page with the data in the route's state
@@ -38,7 +38,7 @@ export const AccountLeague = () => {
                     marginBottom: '2%'
                 }}
             >
-                LEAGUES
+                YOUR LEAGUES
             </Typography>
             <Typography
                 className="bodyText"
@@ -51,17 +51,10 @@ export const AccountLeague = () => {
             <Box sx={{ position: "relative", height: "100%", width: "90%" }}>
                 {leagues != null
                     ? leagues.map((item, index) => (
-                        <LeagueComp
+                        <LeagueComp // replace to simplied
                             logo={require('../../assets/images/ATL1.png')}
                             name={leagues[index]["LeagueName"]}
-                            numberOfTeams={leagues[index]["NumTeams"]}
-                            teamsSignedUp={leagues[index]["Teams"].length}
-                            startDate={leagues[index]["StartDate"]}
-                            endDate={leagues[index]["EndDate"]}
-                            city={leagues[index]["City"]}
-                            onClick={() => {
-                                navigateToLeagueInfo(index);
-                            }}
+                            teamName={leagues[index]["TeamName"]}
                         />
                     ))
                     : null}
