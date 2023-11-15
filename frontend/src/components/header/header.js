@@ -217,7 +217,7 @@ export const Header = (props) => {
               fontSize: "calc(0.1em + 1vw)",
             }}
           >
-            {user ? "YOUR PROFILE" : "LOGIN/SIGNUP"}
+            {user ? "PROFILE" : "LOGIN/SIGNUP"}
           </Box>
           <img className="icon_image" src={login} />
         </Button>
