@@ -1,5 +1,6 @@
 import League from "../models/league.model.js";
 import User from "../models/user.model.js";
+import axios from 'axios';
 
 import sgMail from '@sendgrid/mail';
 
@@ -122,16 +123,6 @@ export const getLeague = async (req, res) => {
     });
 };
 
-export const getCourts = async (req, res) => {
-  try {
-    const leagues = await League.find();
-    const courts = leagues.map(league => league.Courts).flat();
-    res.json(courts);
-  } catch (error) {
-    res.status(500).send(error);
-  }
-};
-
 export const deleteLeague = async (req, res) => {
   await League.findByIdAndDelete(req.params.id)
     .then((doc) => {
@@ -140,6 +131,27 @@ export const deleteLeague = async (req, res) => {
     .catch((error) => {
       res.status(400).json({ error: error.message });
     });
+};
+
+
+export const getAddressInfo = async (req, res) => {
+  const apiKey = process.env.GEOAPIFY;
+  const input = req.query.input;
+
+  const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${input}&apiKey=${apiKey}`;
+  try {
+    const requestOptions = {
+      method: 'GET',
+    };
+    await fetch(url, requestOptions)
+      .then(response => response.json())
+      .then(result => {
+        res.status(200).json(result);
+      })
+  } catch (error) {
+    console.error('Error fetching address information:', error);
+    res.status(400).json(error);
+  }
 };
 
 export const startLeague = async (req, res) => {
