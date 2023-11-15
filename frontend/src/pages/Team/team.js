@@ -51,14 +51,14 @@ export const TeamSelect = (props) => {
   console.log(user);
   console.log(location)
   // For the input for a new team
+  const [teamState, setTeamState] = useState(location.state)
   const [teamName, setTeamName] = useState(null);
-
   const [homeCourtAddress, setHomeCourtAddress] = useState(null);
 
   // Adds the team to the league
   const addTeamToLeague = async () => {
     // Make a copy of the league, add the new team
-    const leagueInfo = location.state;
+    const leagueInfo = teamState;
 
     // check if the team name or home court address is already taken
     const isTeamNameTaken = leagueInfo.Teams.some(team => team.TeamName === teamName);
@@ -117,6 +117,7 @@ export const TeamSelect = (props) => {
       .then((response) => response.json())
       .then((responseData) => {
         console.log(responseData);
+        setTeamState(responseData)
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -129,11 +130,11 @@ export const TeamSelect = (props) => {
       return;
     }
 
-    let PlayerList = location.state.Teams[teamIndex].TeamMembers;
+    let PlayerList = teamState.Teams[teamIndex].TeamMembers;
     console.log(PlayerList);
 
-    let teamCaptain = location.state.Teams[teamIndex].TeamCaptain;
-    var leagueInfo = location.state;
+    let teamCaptain = teamState.Teams[teamIndex].TeamCaptain;
+    var leagueInfo = teamState;
     if (teamCaptain === user.Username) {
       if (PlayerList.length === 0) {
         leagueInfo.Teams.splice(teamIndex, 1)
@@ -152,6 +153,7 @@ export const TeamSelect = (props) => {
         return;
       }
       leagueInfo.Teams[teamIndex].TeamMembers.splice(userIndex, 1);
+      alert("Leaving team");
     }
 
     const apiUrl = `http://localhost:8000/leagues/updateLeague/${location.state["_id"]}`;
@@ -167,10 +169,12 @@ export const TeamSelect = (props) => {
       .then((response) => response.json())
       .then((responseData) => {
         console.log(responseData);
+        setTeamState(responseData)
       })
       .catch((error) => {
         console.error("Error:", error);
       });
+    location.state = leagueInfo
   };
 
   // Adds a player to the potential team member list of a team
@@ -181,10 +185,10 @@ export const TeamSelect = (props) => {
     }
 
     let potentialPlayerList =
-      location.state.Teams[teamIndex].PotentialTeamMembers;
+      teamState.Teams[teamIndex].PotentialTeamMembers;
     console.log(potentialPlayerList);
 
-    let isCaptain = location.state["Teams"].find(
+    let isCaptain = teamState["Teams"].find(
       (obj) => obj.TeamCaptain === user.Username
     );
 
@@ -210,13 +214,14 @@ export const TeamSelect = (props) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(location.state),
+      body: JSON.stringify(teamState),
     };
 
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
       .then((responseData) => {
         console.log(responseData);
+        setTeamState(responseData)
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -235,7 +240,6 @@ export const TeamSelect = (props) => {
       });
   };
 
-  console.log(location.state)
 
   return (
     <Box sx={{ width: "80vw", height: "77.69vh", display: "flex" }}>
@@ -259,7 +263,7 @@ export const TeamSelect = (props) => {
             marginLeft: "10vw",
           }}
         >
-          {location.state.LeagueName}
+          {teamState.LeagueName}
         </Typography>
         <Typography
           className="bodyText"
@@ -270,7 +274,7 @@ export const TeamSelect = (props) => {
             marginLeft: "10vw",
           }}
         >
-          Teams Required: {location.state.NumTeams}
+          Teams Required: {teamState.NumTeams}
         </Typography>
         <Typography
           className="bodyText"
@@ -281,7 +285,7 @@ export const TeamSelect = (props) => {
             marginLeft: "10vw",
           }}
         >
-          Start Date: {new Date(location.state.StartDate).toLocaleDateString()}
+          Start Date: {new Date(teamState.StartDate).toLocaleDateString()}
         </Typography>
         <Typography
           className="bodyText"
@@ -292,7 +296,7 @@ export const TeamSelect = (props) => {
             marginLeft: "10vw",
           }}
         >
-          End Date: {new Date(location.state.EndDate).toLocaleDateString()}
+          End Date: {new Date(teamState.EndDate).toLocaleDateString()}
         </Typography>
         <Typography
           className="bodyText"
@@ -341,8 +345,8 @@ export const TeamSelect = (props) => {
 
         <Box sx={{ position: "relative", left: "3svw" }}>
           {/* Dynamically renders the teams within the league */}
-          {location.state.Teams !== null
-            ? location.state.Teams.map((item, index) => (
+          {teamState.Teams !== null
+            ? teamState.Teams.map((item, index) => (
               <TeamSelectButton
                 onClick={() => {
                   addPlayerToPotentialList(index);
@@ -351,19 +355,20 @@ export const TeamSelect = (props) => {
                   console.log("Remove User Is Running");
                   removePlayerFromTeam(index);
                 }}
-                name={location.state.Teams[index].TeamName}
-                captain={location.state.Teams[index].TeamCaptain}
-                members={location.state.Teams[index].TeamMembers}
-                home={location.state.Teams[index].HomeCourtAddress}
+                name={teamState.Teams[index].TeamName}
+                captain={teamState.Teams[index].TeamCaptain}
+                members={teamState.Teams[index].TeamMembers}
+                home={teamState.Teams[index].HomeCourtAddress}
                 potentialMembers={
-                  location.state.Teams[index].PotentialTeamMembers
+                  teamState.Teams[index].PotentialTeamMembers
                 }
                 showPotentialMembers={
                   user &&
-                  user.Username === location.state.Teams[index].TeamCaptain
+                  user.Username === teamState.Teams[index].TeamCaptain
                 }
-                leagueInfo={location.state}
+                leagueInfo={teamState}
                 teamIndex={index}
+                updateTeam={setTeamState}
               />
             ))
             : null}

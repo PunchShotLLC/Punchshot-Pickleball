@@ -94,7 +94,7 @@ export const updateLeague = async (req, res, body) => {
   }
   res.status(200).json(tourney)
   */
-  await League.findByIdAndUpdate(req.params.id, req.body)
+  await League.findByIdAndUpdate(req.params.id, req.body, { returnDocument: 'after' })
     .then((doc) => {
       res.status(200).json(doc);
     })
@@ -149,8 +149,8 @@ export const sendRequestEmail = async (req, res) => {
 
   const message = {
     to: `${req.query.sendTo}`,
-    from:'tcolina3@gatech.edu',
-    subject:`${req.query.user} wants to join your team`,
+    from: 'tcolina3@gatech.edu',
+    subject: `${req.query.user} wants to join your team`,
     text: `${req.query.user} has requested to join your team! Log onto Punchshot Pickleball to accept this user.`
   }
 

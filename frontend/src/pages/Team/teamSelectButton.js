@@ -6,7 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 export const TeamSelectButton = (props) => {
 
   console.log(props)
-
+  const updateTeam = props.updateTeam
   const addPlayerToTeam = async (teamIndex, username) => {
 
     // Add the player to the team's player list
@@ -46,6 +46,7 @@ export const TeamSelectButton = (props) => {
       .then((response) => response.json())
       .then((responseData) => {
         console.log(responseData);
+        updateTeam(responseData)
         alert("User has been successfully added")
       })
       .catch((error) => {
@@ -74,6 +75,7 @@ export const TeamSelectButton = (props) => {
       .then((response) => response.json())
       .then((responseData) => {
         console.log(responseData);
+        updateTeam(responseData)
         alert("User has been succesfully removed")
       })
       .catch((error) => {
