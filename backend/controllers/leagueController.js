@@ -131,7 +131,8 @@ export const deleteLeague = async (req, res) => {
 
 export const getAddressInfo = async (req, res) => {
   const apiKey = process.env.GEOAPIFY;
-  const input = req.params.input;
+  const input = req.query.input;
+
   const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${input}&apiKey=${apiKey}`;
   try {
     const requestOptions = {
