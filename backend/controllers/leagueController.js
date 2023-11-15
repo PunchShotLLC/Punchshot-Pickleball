@@ -10,11 +10,13 @@ export const createLeague = async (req, res, body) => {
   const {
     LeagueName,
     LeagueOwner,
+    LeagueOwnerEmail,
     NumTeams,
     ZipCodes,
     City,
     StartDate,
     EndDate,
+    Status
   } = req.body;
 
   if (!LeagueName) {
@@ -67,11 +69,13 @@ export const createLeague = async (req, res, body) => {
     const league = await new League({
       LeagueName,
       LeagueOwner,
+      LeagueOwnerEmail,
       NumTeams,
       ZipCodes,
       City,
       StartDate,
       EndDate,
+      Status,
     }).save();
 
     return res.json({ league });
@@ -138,6 +142,27 @@ export const deleteLeague = async (req, res) => {
     });
 };
 
+export const startLeague = async (req, res) => {
+  // Change the status of the league to ongoing
+  await League.findByIdAndUpdate(req.params.id, { Status: "ONGOING" })
+    .then((doc) => {
+      res.status(200).json(doc);
+    })
+    .catch((error) => {
+      res.status(400).json({ error: error.message });
+    });
+
+  // Get the list of teams and their captains
+  let league = await League.findById(req.params.id)
+  let teams = league["Teams"]
+  console.log(teams)
+
+  // Send an email to the captains of each team
+  for (let i = 0; i < teams.length; i++) {
+    sendEmail(teams[i]['CaptainEmail'], `Your league, ${league['LeagueName']}, has begun`, `Your league, ${league['LeagueName']}, has begun`)
+  }
+}
+
 /*
 Sends a request to the captain of the team
 Captain of the team should be in req.params
@@ -145,13 +170,21 @@ Captain of the team should be in req.params
 export const sendRequestEmail = async (req, res) => {
   console.log(`Going to send email to ${req.query.sendTo}`)
 
+  sendEmail(
+    req.query.sendTo, 
+    `${req.query.user} wants to join your team`,
+    `${req.query.user} has requested to join your team! Log onto Punchshot Pickleball to accept this user.`
+  )
+}
+
+const sendEmail = async (reciever, subject, emailBody) => {
   sgMail.setApiKey(process.env.SENDGRID)
 
   const message = {
-    to: `${req.query.sendTo}`,
+    to: `${reciever}`,
     from:'tcolina3@gatech.edu',
-    subject:`${req.query.user} wants to join your team`,
-    text: `${req.query.user} has requested to join your team! Log onto Punchshot Pickleball to accept this user.`
+    subject: subject,
+    text: emailBody
   }
 
   sgMail.send(message)
@@ -161,4 +194,48 @@ export const sendRequestEmail = async (req, res) => {
 
 export const testroute = async (req, res) => {
   console.log("got here")
+}
+
+/**
+ * Cron functionality to send emails out to league owners 
+ * Happens once per day
+ */
+import cron from 'node-cron'
+cron.schedule('0 0 * * *', () => {
+  sendLeagueStartEmails()
+});
+
+function isDayBeforeCurrentDate(targetDate) {
+  // Get the current date
+  let currentDate = new Date();
+
+  // Adjust the current date to be one day later
+  currentDate.setDate(currentDate.getDate() + 1);
+
+  // convert to strings for comparison
+  currentDate = currentDate.toString()
+  targetDate = targetDate.toString()
+
+  return currentDate.substring(0,15) === targetDate.substring(0,15)
+}
+    
+const sendLeagueStartEmails = async () => {
+  // Get all of the leagues
+  const allLeagues = await League.find({}).sort({ createdAt: -1 });
+
+  // Get the current date
+  let currentDate = new Date();
+
+  for (let i = 0; i < allLeagues.length; i++) {
+    // check if the current date = allLeagues[i]'s starting date
+    let leagueDate = allLeagues[i]["StartDate"]
+
+    if (isDayBeforeCurrentDate(leagueDate)) {
+      // If day before the allLeagues[i] starts, send email to league owner
+      console.log(`It is the day before ${allLeagues[i]["LeagueName"]} starts, sending email to league owner`)
+      sendEmail(allLeagues[i]["LeagueOwnerEmail"], "league starts tomorrow", `It is the day before ${allLeagues[i]["LeagueName"]} starts. Remember to start the league tomorrow.`)
+    } else {
+      console.log(`It is not the day before ${allLeagues[i]["LeagueName"]} starts`)
+    }
+  }
 }

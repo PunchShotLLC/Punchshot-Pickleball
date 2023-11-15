@@ -11,6 +11,10 @@ const leagueSchema = new Schema({
     type: String,
     required: true,
   },
+  LeagueOwnerEmail: {
+    type: String,
+    required: true
+  },
   NumTeams: {
     type: Number,
     required: true,
@@ -62,6 +66,10 @@ const leagueSchema = new Schema({
     type: Date,
     required: true,
   },
+  Status: {
+    type: String,
+    enum: ["PENDING", "ONGOING", "COMPLETED"],
+  }
 });
 
 export default mongoose.model("League", leagueSchema);
