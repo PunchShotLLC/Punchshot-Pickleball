@@ -133,46 +133,25 @@ export const TeamSelect = (props) => {
     console.log(PlayerList);
 
     let teamCaptain = location.state.Teams[teamIndex].TeamCaptain;
-
+    var leagueInfo = location.state;
     if (teamCaptain === user.Username) {
       if (PlayerList.length === 0) {
-        const leagueInfo = location.state;
         leagueInfo.Teams.splice(teamIndex, 1)
-        const requestOptions = {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(leagueInfo),
-        };
-
-        // Make the PATCH request to update the leagues
-        const apiUrl = `http://localhost:8000/leagues/updateLeague/${location.state["_id"]}`;
-
-        fetch(apiUrl, requestOptions)
-          .then((response) => response.json())
-          .then((responseData) => {
-            console.log(responseData);
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
         alert("Dropping team");
-        return
+      } else {
+        leagueInfo.Teams[teamIndex].TeamCaptain = PlayerList[0];
+        leagueInfo.Teams[teamIndex].TeamMembers.splice(0, 1);
+        alert("Assigning new captain");
       }
-
-      // removeCaptain and set first player to Captain
-      location.state.Teams[teamIndex].TeamCaptain = PlayerList[0];
     } else {
       //find user in memberlist and remove from memberlist
       console.log("in filter");
-      let inMemberList = PlayerList.find((item) => item === user.Username);
-      if (!inMemberList) {
+      let userIndex = PlayerList.indexof(user.Username);
+      if (userIndex === -1) {
         alert("User already not in team");
         return;
       }
-      let filteredArray = PlayerList.filter((item) => item !== user.Username);
-      location.state.Teams[teamIndex].TeamMembers = filteredArray;
+      leagueInfo.Teams[teamIndex].TeamMembers.splice(userIndex, 1);
     }
 
     const apiUrl = `http://localhost:8000/leagues/updateLeague/${location.state["_id"]}`;
@@ -182,9 +161,8 @@ export const TeamSelect = (props) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(location.state),
+      body: JSON.stringify(leagueInfo),
     };
-
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
       .then((responseData) => {
