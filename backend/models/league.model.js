@@ -6,8 +6,13 @@ const leagueSchema = new Schema({
   LeagueName: {
     type: String,
     required: true,
+    unique: true,
   },
   LeagueOwner: {
+    type: String,
+    required: true,
+  },
+  LeagueOwnerEmail: {
     type: String,
     required: true,
   },
@@ -38,7 +43,7 @@ const leagueSchema = new Schema({
         required: true,
       },
       CaptainEmail: {
-        type: String, 
+        type: String,
         required: true,
       },
       TeamMembers: [
@@ -61,6 +66,10 @@ const leagueSchema = new Schema({
   EndDate: {
     type: Date,
     required: true,
+  },
+  Status: {
+    type: String,
+    enum: ["PENDING", "ONGOING", "COMPLETED"],
   },
 });
 

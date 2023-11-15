@@ -13,9 +13,11 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/InputBase";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import axios from "axios";
+import { useCookies } from "react-cookie";
+
 const StyledLabel = styled("p")({
   fontWeight: "bold",
   marginRight: "1vw",
@@ -37,18 +39,36 @@ const StyledInput = styled(TextField)({
   paddingLeft: "1vw",
 });
 export const Profile = () => {
-  const user = useContext(UserContext);
+  const [cookies, removeCookie] = useCookies([]);
+  const { loading, user } = useContext(UserContext);
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
+
+  useEffect(() => {
+    const isSignedIn = async () => {
+   
+      if (!loading && !user) { 
+        window.location.href = "/";
+        alert("Sign in to access profile page!");
+      }
+    };
+    isSignedIn();
+  }, [user, loading]);
+
   const handleClickConfirmPassword = () =>
     setShowConfirmPassword((show) => !show);
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
+  };
+
+  const handleLogout = () => {
+    removeCookie("token");
+    window.location.href = "/";
   };
   const changePassword = async (e) => {
     let response = null;
@@ -219,6 +239,24 @@ export const Profile = () => {
                 onClick={changePassword}
               >
                 Change Password
+              </Button>
+            </Box>
+            <Box
+              style={{ paddingTop: "10px", paddingBottom: "10px" }}
+              sx={{ display: "flex" }}
+            >
+              <Button
+                type="submit"
+                variant="contained"
+                style={{
+                  justifySelf: "center",
+                  alignSelf: "flex-end",
+                  borderRadius: "1em",
+                }}
+                color="secondary"
+                onClick={handleLogout}
+              >
+                LOGOUT
               </Button>
             </Box>
           </Box>
