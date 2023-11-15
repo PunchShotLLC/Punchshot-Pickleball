@@ -129,6 +129,25 @@ export const deleteLeague = async (req, res) => {
     });
 };
 
+export const getAddressInfo = async (req, res) => {
+  const apiKey = process.env.GEOAPIFY;
+  const input = req.params.input;
+  const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${input}&apiKey=${apiKey}`;
+  try {
+    const requestOptions = {
+      method: 'GET',
+    };
+    await fetch(url, requestOptions)
+      .then(response => response.json())
+      .then(result => {
+        res.status(200).json(result);
+      })
+  } catch (error) {
+    console.error('Error fetching address information:', error);
+    res.status(400).json(error);
+  }
+};
+
 /*
 Sends a request to the captain of the team
 Captain of the team should be in req.params
