@@ -204,6 +204,12 @@ export const TeamSelect = (props) => {
       return;
     }
 
+    let inPotentialList = teamState.Teams.some((team) => team.PotentialTeamMembers.find((obj) => obj === user.Username))
+    if (inPotentialList) {
+      alert("Already in a potential player list");
+      return;
+    }
+
     potentialPlayerList.push(user.Username);
 
     // Make the PATCH request to update the leagues
