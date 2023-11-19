@@ -99,7 +99,7 @@ export const updateLeague = async (req, res, body) => {
   }
   res.status(200).json(tourney)
   */
-  await League.findByIdAndUpdate(req.params.id, req.body)
+  await League.findByIdAndUpdate(req.params.id, req.body, { returnDocument: 'after' })
     .then((doc) => {
       res.status(200).json(doc);
     })
@@ -193,10 +193,10 @@ const sendEmail = async (reciever, subject, emailBody) => {
   sgMail.setApiKey(process.env.SENDGRID)
 
   const message = {
-    to: `${reciever}`,
-    from:'tcolina3@gatech.edu',
-    subject: subject,
-    text: emailBody
+    to: `${req.query.sendTo}`,
+    from: 'tcolina3@gatech.edu',
+    subject: `${req.query.user} wants to join your team`,
+    text: `${req.query.user} has requested to join your team! Log onto Punchshot Pickleball to accept this user.`
   }
 
   sgMail.send(message)

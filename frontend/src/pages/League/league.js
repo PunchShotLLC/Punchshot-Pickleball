@@ -211,21 +211,19 @@ export const League = () => {
             />
             {leagues !== null
               ? leagues.map((item, index) => (
-                  <LeagueComp
-                    logo={require("../../assets/images/ATL1.png")}
-                    name={leagues[index]["LeagueName"]}
-                    numberOfTeams={leagues[index]["NumTeams"]}
-                    teamsSignedUp={leagues[index]["Teams"].length}
-                    startDate={leagues[index]["StartDate"]}
-                    endDate={leagues[index]["EndDate"]}
-                    city={leagues[index]["City"]}
-                    id={leagues[index]["_id"]}
-                    allowStart={user?.Username === "test"}
-                    onClick={() => {
-                      navigateToLeagueInfo(index);
-                    }}
-                  />
-                ))
+                <LeagueComp
+                  logo={require("../../assets/images/ATL1.png")}
+                  name={leagues[index]["LeagueName"]}
+                  numberOfTeams={leagues[index]["NumTeams"]}
+                  teamsSignedUp={leagues[index]["Teams"].length}
+                  startDate={leagues[index]["StartDate"]}
+                  endDate={leagues[index]["EndDate"]}
+                  city={leagues[index]["City"]}
+                  onClick={() => {
+                    navigateToLeagueInfo(index);
+                  }}
+                />
+              ))
               : null}
             <Box
               sx={{
