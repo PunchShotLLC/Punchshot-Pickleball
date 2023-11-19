@@ -40,7 +40,18 @@ const userSchema = new Schema({
   ProfilePhoto: {
     type: String,
   },
-  Leagues: [],
+  Leagues: [
+    {
+      LeagueName:{
+        type: String, // SchemaTypes.ObjectId when users functionality complete
+        required: true
+      }, 
+      TeamName:{
+        type: String,  // SchemaTypes.ObjectId when users functionality complete
+        required: true
+      }
+    }
+  ]
 });
 
 export default mongoose.model("User", userSchema);

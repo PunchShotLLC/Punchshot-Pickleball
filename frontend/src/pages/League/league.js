@@ -53,12 +53,22 @@ export const League = () => {
   const [endDate, setEndDate] = useState(null);
 
   const [leagues, setLeagues] = useState(null);
-  const user = useContext(UserContext);
+  const {loading, user} = useContext(UserContext);
   const navigate = useNavigate();
 
   // These two states activate when a user selects a league
   const [teamSelection, setTeamSelection] = useState(false);
   const [teamSelectLeagueIndex, setTeamSelectLeagueIndex] = useState(null);
+
+  useEffect(() => {
+    const isSignedIn = async () => {
+      if (!loading && !user) {
+        window.location.href = "/";
+        alert("Sign in to access leagues page!");
+      }
+    };
+    isSignedIn();
+  }, [user, loading]);
 
   // When a league is selected, activate the team selection page
   const switchToTeamSelectionMode = (teamIndex) => {
@@ -106,8 +116,10 @@ export const League = () => {
         .filter((e) => e),
       City: city,
       LeagueOwner: "tempOwner",
+      LeagueOwnerEmail: 'tiberius.colina@gmail.com', // change in production,
       StartDate: startDate,
       EndDate: endDate,
+      Status: "PENDING"
     };
 
     console.log(body);
@@ -151,6 +163,8 @@ export const League = () => {
   useEffect(() => {
     getLeagues(user?.ZipCode);
   }, [user?.ZipCode]);
+
+  console.log(leagues)
 
   // If the team selection state is true, render the team create/join component
   if (teamSelection) {
