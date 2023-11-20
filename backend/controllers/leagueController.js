@@ -1,10 +1,10 @@
 import League from "../models/league.model.js";
 import User from "../models/user.model.js";
-import axios from 'axios';
+import fetch from "node-fetch";
 
-import sgMail from '@sendgrid/mail';
+import sgMail from "@sendgrid/mail";
 
-import dotenv from 'dotenv'
+import dotenv from "dotenv";
 dotenv.config();
 
 export const createLeague = async (req, res, body) => {
@@ -16,8 +16,7 @@ export const createLeague = async (req, res, body) => {
     ZipCodes,
     City,
     StartDate,
-    EndDate,
-    Status
+    Status,
   } = req.body;
 
   if (!LeagueName) {
@@ -53,12 +52,6 @@ export const createLeague = async (req, res, body) => {
     });
   }
 
-  if (!EndDate) {
-    return res.json({
-      error: "End Date is required",
-    });
-  }
-
   const existUsername = await User.findOne({ LeagueOwner });
   if (!existUsername) {
     return res.json({
@@ -75,7 +68,6 @@ export const createLeague = async (req, res, body) => {
       ZipCodes,
       City,
       StartDate,
-      EndDate,
       Status,
     }).save();
 
@@ -99,7 +91,10 @@ export const updateLeague = async (req, res, body) => {
   }
   res.status(200).json(tourney)
   */
-  await League.findByIdAndUpdate(req.params.id, req.body, { returnDocument: 'after' })
+  console.log(req.body);
+  await League.findByIdAndUpdate(req.params.id, req.body, {
+    returnDocument: "after",
+  })
     .then((doc) => {
       res.status(200).json(doc);
     })
@@ -133,7 +128,6 @@ export const deleteLeague = async (req, res) => {
     });
 };
 
-
 export const getAddressInfo = async (req, res) => {
   const apiKey = process.env.GEOAPIFY;
   const input = req.query.input;
@@ -141,15 +135,15 @@ export const getAddressInfo = async (req, res) => {
   const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${input}&apiKey=${apiKey}`;
   try {
     const requestOptions = {
-      method: 'GET',
+      method: "GET",
     };
     await fetch(url, requestOptions)
-      .then(response => response.json())
-      .then(result => {
+      .then((response) => response.json())
+      .then((result) => {
         res.status(200).json(result);
-      })
+      });
   } catch (error) {
-    console.error('Error fetching address information:', error);
+    console.error("Error fetching address information:", error);
     res.status(400).json(error);
   }
 };
@@ -165,56 +159,60 @@ export const startLeague = async (req, res) => {
     });
 
   // Get the list of teams and their captains
-  let league = await League.findById(req.params.id)
-  let teams = league["Teams"]
-  console.log(teams)
+  let league = await League.findById(req.params.id);
+  let teams = league["Teams"];
+  console.log(teams);
 
   // Send an email to the captains of each team
   for (let i = 0; i < teams.length; i++) {
-    sendEmail(teams[i]['CaptainEmail'], `Your league, ${league['LeagueName']}, has begun`, `Your league, ${league['LeagueName']}, has begun`)
+    sendEmail(
+      teams[i]["CaptainEmail"],
+      `Your league, ${league["LeagueName"]}, has begun`,
+      `Your league, ${league["LeagueName"]}, has begun`
+    );
   }
-}
+};
 
 /*
 Sends a request to the captain of the team
 Captain of the team should be in req.params
 */
 export const sendRequestEmail = async (req, res) => {
-  console.log(`Going to send email to ${req.query.sendTo}`)
+  console.log(`Going to send email to ${req.query.sendTo}`);
 
   sendEmail(
-    req.query.sendTo, 
+    req.query.sendTo,
     `${req.query.user} wants to join your team`,
     `${req.query.user} has requested to join your team! Log onto Punchshot Pickleball to accept this user.`
-  )
-}
+  );
+};
 
-const sendEmail = async (reciever, subject, emailBody) => {
-  sgMail.setApiKey(process.env.SENDGRID)
-
+const sendEmail = async (email, subject, body) => {
+  sgMail.setApiKey(process.env.SENDGRID);
   const message = {
-    to: `${req.query.sendTo}`,
-    from: 'tcolina3@gatech.edu',
-    subject: `${req.query.user} wants to join your team`,
-    text: `${req.query.user} has requested to join your team! Log onto Punchshot Pickleball to accept this user.`
-  }
+    to: `${email}`,
+    from: "tcolina3@gatech.edu",
+    subject: `${subject}`,
+    text: `${body}`,
+  };
 
-  sgMail.send(message)
-    .then(response => console.log('Email sent...'))
-    .catch(error => console.log(error.response.body))
-}
+  await sgMail
+    .send(message)
+    .then((response) => console.log("Email sent..."))
+    .catch((error) => console.log(error.response.body));
+};
 
 export const testroute = async (req, res) => {
-  console.log("got here")
-}
+  console.log("got here");
+};
 
 /**
- * Cron functionality to send emails out to league owners 
+ * Cron functionality to send emails out to league owners
  * Happens once per day
  */
-import cron from 'node-cron'
-cron.schedule('0 0 * * *', () => {
-  sendLeagueStartEmails()
+import cron from "node-cron";
+cron.schedule("0 0 * * *", () => {
+  sendLeagueStartEmails();
 });
 
 function isDayBeforeCurrentDate(targetDate) {
@@ -225,12 +223,12 @@ function isDayBeforeCurrentDate(targetDate) {
   currentDate.setDate(currentDate.getDate() + 1);
 
   // convert to strings for comparison
-  currentDate = currentDate.toString()
-  targetDate = targetDate.toString()
+  currentDate = currentDate.toString();
+  targetDate = targetDate.toString();
 
-  return currentDate.substring(0,15) === targetDate.substring(0,15)
+  return currentDate.substring(0, 15) === targetDate.substring(0, 15);
 }
-    
+
 const sendLeagueStartEmails = async () => {
   // Get all of the leagues
   const allLeagues = await League.find({}).sort({ createdAt: -1 });
@@ -240,14 +238,22 @@ const sendLeagueStartEmails = async () => {
 
   for (let i = 0; i < allLeagues.length; i++) {
     // check if the current date = allLeagues[i]'s starting date
-    let leagueDate = allLeagues[i]["StartDate"]
+    let leagueDate = allLeagues[i]["StartDate"];
 
     if (isDayBeforeCurrentDate(leagueDate)) {
       // If day before the allLeagues[i] starts, send email to league owner
-      console.log(`It is the day before ${allLeagues[i]["LeagueName"]} starts, sending email to league owner`)
-      sendEmail(allLeagues[i]["LeagueOwnerEmail"], "league starts tomorrow", `It is the day before ${allLeagues[i]["LeagueName"]} starts. Remember to start the league tomorrow.`)
+      console.log(
+        `It is the day before ${allLeagues[i]["LeagueName"]} starts, sending email to league owner`
+      );
+      sendEmail(
+        allLeagues[i]["LeagueOwnerEmail"],
+        "league starts tomorrow",
+        `It is the day before ${allLeagues[i]["LeagueName"]} starts. Remember to start the league tomorrow.`
+      );
     } else {
-      console.log(`It is not the day before ${allLeagues[i]["LeagueName"]} starts`)
+      console.log(
+        `It is not the day before ${allLeagues[i]["LeagueName"]} starts`
+      );
     }
   }
-}
+};

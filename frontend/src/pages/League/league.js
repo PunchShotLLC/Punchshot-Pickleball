@@ -50,10 +50,9 @@ export const League = () => {
   const [zipCode, setZipCode] = useState(null);
   const [city, setCity] = useState(null);
   const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
 
   const [leagues, setLeagues] = useState(null);
-  const {loading, user} = useContext(UserContext);
+  const { loading, user } = useContext(UserContext);
   const navigate = useNavigate();
 
   // These two states activate when a user selects a league
@@ -116,10 +115,9 @@ export const League = () => {
         .filter((e) => e),
       City: city,
       LeagueOwner: "tempOwner",
-      LeagueOwnerEmail: 'tiberius.colina@gmail.com', // change in production,
+      LeagueOwnerEmail: "tiberius.colina@gmail.com", // change in production,
       StartDate: startDate,
-      EndDate: endDate,
-      Status: "PENDING"
+      Status: "PENDING",
     };
 
     console.log(body);
@@ -164,7 +162,7 @@ export const League = () => {
     getLeagues(user?.ZipCode);
   }, [user?.ZipCode]);
 
-  console.log(leagues)
+  console.log(leagues);
 
   // If the team selection state is true, render the team create/join component
   if (teamSelection) {
@@ -211,19 +209,20 @@ export const League = () => {
             />
             {leagues !== null
               ? leagues.map((item, index) => (
-                <LeagueComp
-                  logo={require("../../assets/images/ATL1.png")}
-                  name={leagues[index]["LeagueName"]}
-                  numberOfTeams={leagues[index]["NumTeams"]}
-                  teamsSignedUp={leagues[index]["Teams"].length}
-                  startDate={leagues[index]["StartDate"]}
-                  endDate={leagues[index]["EndDate"]}
-                  city={leagues[index]["City"]}
-                  onClick={() => {
-                    navigateToLeagueInfo(index);
-                  }}
-                />
-              ))
+                  <LeagueComp
+                    logo={require("../../assets/images/ATL1.png")}
+                    name={leagues[index]["LeagueName"]}
+                    numberOfTeams={leagues[index]["NumTeams"]}
+                    teamsSignedUp={leagues[index]["Teams"].length}
+                    startDate={leagues[index]["StartDate"]}
+                    city={leagues[index]["City"]}
+                    id={leagues[index]["_id"]}
+                    allowStart={user?.Username === "test"}
+                    onClick={() => {
+                      navigateToLeagueInfo(index);
+                    }}
+                  />
+                ))
               : null}
             <Box
               sx={{
@@ -318,24 +317,21 @@ export const League = () => {
                 />
               </FormControl>
               <FormControl sx={{ height: "5vw", marginLeft: "1.5vw" }}>
-                <StyledLabel htmlFor="city">
+                <StyledLabel htmlFor="date">
                   Start Date <span style={{ color: "red" }}>*</span>
                 </StyledLabel>
                 <StyledInput
                   type="date"
-                  onChange={(event) => setStartDate(event.target.value)}
-                  id="city"
-                  required
-                />
-              </FormControl>
-              <FormControl sx={{ height: "5vw", marginLeft: "1.5vw" }}>
-                <StyledLabel htmlFor="city">
-                  End Date <span style={{ color: "red" }}>*</span>
-                </StyledLabel>
-                <StyledInput
-                  type="date"
-                  onChange={(event) => setEndDate(event.target.value)}
-                  id="city"
+                  onChange={(event) => {
+                    setStartDate(
+                      new Date(
+                        event.target.value.split("-")[0],
+                        event.target.value.split("-")[1] - 1,
+                        event.target.value.split("-")[2]
+                      )
+                    );
+                  }}
+                  id="date"
                   required
                 />
               </FormControl>

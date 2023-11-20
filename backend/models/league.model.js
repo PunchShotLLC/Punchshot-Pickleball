@@ -63,10 +63,6 @@ const leagueSchema = new Schema({
     type: Date,
     required: true,
   },
-  EndDate: {
-    type: Date,
-    required: true,
-  },
   Status: {
     type: String,
     enum: ["PENDING", "ONGOING", "COMPLETED"],

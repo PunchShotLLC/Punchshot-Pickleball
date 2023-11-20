@@ -44,16 +44,16 @@ const buttonTheme = createTheme({
 
 export const TeamSelect = (props) => {
   // Grab the cookies
-  const user = useContext(UserContext);
+  const { loading, user } = useContext(UserContext);
   // location.state holds the info about the league
   const location = useLocation();
   console.log(user);
-  console.log(location)
+  console.log(location);
   // For the input for a new team
-  const [teamState, setTeamState] = useState(location.state)
+  const [teamState, setTeamState] = useState(location.state);
   const [teamName, setTeamName] = useState(null);
   const [homeCourtAddress, setHomeCourtAddress] = useState(null);
-  const [homeCourtMessage, setHomeCourtMessage] = useState('');
+  const [homeCourtMessage, setHomeCourtMessage] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
   // Adds the team to the league
@@ -63,28 +63,30 @@ export const TeamSelect = (props) => {
 
     // alerts if team name is blank
     if (!teamName || teamName.trim() === "") {
-      alert('Please enter a team name.');
+      alert("Please enter a team name.");
       return;
     }
-  
+
     // alerts if home court address is blank
     if (!homeCourtAddress || homeCourtAddress.trim() === "") {
-      alert('Please enter a home court address.');
+      alert("Please enter a home court address.");
       return;
     }
 
     // check if the team name or home court address is already taken
-    const isTeamNameTaken = leagueInfo.Teams.some(team => team.TeamName === teamName);
+    const isTeamNameTaken = leagueInfo.Teams.some(
+      (team) => team.TeamName === teamName
+    );
 
     // alerts if team is taken
     if (isTeamNameTaken) {
-      alert('This team name is already taken. Please choose a different one.');
+      alert("This team name is already taken. Please choose a different one.");
       return;
     }
 
     // console.log(leagueInfo);
     console.log(user);
-    if (!user) {
+    if (!loading && !user) {
       console.log("not signed in");
     }
 
@@ -99,7 +101,6 @@ export const TeamSelect = (props) => {
       alert("Cannot make new team as captain of another team");
       return;
     }
-
     leagueInfo["Teams"].push({
       TeamName: teamName,
       TeamCaptain: user.Username,
@@ -108,6 +109,7 @@ export const TeamSelect = (props) => {
       PotentialTeamMembers: [],
       HomeCourtAddress: homeCourtAddress,
     });
+    console.log(leagueInfo);
 
     // Make a patch request to the leagues API with the updated league object
     const requestOptions = {
@@ -125,7 +127,7 @@ export const TeamSelect = (props) => {
       .then((response) => response.json())
       .then((responseData) => {
         console.log(responseData);
-        setTeamState(responseData)
+        setTeamState(responseData);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -145,7 +147,7 @@ export const TeamSelect = (props) => {
     var leagueInfo = teamState;
     if (teamCaptain === user.Username) {
       if (PlayerList.length === 0) {
-        leagueInfo.Teams.splice(teamIndex, 1)
+        leagueInfo.Teams.splice(teamIndex, 1);
         alert("Dropping team");
       } else {
         leagueInfo.Teams[teamIndex].TeamCaptain = PlayerList[0];
@@ -177,12 +179,12 @@ export const TeamSelect = (props) => {
       .then((response) => response.json())
       .then((responseData) => {
         console.log(responseData);
-        setTeamState(responseData)
+        setTeamState(responseData);
       })
       .catch((error) => {
         console.error("Error:", error);
       });
-    location.state = leagueInfo
+    location.state = leagueInfo;
   };
 
   // Adds a player to the potential team member list of a team
@@ -192,8 +194,7 @@ export const TeamSelect = (props) => {
       return;
     }
 
-    let potentialPlayerList =
-      teamState.Teams[teamIndex].PotentialTeamMembers;
+    let potentialPlayerList = teamState.Teams[teamIndex].PotentialTeamMembers;
     console.log(potentialPlayerList);
 
     let isCaptain = teamState["Teams"].find(
@@ -212,7 +213,9 @@ export const TeamSelect = (props) => {
       return;
     }
 
-    let inPotentialList = teamState.Teams.some((team) => team.PotentialTeamMembers.find((obj) => obj === user.Username))
+    let inPotentialList = teamState.Teams.some((team) =>
+      team.PotentialTeamMembers.find((obj) => obj === user.Username)
+    );
     if (inPotentialList) {
       alert("Already in a potential player list");
       return;
@@ -235,7 +238,7 @@ export const TeamSelect = (props) => {
       .then((response) => response.json())
       .then((responseData) => {
         console.log(responseData);
-        setTeamState(responseData)
+        setTeamState(responseData);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -258,21 +261,21 @@ export const TeamSelect = (props) => {
   const fetchAddressSuggestions = (input) => {
     if (input.length > 2) {
       const requestOptions = {
-        method: 'GET',
+        method: "GET",
       };
       const suggestionsApiUrl = `http://localhost:8000/leagues/address?input=${input}`;
       fetch(suggestionsApiUrl, requestOptions)
-        .then(response => response.json())
-        .then(result => {
-          console.log('we got result');
-          console.log(result)
+        .then((response) => response.json())
+        .then((result) => {
+          console.log("we got result");
+          console.log(result);
           setSuggestions(result.features);
         })
-        .catch(error => console.log('error', error));
+        .catch((error) => console.log("error", error));
     } else {
       setSuggestions([]);
     }
-  }
+  };
 
   // event handler for homeCourtAddress input changes
   const handleHomeCourtAddressChange = (event) => {
@@ -290,14 +293,18 @@ export const TeamSelect = (props) => {
   // checking if multiple home court addresses
   const checkHomeCourtAddress = () => {
     const leagueInfo = location.state;
-    const homeCourtAddressCount = leagueInfo.Teams.filter(team => team.HomeCourtAddress === homeCourtAddress).length;
+    const homeCourtAddressCount = leagueInfo.Teams.filter(
+      (team) => team.HomeCourtAddress === homeCourtAddress
+    ).length;
     if (homeCourtAddressCount > 0) {
-      const teamWord1 = homeCourtAddressCount === 1 ? 'is' : 'are';
-      const teamWord2 = homeCourtAddressCount === 1 ? '' : 's';
-      const teamWord3 = homeCourtAddressCount === 1 ? 'has' : 'have';
-      setHomeCourtMessage(`FYI: There ${teamWord1} ${homeCourtAddressCount} other team${teamWord2} that ${teamWord3} this home court address`);
+      const teamWord1 = homeCourtAddressCount === 1 ? "is" : "are";
+      const teamWord2 = homeCourtAddressCount === 1 ? "" : "s";
+      const teamWord3 = homeCourtAddressCount === 1 ? "has" : "have";
+      setHomeCourtMessage(
+        `FYI: There ${teamWord1} ${homeCourtAddressCount} other team${teamWord2} that ${teamWord3} this home court address`
+      );
     } else {
-      setHomeCourtMessage('');
+      setHomeCourtMessage("");
     }
   };
 
@@ -307,32 +314,32 @@ export const TeamSelect = (props) => {
   }, [homeCourtAddress]);
 
   // formatting for suggestions
-  const SuggestionsList = styled('ul')({
-    listStyleType: 'none',
+  const SuggestionsList = styled("ul")({
+    listStyleType: "none",
     margin: 0,
     padding: 0,
-    position: 'absolute',
+    position: "absolute",
     zIndex: 1000,
-    backgroundColor: '#fff',
-    width: '30vw',
-    borderRadius: '0 0 1em 1em', 
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-    top: 'calc(100% + 25px)',
+    backgroundColor: "#fff",
+    width: "30vw",
+    borderRadius: "0 0 1em 1em",
+    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    top: "calc(100% + 25px)",
     left: 0,
   });
-  
+
   // define a styled component for the suggestions list items
-  const SuggestionItem = styled('li')({
-    padding: '10px 20px',
-    cursor: 'pointer',
-    fontSize: '0.8em',
-  
-    '&:hover': {
-      backgroundColor: '#f0f0f0',
+  const SuggestionItem = styled("li")({
+    padding: "10px 20px",
+    cursor: "pointer",
+    fontSize: "0.8em",
+
+    "&:hover": {
+      backgroundColor: "#f0f0f0",
     },
   });
 
-  console.log(location.state)
+  console.log(location.state);
 
   return (
     <Box sx={{ width: "80vw", height: "77.69vh", display: "flex" }}>
@@ -401,7 +408,9 @@ export const TeamSelect = (props) => {
             marginBottom: "8em",
           }}
         >
-          <FormControl sx={{ height: "7vw", marginLeft: "1.5vw", position: 'relative'}}>
+          <FormControl
+            sx={{ height: "7vw", marginLeft: "1.5vw", position: "relative" }}
+          >
             <StyledLabel htmlFor="leagueName">
               Team Name<span style={{ color: "red" }}>*</span>
             </StyledLabel>
@@ -424,7 +433,10 @@ export const TeamSelect = (props) => {
             {suggestions.length > 0 && (
               <SuggestionsList>
                 {suggestions.map((suggestion, index) => (
-                  <SuggestionItem key={index} onClick={() => handleSuggestionClick(suggestion)}>
+                  <SuggestionItem
+                    key={index}
+                    onClick={() => handleSuggestionClick(suggestion)}
+                  >
                     {suggestion.properties.formatted}
                   </SuggestionItem>
                 ))}
@@ -437,7 +449,7 @@ export const TeamSelect = (props) => {
                 fontSize: "calc(0.5em + 0.5vw)",
                 color: "gray",
                 marginTop: "0.25em",
-                marginBottom: "0.5em"
+                marginBottom: "0.5em",
               }}
             >
               * Ensuring court availability is your team’s responsibility.
@@ -449,7 +461,7 @@ export const TeamSelect = (props) => {
                 color: "primary",
                 marginTop: "0.5em",
                 marginBottom: "0.5em",
-                visibility: homeCourtMessage ? 'visible' : 'hidden', 
+                visibility: homeCourtMessage ? "visible" : "hidden",
               }}
             >
               {homeCourtMessage}
@@ -475,30 +487,27 @@ export const TeamSelect = (props) => {
           {/* Dynamically renders the teams within the league */}
           {teamState.Teams !== null
             ? teamState.Teams.map((item, index) => (
-              <TeamSelectButton
-                onClick={() => {
-                  addPlayerToPotentialList(index);
-                }}
-                onClickRemoveUser={() => {
-                  console.log("Remove User Is Running");
-                  removePlayerFromTeam(index);
-                }}
-                name={teamState.Teams[index].TeamName}
-                captain={teamState.Teams[index].TeamCaptain}
-                members={teamState.Teams[index].TeamMembers}
-                home={teamState.Teams[index].HomeCourtAddress}
-                potentialMembers={
-                  teamState.Teams[index].PotentialTeamMembers
-                }
-                showPotentialMembers={
-                  user &&
-                  user.Username === teamState.Teams[index].TeamCaptain
-                }
-                leagueInfo={teamState}
-                teamIndex={index}
-                updateTeam={setTeamState}
-              />
-            ))
+                <TeamSelectButton
+                  onClick={() => {
+                    addPlayerToPotentialList(index);
+                  }}
+                  onClickRemoveUser={() => {
+                    console.log("Remove User Is Running");
+                    removePlayerFromTeam(index);
+                  }}
+                  name={teamState.Teams[index].TeamName}
+                  captain={teamState.Teams[index].TeamCaptain}
+                  members={teamState.Teams[index].TeamMembers}
+                  home={teamState.Teams[index].HomeCourtAddress}
+                  potentialMembers={teamState.Teams[index].PotentialTeamMembers}
+                  showPotentialMembers={
+                    user && user.Username === teamState.Teams[index].TeamCaptain
+                  }
+                  leagueInfo={teamState}
+                  teamIndex={index}
+                  updateTeam={setTeamState}
+                />
+              ))
             : null}
 
           <Box sx={{ width: "45vw", height: "4vh", display: "flex" }}></Box>
