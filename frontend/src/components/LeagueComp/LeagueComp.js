@@ -39,6 +39,7 @@ export const LeagueComp = (props) => {
   return (
     <Box sx={styles.main}>
       <img
+        alt="logo"
         src={props.logo}
         width={"120vh"}
         height={"120vh"}
@@ -51,6 +52,7 @@ export const LeagueComp = (props) => {
           <Box sx={styles.data}>
             <img
               src={require("../../assets/images/Team.png")}
+              alt="team"
               height={"30vh"}
               width={"33vh"}
               style={{ border: "2px solid black", borderRadius: "50%" }}
@@ -61,6 +63,7 @@ export const LeagueComp = (props) => {
           </Box>
           <Box sx={styles.data2}>
             <img
+              alt="clock"
               src={require("../../assets/images/Clock.png")}
               height={"30vh"}
               width={"33vh"}
@@ -72,6 +75,7 @@ export const LeagueComp = (props) => {
           </Box>
           <Box sx={styles.data3}>
             <img
+              alt="location"
               src={require("../../assets/images/location.png")}
               height={"30vh"}
               width={"33vh"}

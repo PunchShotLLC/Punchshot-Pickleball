@@ -134,11 +134,16 @@ export const League = () => {
         },
         body: JSON.stringify(body),
       }
-    ).catch((err) => console.log(err));
+    ).catch((err) => alert(err));
 
     const content = await rawResponse.json();
 
     console.log(content);
+    if (!content.error) {
+      alert(content.message);
+    } else {
+      alert(content.error);
+    }
   };
 
   // Make a get request to retrieve all the leagues

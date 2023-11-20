@@ -394,17 +394,6 @@ export const TeamSelect = (props) => {
             fontSize: "calc(0.1em + 1vw)",
             align: "left",
             marginLeft: "10vw",
-          }}
-        >
-          End Date: {new Date(teamState.EndDate).toLocaleDateString()}
-        </Typography>
-        <Typography
-          className="bodyText"
-          sx={{
-            display: "absolute",
-            fontSize: "calc(0.1em + 1vw)",
-            align: "left",
-            marginLeft: "10vw",
             marginBottom: "8em",
           }}
         >

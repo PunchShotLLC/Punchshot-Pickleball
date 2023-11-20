@@ -21,41 +21,48 @@ export const createLeague = async (req, res, body) => {
 
   if (!LeagueName) {
     return res.json({
-      error: "LeagueName is required",
+      error: "LeagueName is required!",
     });
   }
   if (!LeagueOwner) {
     return res.json({
-      error: "LeagueOwner is required",
+      error: "LeagueOwner is required!",
     });
   }
-  if (!NumTeams) {
+  if (!NumTeams || NumTeams < 3) {
     return res.json({
-      error: "Number of Teams is required",
+      error: "There has to be a minimum of 3 teams!",
     });
   }
 
   if (!ZipCodes || ZipCodes.some((e) => e.length !== 5)) {
     return res.json({
-      error: "Valid zip code is required",
+      error: "Valid zip code is required!",
     });
   }
   if (!City) {
     return res.json({
-      error: "City is required",
+      error: "City is required!",
     });
   }
 
   if (!StartDate) {
     return res.json({
-      error: "Start Date is required",
+      error: "Start Date is required!",
+    });
+  }
+
+  const existLeagueName = await League.findOne({ LeagueName });
+  if (existLeagueName) {
+    return res.json({
+      error: "League name already exists!",
     });
   }
 
   const existUsername = await User.findOne({ LeagueOwner });
   if (!existUsername) {
     return res.json({
-      error: "League owner does not exist",
+      error: "League owner does not exist!",
     });
   }
 
@@ -71,7 +78,7 @@ export const createLeague = async (req, res, body) => {
       Status,
     }).save();
 
-    return res.json({ league });
+    return res.json({ message: "League was successfully created!" });
   } catch (error) {
     console.log(error);
     return res.error;
