@@ -67,6 +67,9 @@ const leagueSchema = new Schema({
     type: String,
     enum: ["PENDING", "ONGOING", "COMPLETED"],
   },
+  Matches: [
+    Object
+  ]
 });
 
 export default mongoose.model("League", leagueSchema);

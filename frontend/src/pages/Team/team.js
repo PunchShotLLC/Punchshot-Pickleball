@@ -472,7 +472,7 @@ export const TeamSelect = (props) => {
           </FormControl>
         </Typography>
 
-        <Box sx={{ position: "relative", left: "3svw" }}>
+        <Box sx={{ position: "relative", left: "3svw", overflow: 'scroll' }}>
           {/* Dynamically renders the teams within the league */}
           {teamState.Teams !== null
             ? teamState.Teams.map((item, index) => (
