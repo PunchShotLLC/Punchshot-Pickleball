@@ -17,6 +17,7 @@ export const createLeague = async (req, res, body) => {
     City,
     StartDate,
     Status,
+    Matches,
   } = req.body;
 
   if (!LeagueName) {
@@ -76,6 +77,7 @@ export const createLeague = async (req, res, body) => {
       City,
       StartDate,
       Status,
+      Matches
     }).save();
 
     return res.json({ message: "League was successfully created!" });
@@ -139,6 +141,8 @@ export const getAddressInfo = async (req, res) => {
   const apiKey = process.env.GEOAPIFY;
   const input = req.query.input;
 
+  console.log(input)
+
   const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${input}&apiKey=${apiKey}`;
   try {
     const requestOptions = {
@@ -155,9 +159,76 @@ export const getAddressInfo = async (req, res) => {
   }
 };
 
+/**
+ * function that takes a list of teams and creates matchups with dates
+ * @param {list} teamList 
+ * @returns matchup objects
+ */
+const createMatchups = (teamList) => {
+  const combos = [];
+
+  for (let i = 0; i < teamList.length - 1; i++) {
+      for (let j = i + 1; j < teamList.length; j++) {
+          combos.push([teamList[i], teamList[j]]);
+      }
+  }
+
+  // Set up the dates
+  const today = new Date();
+  const nextSaturday = new Date(today);
+
+  // Find the next Saturday
+  nextSaturday.setDate(today.getDate() + (6 - today.getDay()) + 1);
+
+  const matchups = [];
+  
+  combos.forEach((combo, index) => {
+    const assignedDate = new Date(nextSaturday);
+    assignedDate.setDate((assignedDate.getDate() + index * 7) - 1);
+    // matchupAssignments[matchup] = assignedDate.toDateString();
+    let matchup = {
+      "Date": assignedDate.toDateString(),
+      "Team1": combos[index][0],
+      "Team2": combos[index][1],
+      "Score": "",
+      "WinnerTeam": ""
+    }
+    matchups.push(matchup)
+});
+
+  return matchups
+}
+
+// createMatchups(["Team1", "Team2", "Team3", "Team4", "Team5"])
+
+/**
+ * startLeague is responsible for:
+ * 1. starting the league by changing the status to ONGOING
+ * 2. creating the matchups between the teams
+ * @param {*} req request object
+ * @param {*} res response object
+ */
 export const startLeague = async (req, res) => {
+  // Create an update object
+  let updateObject = { 
+    Status: "ONGOING" 
+  }
+
+  // Get the list of team names from the database
+  let league = await League.findById(req.params.id);
+  let teams = league["Teams"];
+  let teamNames = []
+
+  // Get the team names from the teams list
+  for (let i = 0; i < teams.length; i++) {
+    teamNames.push(teams[i]["TeamName"])
+  }
+
+  // Get the matchups
+  updateObject['Matches'] = createMatchups(teamNames)
+
   // Change the status of the league to ongoing
-  await League.findByIdAndUpdate(req.params.id, { Status: "ONGOING" })
+  await League.findByIdAndUpdate(req.params.id, updateObject)
     .then((doc) => {
       res.status(200).json(doc);
     })
@@ -165,11 +236,8 @@ export const startLeague = async (req, res) => {
       res.status(400).json({ error: error.message });
     });
 
-  // Get the list of teams and their captains
-  let league = await League.findById(req.params.id);
-  let teams = league["Teams"];
-  console.log(teams);
 
+  // Get the list of teams and their captains
   // Send an email to the captains of each team
   for (let i = 0; i < teams.length; i++) {
     sendEmail(
