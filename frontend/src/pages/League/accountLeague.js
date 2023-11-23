@@ -44,7 +44,7 @@ export const AccountLeague = () => {
         console.log(team);
         if (
           team.TeamCaptain === user.Username ||
-          team.TeamMembers.contains(user.Username)
+          team.TeamMembers.includes(user.Username)
         ) {
           accountLeagues.push({
             LeagueName: leagues[index].LeagueName,
