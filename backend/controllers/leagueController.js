@@ -248,25 +248,25 @@ export const startLeague = async (req, res) => {
   }
 };
 
+// Gets the name, wins, and losses of the league
 export const getStandings = async (req, res) => {
   try {
     let league = await League.findById(req.params.id);
-    // Assuming you have a way to get all matches for a league
+    let teams = league["Teams"]
     let matches = league["Matches"];
     let standings = {};
+
+    // get team names from team objects list
+    for (let i = 0; i < teams.length; i++) {
+      standings[teams[i]["TeamName"]] = { wins: 0, losses: 0 };
+    }
 
     for (let i = 0; i < matches.length; i++) {
       let Team1 = matches[i]["Team1"];
       let Team2 = matches[i]["Team2"];
       let WinnerTeam = matches[i]["WinnerTeam"]
-      if (!standings[Team1]) {
-        standings[Team1] = { wins: 0, losses: 0 };
-      }
-      if (!standings[Team2]) {
-        standings[Team2] = { wins: 0, losses: 0 };
-      }
 
-      // Tally wins and losses
+      // tally wins and losses
       if (WinnerTeam && WinnerTeam === "Tie") {
         standings[Team1].wins += 1;
         standings[Team2].wins += 1;
@@ -275,29 +275,11 @@ export const getStandings = async (req, res) => {
         standings[WinnerTeam === Team1 ? Team2 : Team1].losses += 1;
       }
     }
-    console.log(standings);
+
     res.status(200).json(standings);
   } catch (error) {
     console.error("Error fetching team standings:", error);
     res.status(500).send("Internal Server Error");
-  }
-};
-
-export const getLeagueTeamNames = async (req, res) => {
-  try {
-    // Assuming the league ID is passed as a URL parameter
-    let league = await League.findById(req.params.id);
-    let teams = league["Teams"];
-    let teamNames = []
-
-    for (let i = 0; i < teams.length; i++) {
-      teamNames.push(teams[i]["TeamName"])
-    }
-    // Send the team names as a response
-    res.status(200).json(teamNames);
-  } catch (error) {
-    // Handle any errors that occur during the database query
-    res.status(500).json({ error: error.message });
   }
 };
 

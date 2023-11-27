@@ -9,9 +9,10 @@ import Paper from "@mui/material/Paper";
 
 const LeaderboardTable = ({ selectedLeague }) => {
   const [tableData, setTableData] = useState([]);
+  const cellStyle = { fontSize: '2rem' };
   
   useEffect(() => {
-    // Fetch standings data based on the selected league
+    // fetch standings data based on the selected league
     const fetchStandingsData = async () => {
       try {
         const response = await fetch(`http://localhost:8000/leagues/${selectedLeague}/standings`);
@@ -32,23 +33,23 @@ const LeaderboardTable = ({ selectedLeague }) => {
   }, [selectedLeague]);
 
   return (
-    <TableContainer component={Paper} style={{ marginTop: "2em" }}>
+    <TableContainer component={Paper} style={{ marginTop: "2em", width: 'auto', maxWidth: '100%' }}>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Team</TableCell>
-            <TableCell>Matches</TableCell>
-            <TableCell>Wins</TableCell>
-            <TableCell>Losses</TableCell>
+            <TableCell style={cellStyle}>Team </TableCell>
+            <TableCell style={cellStyle}>Matches</TableCell>
+            <TableCell style={cellStyle}>Wins</TableCell>
+            <TableCell style={cellStyle}>Losses</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {tableData.map((team) => (
             <TableRow key={team.teamName}>
-              <TableCell>{team.teamName}</TableCell>
-              <TableCell>{team.losses + team.wins}</TableCell>
-              <TableCell>{team.wins}</TableCell>
-              <TableCell>{team.losses}</TableCell>
+              <TableCell style={cellStyle}>{team.teamName}</TableCell>
+              <TableCell style={cellStyle}>{team.losses + team.wins}</TableCell>
+              <TableCell style={cellStyle}>{team.wins}</TableCell>
+              <TableCell style={cellStyle}>{team.losses}</TableCell>
             </TableRow>
           ))}
         </TableBody>
