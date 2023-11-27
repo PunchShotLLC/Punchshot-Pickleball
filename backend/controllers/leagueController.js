@@ -294,69 +294,71 @@ cron.schedule("0 8 * * *", (date) => {
 })
 const matchCronJob = async (date) => {
   const leagues = await League.find({})
-  leagues.forEach((league) => {
-    league.Matches.forEach((match, index, matches) => {
-      const matchTeams = league.Teams.filter(team => team.TeamName === match.Team1 || team.TeamName === match.Team2);
-      //Day before match case
-      if (isDayBeforeCurrentDate(match.Date)) {
-        matchTeams.forEach((team) => {
-          sendEmail(team.teamCaptainEmail,
-            "You have a match tommorow",
-            `It is the day before your match against ${team.TeamName === match.Team1 ? match.Team2 : match.Team1} starts. Make sure to let your team now. Good luck and have fun!`
-          )
-        })
-      }
-      //Tuesday and no score case
-      else if (date > match.Date && !score && date.getDay() == 2) {
-        matchTeams.forEach((team) => {
-          sendEmail(team.teamCaptainEmail,
-            "Enter your scores for your match",
-            `You played a match last Saturday against ${team.TeamName === match.Team1 ? match.Team2 : match.Team1}. Make sure to enter your score by this Thursday or the match will be declared a tie.`
-          )
-        })
-      }
-      //Thursday and no score case
-      else if (date > match.Date && !score && date.getDay() == 4) {
-        matchTeams.forEach((team) => {
-          sendEmail(team.teamCaptainEmail,
-            "Match scores not entered",
-            `You played a match last Saturday against ${team.TeamName === match.Team1 ? match.Team2 : match.Team1} and neither of you have entered a score. The match has been declared a tie. Make sure to enter your score next time.`
-          )
-        })
-        match.Score = "0-0"
-        match.WinnerTeam = "Tie"
-        matches[index] = match
-        league.findByIdAndUpdate(league._id, { Matches: matches })
+  leagues.filter(league => league.Status === "ONGOING")
+    .forEach(league => {
+      league.Matches.forEach((match, index, matches) => {
+        const matchTeams = league.Teams.filter(team => team.TeamName === match.Team1 || team.TeamName === match.Team2);
+        const afterMatch = date.getTime() > Date.parse(match.Date)
+        //Day before match case
+        if (isDayBeforeCurrentDate(match.Date)) {
+          matchTeams.forEach((team) => {
+            sendEmail(team.teamCaptainEmail,
+              "You have a match tommorow",
+              `It is the day before your match against ${team.TeamName === match.Team1 ? match.Team2 : match.Team1} starts. Make sure to let your team now. Good luck and have fun!`
+            )
+          })
+        }
+        //Tuesday and no score case
+        else if (afterMatch && !score && date.getDay() == 2) {
+          matchTeams.forEach((team) => {
+            sendEmail(team.teamCaptainEmail,
+              "Enter your scores for your match",
+              `You played a match last Saturday against ${team.TeamName === match.Team1 ? match.Team2 : match.Team1}. Make sure to enter your score by this Thursday or the match will be declared a tie.`
+            )
+          })
+        }
+        //Thursday and no score case
+        else if (afterMatch && !score && date.getDay() == 4) {
+          matchTeams.forEach((team) => {
+            sendEmail(team.teamCaptainEmail,
+              "Match scores not entered",
+              `You played a match last Saturday against ${team.TeamName === match.Team1 ? match.Team2 : match.Team1} and neither of you have entered a score. The match has been declared a tie. Make sure to enter your score next time.`
+            )
+          })
+          match.Score = "0-0"
+          match.WinnerTeam = "Tie"
+          matches[index] = match
+          league.findByIdAndUpdate(league._id, { Matches: matches })
+        }
+      })
+      if (league.Matches.length() == (league.Teams.length() * (league.Teams.length() - 1) / 2) && league.Matches.every(match => match.WinnerTeam)) {
+        let teamScores = {}
+        league.Matches.forEach(match => {
+          if (match.WinnerTeam == match.Team1) {
+            teamScores[match.Team1] = teamScores[match.Team1] ? teamScores[match.Team1] + 1 : 1
+            teamScores[match.Team2] = teamScores[match.Team2] ? teamScores[match.Team2] : 0
+          } else if (match.WinnerTeam == match.Team2) {
+            teamScores[match.Team2] = teamScores[match.Team2] ? teamScores[match.Team2] + 1 : 1
+            teamScores[match.Team1] = teamScores[match.Team1] ? teamScores[match.Team1] : 0
+          } else {
+            teamScores[match.Team1] = teamScores[match.Team1] ? teamScores[match.Team1] : 0
+            teamScores[match.Team2] = teamScores[match.Team2] ? teamScores[match.Team2] : 0
+          }
+        });
+        let top2Teams = Object.entries(teamScores)
+          .sort(({ 1: a }, { 1: b }) => b - a)
+          .slice(0, 2)
+        const nextSaturday = new Date(date.getDate() + (6 - date.getDay()) + 1)
+        let finalMatch = {
+          "Date": nextSaturday.toDateString(),
+          "Team1": top2Teams[0],
+          "Team2": top2Teams[1],
+          "Score": "",
+          "WinnerTeam": ""
+        }
+        league.findByIdAndUpdate(league._id, { $push: { Matches: finalMatch } })
       }
     })
-    if (league.Matches.length() == (league.Teams.length() * (league.Teams.length() - 1) / 2) && league.Matches.every(match => match.WinnerTeam)) {
-      let teamScores = {}
-      league.Matches.forEach(match => {
-        if (match.WinnerTeam == match.Team1) {
-          teamScores[match.Team1] = teamScores[match.Team1] ? teamScores[match.Team1] + 1 : 1
-          teamScores[match.Team2] = teamScores[match.Team2] ? teamScores[match.Team2] : 0
-        } else if (match.WinnerTeam == match.Team2) {
-          teamScores[match.Team2] = teamScores[match.Team2] ? teamScores[match.Team2] + 1 : 1
-          teamScores[match.Team1] = teamScores[match.Team1] ? teamScores[match.Team1] : 0
-        } else {
-          teamScores[match.Team1] = teamScores[match.Team1] ? teamScores[match.Team1] + 0.5 : 0.5
-          teamScores[match.Team2] = teamScores[match.Team2] ? teamScores[match.Team2] + 0.5 : 0.5
-        }
-      });
-      let top2Teams = Object.entries(teamScores)
-        .sort(({ 1: a }, { 1: b }) => b - a)
-        .slice(0, 2)
-      const nextSaturday = new Date(date.getDate() + (6 - date.getDay()) + 1)
-      let finalMatch = {
-        "Date": nextSaturday.toDateString(),
-        "Team1": top2Teams[0],
-        "Team2": top2Teams[1],
-        "Score": "",
-        "WinnerTeam": ""
-      }
-      league.findByIdAndUpdate(league._id, { $push: { Matches: finalMatch } })
-    }
-  })
 }
 
 function isDayBeforeCurrentDate(targetDate) {
