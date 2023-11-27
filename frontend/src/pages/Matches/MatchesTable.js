@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -9,11 +9,15 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import ScoreEnterBox from './ScoreEnterBox';
+import { UserContext } from "../../components/UserContext/usercontext";
+
 
 const columns = [
   { id: 'league', label: 'League', minWidth: 150 },
   { id: 'team1', label: 'Team 1', minWidth: 120 },
   { id: 'team2', label: 'Team 2', minWidth: 120 },
+  { id: 'team1captain', label: 'Team 1 C', minWidth: 120 },
+  { id: 'team2captain', label: 'Team 2 C', minWidth: 120 },
   { id: 'winner', label: 'Winner', minWidth: 120 },
   { id: 'score', label: 'Score', minWidth: 120 },
 ];
@@ -26,6 +30,9 @@ export default function MatchesTable(props) {
   const [selectedMatch, setSelectedMatch] = React.useState(null)
   const [selectedMatchIndex, setSelectedMatchIndex] = React.useState(null)
 
+  // Load in the user context
+  const { loading, user } = useContext(UserContext);
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -36,10 +43,28 @@ export default function MatchesTable(props) {
   };
 
   const editScore = (index) => {
-    setSelectedMatch(props.matches[index])
+    console.log("Check if the user is the captain of either team")
+    let match = props.matches[index]
+
+    if (!(user['Username'] === match['team1captain'] || user['Username'] === match['team2captain'])) {
+      console.log("User is not a captain of either team")
+      return
+    }
+
+    setSelectedMatch(match)
     setSelectedMatchIndex(index)
     setEnterScoreActive(true)
   }
+
+  useEffect(() => {
+    const isSignedIn = async () => {
+      if (!loading && !user) {
+        window.location.href = "/";
+        alert("Sign in to access leagues page!");
+      }
+    };
+    isSignedIn();
+  }, [user, loading]);
 
   if (!enterScoreActive) {
     return (

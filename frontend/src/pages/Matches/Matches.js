@@ -8,9 +8,13 @@ import { alpha } from "@mui/material/styles";
 import AntTab from "./AntTab";
 import { fontFamily } from "@mui/system";
 
-function createData(league, team1, team2, winner, score) {
-  return { league, team1, team2, winner, score };
+function createData(league, team1, team2, team1captain, team2captain, winner, score) {
+  return { league, team1, team2, winner, score, team1captain, team2captain };
 }
+
+// function createData(league, team1, team2, winner, score) {
+//   return { league, team1, team2, winner, score };
+// }
 
 export const Matches = () => {
 
@@ -50,9 +54,30 @@ export const Matches = () => {
         let matchesToSet = leagues[i]["Matches"]
         console.log(matchesToSet)
 
+        // Make lookup table between team and captains
+        let leagueTeams = leagues[i]['Teams']
+        let captains = {}
+        for (let i = 0; i < leagueTeams.length; i++) {
+          captains[leagueTeams[i]['TeamName']] = leagueTeams[i]['TeamCaptain']
+        }
+
         let matchesAfterCreateData = []
         for (let j = 0; j < matchesToSet.length; j++) {
-          matchesAfterCreateData.push(createData(matchesToSet[j]['Date'], matchesToSet[j]['Team1'], matchesToSet[j]['Team2'], matchesToSet[j]['WinnerTeam'], matchesToSet[j]['Score']))
+
+          console.log("Running createData")
+          console.log("Captain of team 1:")
+          let captain1 = captains[matchesToSet[j]['Team1']]
+          let captain2 = captains[matchesToSet[j]['Team2']]
+          console.log(captain1)
+          matchesAfterCreateData.push(createData(
+            matchesToSet[j]['Date'], 
+            matchesToSet[j]['Team1'], 
+            matchesToSet[j]['Team2'], 
+            captain1,
+            captain2,
+            matchesToSet[j]['WinnerTeam'], 
+            matchesToSet[j]['Score'])
+            )
         }
 
         console.log("matches after create data")

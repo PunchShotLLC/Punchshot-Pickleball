@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import './ScoreEnterBox.css'
+// import './ScoreEnterBox.css'
 
 export default function ScoreEnterBox(props) {
 
