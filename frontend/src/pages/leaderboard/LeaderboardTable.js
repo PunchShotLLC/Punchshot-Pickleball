@@ -9,10 +9,10 @@ import Paper from "@mui/material/Paper";
 
 const LeaderboardTable = ({ selectedLeague }) => {
   const [tableData, setTableData] = useState([]);
-  const cellStyle = { fontSize: '2rem' };
+  const cellStyle = { fontSize: '2.5rem' };
   
   useEffect(() => {
-    // fetch standings data based on the selected league
+    // Fetch standings data based on the selected league
     const fetchStandingsData = async () => {
       try {
         const response = await fetch(`http://localhost:8000/leagues/${selectedLeague}/standings`);
@@ -33,7 +33,16 @@ const LeaderboardTable = ({ selectedLeague }) => {
   }, [selectedLeague]);
 
   return (
-    <TableContainer component={Paper} style={{ marginTop: "2em", width: 'auto', maxWidth: '100%' }}>
+    <TableContainer 
+      component={Paper} 
+      sx={{
+        marginTop: "2em",
+        width: '100em',
+        maxWidth: '100%',
+        borderRadius: '20px',
+        border: '5px solid #D5FD51'
+      }}
+    >
       <Table>
         <TableHead>
           <TableRow>
