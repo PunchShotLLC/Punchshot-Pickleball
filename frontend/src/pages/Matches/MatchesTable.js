@@ -16,8 +16,6 @@ const columns = [
   { id: 'league', label: 'League', minWidth: 150 },
   { id: 'team1', label: 'Team 1', minWidth: 120 },
   { id: 'team2', label: 'Team 2', minWidth: 120 },
-  { id: 'team1captain', label: 'Team 1 C', minWidth: 120 },
-  { id: 'team2captain', label: 'Team 2 C', minWidth: 120 },
   { id: 'winner', label: 'Winner', minWidth: 120 },
   { id: 'score', label: 'Score', minWidth: 120 },
 ];
@@ -47,8 +45,8 @@ export default function MatchesTable(props) {
     let match = props.matches[index]
 
     if (!(user['Username'] === match['team1captain'] || user['Username'] === match['team2captain'])) {
-      console.log("User is not a captain of either team")
-      return
+      alert("You must be a captain of one of these teams to edit the score")
+      return;
     }
 
     setSelectedMatch(match)
