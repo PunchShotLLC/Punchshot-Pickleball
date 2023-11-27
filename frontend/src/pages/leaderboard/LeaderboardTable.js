@@ -21,6 +21,7 @@ const LeaderboardTable = ({ selectedLeague }) => {
           teamName,
           ...stats
         }));
+        teamsArray.sort((a, b) => b.wins - a.wins);
         setTableData(teamsArray);
       } catch (error) {
         console.error("Error fetching standings data:", error);
