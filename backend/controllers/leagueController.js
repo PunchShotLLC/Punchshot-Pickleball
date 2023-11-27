@@ -248,6 +248,24 @@ export const startLeague = async (req, res) => {
   }
 };
 
+export const getLeagueTeamNames = async (req, res) => {
+  try {
+    // Assuming the league ID is passed as a URL parameter
+    let league = await League.findById(req.params.id);
+    let teams = league["Teams"];
+    let teamNames = []
+
+    for (let i = 0; i < teams.length; i++) {
+      teamNames.push(teams[i]["TeamName"])
+    }
+    // Send the team names as a response
+    res.status(200).json(teamNames);
+  } catch (error) {
+    // Handle any errors that occur during the database query
+    res.status(500).json({ error: error.message });
+  }
+};
+
 /*
 Sends a request to the captain of the team
 Captain of the team should be in req.params

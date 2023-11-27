@@ -112,7 +112,7 @@ export const Leaderboard = () => {
     >
       <Box
           >
-            <LeaderboardTable />
+            <LeaderboardTable selectedLeague={selectedLeague} />
       </Box>
     </Box>
   </Box>

@@ -15,7 +15,7 @@ const LeaderboardTable = ({ selectedLeague }) => {
     // Fetch table data based on the selected league
     const fetchTableData = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/leagues/${selectedLeague}/table`);
+        const response = await fetch(`http://localhost:8000/leagues/${selectedLeague}/teams`);
         const data = await response.json();
         setTableData(data);
       } catch (error) {
@@ -41,13 +41,13 @@ const LeaderboardTable = ({ selectedLeague }) => {
         </TableHead>
         <TableBody>
           {tableData.map((row) => (
-            <TableRow key={row.TeamID}>
-              <TableCell>{row.TeamName}</TableCell>
-              <TableCell>{row.NumWins + row.NumLosses}</TableCell>
-              <TableCell>{row.NumWins}</TableCell>
-              <TableCell>{row.NumLosses}</TableCell>
-            </TableRow>
-          ))}
+              <TableRow key={row.TeamID}>
+                <TableCell>{row}</TableCell>
+                <TableCell>{'5'}</TableCell>
+                <TableCell>{'6'}</TableCell>
+                <TableCell>{'7'}</TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </TableContainer>
