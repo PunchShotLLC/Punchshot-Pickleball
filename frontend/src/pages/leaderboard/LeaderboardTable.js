@@ -1,4 +1,3 @@
-// LeagueTable.js
 import React, { useState, useEffect } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -10,21 +9,25 @@ import Paper from "@mui/material/Paper";
 
 const LeaderboardTable = ({ selectedLeague }) => {
   const [tableData, setTableData] = useState([]);
-
+  
   useEffect(() => {
-    // Fetch table data based on the selected league
-    const fetchTableData = async () => {
+    // Fetch standings data based on the selected league
+    const fetchStandingsData = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/leagues/${selectedLeague}/teams`);
-        const data = await response.json();
-        setTableData(data);
+        const response = await fetch(`http://localhost:8000/leagues/${selectedLeague}/standings`);
+        const teamsData = await response.json();
+        const teamsArray = Object.entries(teamsData).map(([teamName, stats]) => ({
+          teamName,
+          ...stats
+        }));
+        setTableData(teamsArray);
       } catch (error) {
-        console.error("Error fetching table data:", error);
+        console.error("Error fetching standings data:", error);
       }
     };
-
+  
     if (selectedLeague) {
-      fetchTableData();
+      fetchStandingsData();
     }
   }, [selectedLeague]);
 
@@ -40,14 +43,14 @@ const LeaderboardTable = ({ selectedLeague }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {tableData.map((row) => (
-              <TableRow key={row.TeamID}>
-                <TableCell>{row}</TableCell>
-                <TableCell>{'5'}</TableCell>
-                <TableCell>{'6'}</TableCell>
-                <TableCell>{'7'}</TableCell>
-              </TableRow>
-            ))}
+          {tableData.map((team) => (
+            <TableRow key={team.teamName}>
+              <TableCell>{team.teamName}</TableCell>
+              <TableCell>{team.losses + team.wins}</TableCell>
+              <TableCell>{team.wins}</TableCell>
+              <TableCell>{team.losses}</TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </TableContainer>
