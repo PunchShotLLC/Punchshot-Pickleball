@@ -131,6 +131,7 @@ export const LeagueComp = (props) => {
           </>
         ) : null}
       </Box>
+      </Box>
     );
   } else {
     return null;
