@@ -36,25 +36,37 @@ export const LeagueComp = (props) => {
     ).catch((err) => console.log(err));
   };
 
+//   const StyledTitle = styled("header")({
+//     display: "flex",
+//     alignItems: "center",
+//     textAlign: "center",
+//     alignSelf: "center",
+  
+//     fontWeight: "700",
+//     fontSize: "calc(2em + 1vw)",
+//     lineHeigth: "4.8125em",
+// })
+
   return (
     <Box sx={styles.main}>
       <img
         alt="logo"
         src={props.logo}
-        width={"120vh"}
-        height={"120vh"}
+        width={"80%"}
+        height={"80%"}
         style={{ borderRadius: "20%", marginLeft: "2%" }}
       />
 
       <Box onClick={props.onClick} sx={styles.side}>
         <Typography sx={styles.name}>{props.name}</Typography>
+        {/* <StyledTitle> {props.name} </StyledTitle> */}
         <Box sx={styles.row}>
           <Box sx={styles.data}>
             <img
               src={require("../../assets/images/Team.png")}
               alt="team"
-              height={"30vh"}
-              width={"33vh"}
+              height={"80%"}
+              width={"10%"}
               style={{ border: "2px solid black", borderRadius: "50%" }}
             />
             <Typography sx={styles.info}>
@@ -65,8 +77,8 @@ export const LeagueComp = (props) => {
             <img
               alt="clock"
               src={require("../../assets/images/Clock.png")}
-              height={"30vh"}
-              width={"33vh"}
+              height={"80%"}
+              width={"10%"}
               style={{ borderRadius: "50%" }}
             />
             <Typography sx={styles.info}>
@@ -77,8 +89,8 @@ export const LeagueComp = (props) => {
             <img
               alt="location"
               src={require("../../assets/images/location.png")}
-              height={"30vh"}
-              width={"33vh"}
+              height={"80%"}
+              width={"10%"}
               style={{ borderRadius: "50%" }}
             />
             <Typography sx={styles.info}>{props.city}</Typography>
@@ -111,7 +123,7 @@ export const LeagueComp = (props) => {
 
 const styles = {
   name: {
-    fontSize: "3em",
+    fontSize: "calc(1.5em + 1vw)",
   },
   side: {
     display: "flex",

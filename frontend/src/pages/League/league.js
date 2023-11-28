@@ -173,12 +173,14 @@ export const League = () => {
 
   console.log(leagues);
 
+
+
   // If the team selection state is true, render the team create/join component
   if (teamSelection) {
     return <TeamSelect league={leagues[teamSelectLeagueIndex]} />;
   } else {
     return (
-      <Box sx={{ width: "100vw", height: "77.69vh", display: "flex" }}>
+      <Box sx={{ width: "70vw", height: "77.69vh", display: "flex" }}>
         <CreateLeague show={renderCreateLeauge} onClose={closeModal}></CreateLeague>
         <Box
           sx={{
@@ -288,7 +290,7 @@ export const League = () => {
                   Create a league: 
                 </StyledLabel>
                 <Button
-                  onClick={openModal} // we want this button to open a modal 
+                  onClick={openModal} 
                   variant="contained"
                   color="primary"
                   sx={{

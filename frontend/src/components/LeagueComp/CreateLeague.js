@@ -62,7 +62,20 @@ export const CreateLeague = ({show, onClose}) => {
     const [leagues, setLeagues] = useState(null);
 
     const createLeague = async () => {
+
+        if (
+            leagueName === null ||
+            numTeams === null ||
+            city === null ||
+            zipCode === null ||
+            startDate === null
+          ) {
+            alert("All fields are required!");
+            return;
+          }
+         
         // Put the parameters in the request body
+        console.log(zipCode); 
         const body = {
           LeagueName: leagueName,
           NumTeams: numTeams,
@@ -78,33 +91,19 @@ export const CreateLeague = ({show, onClose}) => {
         };
     
         console.log(body);
+
+        const resp = await axios.post(
+          "http://localhost:8000/leagues/createLeague", 
+          body
+        ); 
     
-        // Create POST request
-        // Catch error if exists
-        const rawResponse = await fetch(
-          "http://localhost:8000/leagues/createLeague",
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(body),
-          }
-        ).catch((err) => alert(err));
-    
-        const content = await rawResponse.json();
-    
-        console.log(content);
-        if (!content.error) {
-          alert(content.message);
+        if (resp.data.error) {
+          alert(resp.data.error);
         } else {
-          alert(content.error);
+          // alert(content.error);
         }
       };
     
-
-
   if(!show){
     return null; 
   }
@@ -184,12 +183,12 @@ export const CreateLeague = ({show, onClose}) => {
         >
           <FormControl sx={{ width: "30vw" }}>
                 <StyledLabel htmlFor="zipCode">
-                  Zip Code <span style={{ color: "red" }}>*</span>
+                  Zip Codes (Enter zipcodes seperated by a comma)<span style={{ color: "red" }}>*</span>
                 </StyledLabel>
                 <StyledInput
                   onChange={(event) => setZipCode(event.target.value)}
                   id="zipCode"
-                  placeholder="30332"
+                  placeholder="30332, 02038"
                   required
                 />
               </FormControl>
