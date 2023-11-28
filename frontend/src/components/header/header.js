@@ -51,6 +51,7 @@ export const Header = (props) => {
     if (user) {
       window.location.href = "/account";
     } else {
+      console.log(props); 
       props.setRender((oldRender) => !oldRender);
     }
   };

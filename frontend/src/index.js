@@ -15,6 +15,7 @@ import { SignUp } from "./components/SignUp/signup";
 import { League } from "./pages/League/league";
 import { TeamSelect } from "./pages/Team/team";
 import { Matches } from "./pages/Matches/Matches";
+import { CreateLeague } from "./components/LeagueComp/CreateLeague";
 
 const router = createBrowserRouter([
   {
@@ -68,6 +69,14 @@ const router = createBrowserRouter([
     path: "signup",
     element: <SignUp render={true} />,
   },
+  {
+    path: "createLeague", 
+    element: <CreateLeague render={true} />
+  }, 
+  {
+    path: "*",
+    element: <h1>Page not found</h1>
+  }
 ]);
 
 createRoot(document.getElementById("root")).render(

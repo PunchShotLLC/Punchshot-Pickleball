@@ -26,6 +26,7 @@ export const AccountLeague = () => {
   }, [user, loading]);
 
   const setDBLeagues = async () => {
+    console.log("In this!");
     const rawResponse = await fetch(
       `http://localhost:8000/leagues/${user.ZipCode}`
     ).catch((err) => console.log(err));
