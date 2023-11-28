@@ -21,7 +21,7 @@ const LeaderboardTable = ({ selectedLeague }) => {
           teamName,
           ...stats
         }));
-        teamsArray.sort((a, b) => b.wins - a.wins);
+        teamsArray.sort((a, b) => b.points - a.points);
         setTableData(teamsArray);
       } catch (error) {
         console.error("Error fetching standings data:", error);
@@ -50,16 +50,20 @@ const LeaderboardTable = ({ selectedLeague }) => {
             <TableCell style={cellStyle}>Team </TableCell>
             <TableCell style={cellStyle}>Matches</TableCell>
             <TableCell style={cellStyle}>Wins</TableCell>
+            <TableCell style={cellStyle}>Draws</TableCell>
             <TableCell style={cellStyle}>Losses</TableCell>
+            <TableCell style={cellStyle}>Points</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {tableData.map((team) => (
             <TableRow key={team.teamName}>
               <TableCell style={cellStyle}>{team.teamName}</TableCell>
-              <TableCell style={cellStyle}>{team.losses + team.wins}</TableCell>
+              <TableCell style={cellStyle}>{team.losses + team.wins + team.draws}</TableCell>
               <TableCell style={cellStyle}>{team.wins}</TableCell>
+              <TableCell style={cellStyle}>{team.draws}</TableCell>
               <TableCell style={cellStyle}>{team.losses}</TableCell>
+              <TableCell style={cellStyle}>{team.points}</TableCell>
             </TableRow>
           ))}
         </TableBody>
