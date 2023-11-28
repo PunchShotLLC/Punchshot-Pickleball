@@ -14,6 +14,7 @@ import { Login } from "./components/login/login";
 import { SignUp } from "./components/SignUp/signup";
 import { League } from "./pages/League/league";
 import { TeamSelect } from "./pages/Team/team";
+import { Matches } from "./pages/Matches/Matches";
 import { CreateLeague } from "./components/LeagueComp/CreateLeague";
 
 const router = createBrowserRouter([
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
       {
         path: "account",
         element: <Account />,
+      }, 
+      {
+        path: "matches",
+        element: <Matches />,
       }, 
     ]
   },
