@@ -119,12 +119,11 @@ export const League = () => {
         .filter((e) => e),
       City: city,
       LeagueOwner: "tempOwner",
-      LeagueOwnerEmail: "tiberius.colina@gmail.com", // change in production,
+      LeagueOwnerEmail: user?.Email, // change in production,
       StartDate: startDate,
       Status: "PENDING",
+      Matches: [],
     };
-
-    console.log(body);
 
     // Create POST request
     // Catch error if exists
@@ -142,7 +141,6 @@ export const League = () => {
 
     const content = await rawResponse.json();
 
-    console.log(content);
     if (!content.error) {
       alert(content.message);
     } else {
@@ -156,13 +154,11 @@ export const League = () => {
     if (!zip) {
       zip = user?.ZipCode;
     }
-    console.log(zip);
     const rawResponse = await fetch(
       `http://localhost:8000/leagues/${zip}`
     ).catch((err) => console.log(err));
     const content = await rawResponse.json();
 
-    console.log(content);
     setLeagues(content);
   };
 
@@ -170,10 +166,6 @@ export const League = () => {
   useEffect(() => {
     getLeagues(user?.ZipCode);
   }, [user?.ZipCode]);
-
-  console.log(leagues);
-
-
 
   // If the team selection state is true, render the team create/join component
   if (teamSelection) {
@@ -229,9 +221,11 @@ export const League = () => {
                     name={leagues[index]["LeagueName"]}
                     numberOfTeams={leagues[index]["NumTeams"]}
                     teamsSignedUp={leagues[index]["Teams"].length}
+                    teams={leagues[index]["Teams"]}
                     startDate={leagues[index]["StartDate"]}
                     city={leagues[index]["City"]}
                     id={leagues[index]["_id"]}
+                    showLeague={leagues[index]["Status"] === "PENDING"}
                     allowStart={user?.Username === "test"}
                     onClick={() => {
                       navigateToLeagueInfo(index);

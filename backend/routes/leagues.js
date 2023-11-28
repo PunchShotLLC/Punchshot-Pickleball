@@ -4,10 +4,9 @@ const router = express.Router();
 
 import { createLeague, updateLeague, getLeagues, getLeague, deleteLeague, sendRequestEmail, getAddressInfo, startLeague } from "../controllers/leagueController.js";
 
-
-router.route("/").get(getLeagues);
 router.route("/address").get(getAddressInfo);
 router.route("/sendRequestEmail").get(sendRequestEmail);
+router.route("/").get(getLeagues);
 router.post("/createLeague", createLeague);
 router.route("/:zip").get(getLeague)
 router.route("/updateLeague/:id").patch(updateLeague)

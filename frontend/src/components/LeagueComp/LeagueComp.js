@@ -11,8 +11,6 @@ export const LeagueComp = (props) => {
 
     // Get today's date
     const today = new Date();
-    console.log(givenDate);
-    console.log(today);
     // Set hours, minutes, seconds, and milliseconds to 0 for accurate comparison
     today.setHours(0, 0, 0, 0);
 
@@ -21,8 +19,23 @@ export const LeagueComp = (props) => {
   }
 
   const startLeague = async () => {
-    console.log("Starting league");
+    console.log("Attempting to start league");
 
+    // League must have at least three teams each with at least six players
+    if (props.teams.length < 3) {
+      console.log("There are less than three teams");
+      return
+    }
+    
+    // Each team must have at least 6 players
+    for (let i = 0; i < props.teams.length; i++) {
+      if (props.teams[i]["TeamMembers"].length < 6) {
+        console.log("One team has less than 6 players");
+        return
+      }
+    }
+
+    // Both conditions are met, so start the league
     const rawResponse = await fetch(
       `http://localhost:8000/leagues/startLeague/${props.id}`,
       {
@@ -47,6 +60,7 @@ export const LeagueComp = (props) => {
 //     lineHeigth: "4.8125em",
 // })
 
+ if (props.showLeague) {
   return (
     <Box sx={styles.main}>
       <img
@@ -96,29 +110,33 @@ export const LeagueComp = (props) => {
             <Typography sx={styles.info}>{props.city}</Typography>
           </Box>
         </Box>
+  
+        {/* Render the starting stuff if the user is 'test'
+          Render the date warning message if the date is passed the starting date of the league */}
+        {props.allowStart ? (
+          <>
+            <Button sx={styles.button} onClick={startLeague}>
+              START
+            </Button>
+            {isBeforeToday(props.startDate) ? (
+              <div style={styles.warning1div}>
+                <p>Note: The start date of this league has passed.</p>
+              </div>
+            ) : null}
+            {props.teamsSignedUp < props.numberOfTeams ? (
+              <div style={styles.warning2div}>
+                <p>Note: League is not at capacity</p>
+              </div>
+            ) : null}
+          </>
+        ) : null}
       </Box>
+    );
+  } else {
+    return null;
+  }
 
-      {/* Render the starting stuff if the user is 'test'
-        Render the date warning message if the date is passed the starting date of the league */}
-      {props.allowStart ? (
-        <>
-          <Button sx={styles.button} onClick={startLeague}>
-            START
-          </Button>
-          {isBeforeToday(props.startDate) ? (
-            <div style={styles.warning1div}>
-              <p>Note: The start date of this league has passed.</p>
-            </div>
-          ) : null}
-          {props.teamsSignedUp < props.numberOfTeams ? (
-            <div style={styles.warning2div}>
-              <p>Note: League is not at capacity</p>
-            </div>
-          ) : null}
-        </>
-      ) : null}
-    </Box>
-  );
+  
 };
 
 const styles = {
