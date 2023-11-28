@@ -7,7 +7,7 @@ import { Root } from "./pages/root/root";
 import { About } from "./pages/about/about";
 import { Home } from "./pages/home/home";
 import { Play } from "./pages/play/play";
-import { Tournaments } from "./pages/tournaments/tournaments";
+import { Leaderboard } from "./pages/leaderboard/leaderboard";
 import { Account } from "./pages/Account/account";
 import { What } from "./pages/what/what";
 import { Login } from "./components/login/login";
@@ -39,8 +39,8 @@ const router = createBrowserRouter([
         element: <Play />,
       },
       {
-        path: "tournaments",
-        element: <Tournaments />,
+        path: "leaderboard",
+        element: <Leaderboard />,
       },
       {
         path: "leagues",

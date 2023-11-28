@@ -248,6 +248,44 @@ export const startLeague = async (req, res) => {
   }
 };
 
+// Gets the name, wins, and losses of the league
+export const getStandings = async (req, res) => {
+  try {
+    let league = await League.findById(req.params.id);
+    let teams = league["Teams"]
+    let matches = league["Matches"];
+    let standings = {};
+
+    // get team names from team objects list
+    for (let i = 0; i < teams.length; i++) {
+      standings[teams[i]["TeamName"]] = { teamWins: 0, teamLosses: 0, matchWins: 0, matchLosses: 0};
+    }
+
+    for (let i = 0; i < matches.length; i++) {
+      let Team1 = matches[i]["Team1"];
+      let Team2 = matches[i]["Team2"];
+      let WinnerTeam = matches[i]["WinnerTeam"]
+
+      // tally wins and losses
+      if (WinnerTeam) {
+        let matchWins = parseInt(matches[i]["Score"][0]);
+        let matchLosses = parseInt(matches[i]["Score"][2]);
+        standings[WinnerTeam].teamWins += 1;
+        standings[WinnerTeam].matchWins += matchWins;
+        standings[WinnerTeam].matchLosses += matchLosses;
+        standings[WinnerTeam === Team1 ? Team2 : Team1].teamLosses += 1;
+        standings[WinnerTeam === Team1 ? Team2 : Team1].matchLosses += matchWins;
+        standings[WinnerTeam === Team1 ? Team2 : Team1].matchWins += matchLosses;
+      }
+    }
+
+    res.status(200).json(standings);
+  } catch (error) {
+    console.error("Error fetching team standings:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
 /*
 Sends a request to the captain of the team
 Captain of the team should be in req.params

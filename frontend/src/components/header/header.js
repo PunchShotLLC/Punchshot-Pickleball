@@ -154,7 +154,7 @@ export const Header = (props) => {
             MATCHES
           </Button>
           <Button
-            href="/tournaments"
+            href="/leaderboard"
             sx={{
               color: "black",
               fontSize: "calc(0.1em + 1vw)",
@@ -167,7 +167,7 @@ export const Header = (props) => {
               },
             }}
           >
-            TOURNAMENTS
+            LEADERBOARD
           </Button>
           <Button
             href="/leagues"
