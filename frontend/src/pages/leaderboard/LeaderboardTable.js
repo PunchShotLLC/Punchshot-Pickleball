@@ -21,7 +21,19 @@ const LeaderboardTable = ({ selectedLeague }) => {
           teamName,
           ...stats
         }));
-        teamsArray.sort((a, b) => b.points - a.points);
+        // sort the array based on teamWins with tiebreakers being matchWins then teamLosses then matchLosses
+        teamsArray.sort((a, b) => {
+          if (a.teamWins === b.teamWins) {
+              if (b.matchWins === a.matchWins) {
+                if (b.teamLosses === a.teamLosses) {
+                  return a.matchLosses - b.matchLosses;
+                }
+                return a.teamLosses - b.teamLosses;
+              }
+              return b.matchWins - a.matchWins;
+          }
+          return b.teamWins - a.teamWins;
+        });
         setTableData(teamsArray);
       } catch (error) {
         console.error("Error fetching standings data:", error);
@@ -48,22 +60,20 @@ const LeaderboardTable = ({ selectedLeague }) => {
         <TableHead>
           <TableRow>
             <TableCell style={cellStyle}>Team </TableCell>
-            <TableCell style={cellStyle}>Matches</TableCell>
-            <TableCell style={cellStyle}>Wins</TableCell>
-            <TableCell style={cellStyle}>Draws</TableCell>
-            <TableCell style={cellStyle}>Losses</TableCell>
-            <TableCell style={cellStyle}>Points</TableCell>
+            <TableCell style={cellStyle}>Team Wins</TableCell>
+            <TableCell style={cellStyle}>Team Losses</TableCell>
+            <TableCell style={cellStyle}>Matches Won</TableCell>
+            <TableCell style={cellStyle}>Matches Lost</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {tableData.map((team) => (
             <TableRow key={team.teamName}>
               <TableCell style={cellStyle}>{team.teamName}</TableCell>
-              <TableCell style={cellStyle}>{team.losses + team.wins + team.draws}</TableCell>
-              <TableCell style={cellStyle}>{team.wins}</TableCell>
-              <TableCell style={cellStyle}>{team.draws}</TableCell>
-              <TableCell style={cellStyle}>{team.losses}</TableCell>
-              <TableCell style={cellStyle}>{team.points}</TableCell>
+              <TableCell style={cellStyle}>{team.teamWins}</TableCell>
+              <TableCell style={cellStyle}>{team.teamLosses}</TableCell>
+              <TableCell style={cellStyle}>{team.matchWins}</TableCell>
+              <TableCell style={cellStyle}>{team.matchLosses}</TableCell>
             </TableRow>
           ))}
         </TableBody>

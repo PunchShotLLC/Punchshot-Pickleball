@@ -258,7 +258,7 @@ export const getStandings = async (req, res) => {
 
     // get team names from team objects list
     for (let i = 0; i < teams.length; i++) {
-      standings[teams[i]["TeamName"]] = { wins: 0, losses: 0, draws: 0, points: 0};
+      standings[teams[i]["TeamName"]] = { teamWins: 0, teamLosses: 0, matchWins: 0, matchLosses: 0};
     }
 
     for (let i = 0; i < matches.length; i++) {
@@ -267,15 +267,15 @@ export const getStandings = async (req, res) => {
       let WinnerTeam = matches[i]["WinnerTeam"]
 
       // tally wins and losses
-      if (WinnerTeam != null && WinnerTeam === "Tie") {
-        standings[Team1].draws += 1;
-        standings[Team1].points += 1;
-        standings[Team2].draws += 1;
-        standings[Team2].points += 1;
-      } else if (WinnerTeam) {
-        standings[WinnerTeam].wins += 1;
-        standings[Team1].points += 2;
-        standings[WinnerTeam === Team1 ? Team2 : Team1].losses += 1;
+      if (WinnerTeam) {
+        let matchWins = parseInt(matches[i]["Score"][0]);
+        let matchLosses = parseInt(matches[i]["Score"][2]);
+        standings[WinnerTeam].teamWins += 1;
+        standings[WinnerTeam].matchWins += matchWins;
+        standings[WinnerTeam].matchLosses += matchLosses;
+        standings[WinnerTeam === Team1 ? Team2 : Team1].teamLosses += 1;
+        standings[WinnerTeam === Team1 ? Team2 : Team1].matchLosses += matchWins;
+        standings[WinnerTeam === Team1 ? Team2 : Team1].matchWins += matchLosses;
       }
     }
 
