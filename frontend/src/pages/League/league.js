@@ -172,13 +172,22 @@ export const League = () => {
     return <TeamSelect league={leagues[teamSelectLeagueIndex]} />;
   } else {
     return (
-      <Box sx={{ width: "70vw", height: "77.69vh", display: "flex" }}>
-        <CreateLeague show={renderCreateLeauge} onClose={closeModal}></CreateLeague>
+      <Box
+        sx={{
+          height: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          padding: "2em",
+          overflowY: "auto",
+        }}
+      >
+        <CreateLeague
+          show={renderCreateLeauge}
+          onClose={closeModal}
+        ></CreateLeague>
         <Box
           sx={{
-            position: "relative",
             width: "100%",
-            height: "100%",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -187,32 +196,44 @@ export const League = () => {
           <Typography
             className="titleText"
             sx={{
-              display: "flex",
-              fontSize: "calc(0.7em + 1vw)",
+              fontSize: "calc(1em + 1.5vw)",
               fontWeight: "bold",
-              pt: "1%",
-              marginBottom: "2%",
+              marginBottom: "1em",
             }}
           >
             LEAGUES
           </Typography>
-          <Typography
-            className="bodyText"
-            sx={{
-              display: "absolute",
-              fontSize: "calc(0.5em + 1vw)",
-              fontWeight: "bold",
-            }}
-          ></Typography>
-          <Box sx={{ position: "relative", height: "100%", width: "90%" }}>
-            {/* <LeagueGrid/> */}
+
+          <Box sx={{ width: "70%", marginBottom: "2em", alignItems: "center" }}>
             <StyledInput
               onChange={(event) => getLeagues(event.target.value)}
               id="zipcode"
               placeholder="Search zipcodes"
+              sx={{
+                marginBottom: "1em",
+                width: "100%",
+                paddingLeft: "1em",
+                paddingRight: "1em",
+              }}
             />
 
-           
+            {user?.Username === "test" && (
+              <ThemeProvider theme={buttonTheme}>
+                <Button
+                  onClick={openModal}
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    borderRadius: "calc(1.5em + 1vw)",
+                    marginTop: "1em",
+                    marginBottom: "3em",
+                    width: "100%",
+                  }}
+                >
+                  Create League
+                </Button>
+              </ThemeProvider>
+            )}
 
             {leagues !== null
               ? leagues.map((item, index) => (
@@ -246,60 +267,6 @@ export const League = () => {
             ></Box>
           </Box>
         </Box>
-        {/* <!-- if the user is test, allow them to view a button that opens a model
-        to create a league --> */}
-        
-        {user?.Username === "test" ? (
-          <Box
-            sx={{
-              width: "45vw",
-              height: "77.69vh",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-start",
-              flexDirection: "column",
-            }}
-          >
-            <Typography
-              className="titleText"
-              sx={{
-                display: "flex",
-                fontSize: "calc(0.7em + 1vw)",
-                fontWeight: "bold",
-                pt: "1%",
-              }}
-            >
-              ADMIN COMMANDS
-            </Typography>
-            <Box
-              sx={{
-                height: "70vh",
-                width: "35vw",
-                borderLeft: "2px solid rgba(145, 70, 216, 1)",
-              }}
-            >
-              <ThemeProvider theme={buttonTheme}>
-
-                <StyledLabel htmlFor="leagueName">
-                  Create a league: 
-                </StyledLabel>
-                <Button
-                  onClick={openModal} 
-                  variant="contained"
-                  color="primary"
-                  sx={{
-                    position: "relative",
-                    borderRadius: "calc(0.1em + 1vw)",
-                    pl: "calc(1.5vw)",
-                    pr: "calc(1.8vw)",
-                  }}
-                >
-                  Create League
-                </Button>
-              </ThemeProvider>
-            </Box>
-          </Box>
-        ) : null}
       </Box>
     );
   }

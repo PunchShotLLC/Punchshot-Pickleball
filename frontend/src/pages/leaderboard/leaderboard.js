@@ -11,7 +11,7 @@ export const Leaderboard = () => {
   useEffect(() => {
     // Fetch ongoing leagues from the backend
     const fetchLeagues = async () => {
-      const response = await fetch('http://localhost:8000/leagues/');
+      const response = await fetch("http://localhost:8000/leagues/");
       const data = await response.json();
       setLeagues(data);
     };
@@ -38,7 +38,7 @@ export const Leaderboard = () => {
           sx={{
             color: "white",
             fontFamily: "Inter",
-            fontSize: "calc(1.7em + 2vw)",
+            fontSize: "calc(1.7em + 1vw)",
             fontWeight: "700",
             textAlign: "center",
             paddingTop: "1vw",
@@ -46,54 +46,29 @@ export const Leaderboard = () => {
         >
           LEAGUE LEADERBOARD
         </Typography>
-        <Typography
-          sx={{
-            color: "white",
-            fontFamily: "Inter",
-            fontSize: "2rem",
-            fontWeight: "700",
-            textAlign: "center",
-            paddingTop: "1.7em",
-            paddingBottom: "0.5em"
-          }}
-        >
-          Choose your league!
-        </Typography>
-        <FormControl
-          sx={{
-            marginLeft: "37vw",
-            height: "5vw",
-            width: "25vw",
-            position: "relative",
-            align: "center",
-            '& .MuiInputLabel-root': {
-              color: 'white', 
-              fontWeight: 'bold'
-            },
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': {
-                border: '2px solid #D5FD51',
-                borderRadius: '20px',
-              },
-              '&:hover fieldset': {
-                borderColor: '#D5FD51', 
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: '#D5FD51', 
-              },
-            },
-          }}
-        >
-          <InputLabel 
-            id="league-select-label"
+        <Box display="flex" justifyContent="center" alignItems="center">
+          <Typography
             sx={{
-              color: 'white', 
-              fontWeight: 'bold',
-              fontSize: '1rem'
+              width: "44%",
+              color: "white",
+              fontFamily: "Inter",
+              fontSize: "1rem",
+              fontWeight: "400",
+              textAlign: "center",
+              paddingTop: ".5vw",
             }}
-            >
-              Select League
-            </InputLabel>
+          >
+            Select a league to see the league's leaderboards.
+          </Typography>
+        </Box>
+        <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          paddingTop="3em"
+          paddingBottom="3em"
+        >
           <Select
             labelId="league-select-label"
             id="league-select"
@@ -101,20 +76,11 @@ export const Leaderboard = () => {
             label="Select League"
             onChange={handleLeagueChange}
             sx={{
-              '.MuiSelect-select': {
-                fontSize: '2rem', 
-                fontWeight: 'bold', 
-                color: 'white', 
+              ".MuiSelect-select": {
+                fontSize: "1.25rem",
+                color: "white",
                 // textAlign: 'center'
-              }
-            }}
-            MenuProps={{
-              sx: {
-                '& .MuiMenuItem-root': {
-                  fontSize: '1.5rem',
-                  padding: '10px 20px', 
-                }
-              }
+              },
             }}
           >
             {leagues.map((league) => (
@@ -123,26 +89,22 @@ export const Leaderboard = () => {
               </MenuItem>
             ))}
           </Select>
-        </FormControl>
-    <Box
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-      alignItems="center"
-    >
-      <Box
+        </Box>
+        <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
         >
-          {selectedLeague && (
           <Box>
-            <LeaderboardTable selectedLeague={selectedLeague} />
+            {selectedLeague && (
+              <Box>
+                <LeaderboardTable selectedLeague={selectedLeague} />
+              </Box>
+            )}
           </Box>
-        )}
+        </Box>
       </Box>
     </Box>
-  </Box>
-</Box>
   );
 };
-
-
-

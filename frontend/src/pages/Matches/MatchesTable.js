@@ -1,23 +1,22 @@
-import * as React from 'react';
-import { useEffect, useContext } from 'react';
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
-import ScoreEnterBox from './ScoreEnterBox';
+import * as React from "react";
+import { useEffect, useContext } from "react";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TablePagination from "@mui/material/TablePagination";
+import TableRow from "@mui/material/TableRow";
+import ScoreEnterBox from "./ScoreEnterBox";
 import { UserContext } from "../../components/UserContext/usercontext";
 
-
 const columns = [
-  { id: 'league', label: 'League', minWidth: 150 },
-  { id: 'team1', label: 'Team 1', minWidth: 120 },
-  { id: 'team2', label: 'Team 2', minWidth: 120 },
-  { id: 'winner', label: 'Winner', minWidth: 120 },
-  { id: 'score', label: 'Score', minWidth: 120 },
+  { id: "league", label: "League", minWidth: 150 },
+  { id: "team1", label: "Team 1", minWidth: 120 },
+  { id: "team2", label: "Team 2", minWidth: 120 },
+  { id: "winner", label: "Winner", minWidth: 120 },
+  { id: "score", label: "Score", minWidth: 120 },
 ];
 
 export default function MatchesTable(props) {
@@ -25,8 +24,8 @@ export default function MatchesTable(props) {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [matches, setMatches] = React.useState([]);
   const [enterScoreActive, setEnterScoreActive] = React.useState(false);
-  const [selectedMatch, setSelectedMatch] = React.useState(null)
-  const [selectedMatchIndex, setSelectedMatchIndex] = React.useState(null)
+  const [selectedMatch, setSelectedMatch] = React.useState(null);
+  const [selectedMatchIndex, setSelectedMatchIndex] = React.useState(null);
 
   // Load in the user context
   const { loading, user } = useContext(UserContext);
@@ -41,18 +40,18 @@ export default function MatchesTable(props) {
   };
 
   const editScore = (index) => {
-    console.log("Check if the user is the captain of either team")
-    let match = props.matches[index]
+    console.log("Check if the user is the captain of either team");
+    let match = props.matches[index];
 
     // if (!(user['Username'] === match['team1captain'] || user['Username'] === match['team2captain'])) {
     //   alert("You must be a captain of one of these teams to edit the score")
     //   return;
     // }
 
-    setSelectedMatch(match)
-    setSelectedMatchIndex(index)
-    setEnterScoreActive(true)
-  }
+    setSelectedMatch(match);
+    setSelectedMatchIndex(index);
+    setEnterScoreActive(true);
+  };
 
   useEffect(() => {
     const isSignedIn = async () => {
@@ -66,10 +65,8 @@ export default function MatchesTable(props) {
 
   if (!enterScoreActive) {
     return (
-
-      <Paper elevation={0} sx={{ width: '100%', overflow: 'hidden' }}>
-  
-        <TableContainer sx={{ maxHeight: 300 }}>
+      <Paper elevation={0} sx={{ width: "100%", overflow: "hidden" }}>
+        <TableContainer sx={{ maxHeight: "40vh" }}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
@@ -77,11 +74,11 @@ export default function MatchesTable(props) {
                   <TableCell
                     key={column.id}
                     align={column.align}
-                    style={{ 
+                    style={{
                       minWidth: column.minWidth,
                       fontFamily: "Inter",
-                      fontWeight: 700
-                     }}
+                      fontWeight: 700,
+                    }}
                   >
                     {column.label}
                   </TableCell>
@@ -93,19 +90,25 @@ export default function MatchesTable(props) {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   return (
-                    <TableRow onClick={()=>editScore(index)} hover role="checkbox" tabIndex={-1} key={row.code} >
+                    <TableRow
+                      onClick={() => editScore(index)}
+                      hover
+                      role="checkbox"
+                      tabIndex={-1}
+                      key={row.code}
+                    >
                       {columns.map((column) => {
                         const value = row[column.id];
                         return (
-                          <TableCell 
-                            key={column.id} 
+                          <TableCell
+                            key={column.id}
                             align={column.align}
-                            style={{ 
+                            style={{
                               fontFamily: "Inter",
-                              fontWeight: 400
-                             }}
-                            >
-                            {column.format && typeof value === 'number'
+                              fontWeight: 400,
+                            }}
+                          >
+                            {column.format && typeof value === "number"
                               ? column.format(value)
                               : value}
                           </TableCell>
@@ -128,7 +131,12 @@ export default function MatchesTable(props) {
       </Paper>
     );
   } else {
-    return <ScoreEnterBox match={selectedMatch} matchIndex={selectedMatchIndex} league={props.league}/>
+    return (
+      <ScoreEnterBox
+        match={selectedMatch}
+        matchIndex={selectedMatchIndex}
+        league={props.league}
+      />
+    );
   }
-
 }
