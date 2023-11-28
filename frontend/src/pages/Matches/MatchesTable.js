@@ -44,10 +44,10 @@ export default function MatchesTable(props) {
     console.log("Check if the user is the captain of either team")
     let match = props.matches[index]
 
-    if (!(user['Username'] === match['team1captain'] || user['Username'] === match['team2captain'])) {
-      alert("You must be a captain of one of these teams to edit the score")
-      return;
-    }
+    // if (!(user['Username'] === match['team1captain'] || user['Username'] === match['team2captain'])) {
+    //   alert("You must be a captain of one of these teams to edit the score")
+    //   return;
+    // }
 
     setSelectedMatch(match)
     setSelectedMatchIndex(index)

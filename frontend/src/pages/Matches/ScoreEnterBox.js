@@ -9,10 +9,42 @@ export default function ScoreEnterBox(props) {
 
 
     const handleSubmit = (e) => {
+
+        let form = document.getElementById("score-edit-form")
+        var selectedOption = null;
+
+        // Loop through radio buttons to find the selected one
+        for (var i = 0; i < form.choice.length; i++) {
+            if (form.choice[i].checked) {
+                selectedOption = form.choice[i].value;
+                break;
+            }
+        }
+
+        // Make sure the user has selected an option
+        if (selectedOption === null) {
+            alert("Please select an option.");
+            return
+        }
+
+        console.log("Selected option")
+        console.log(selectedOption)
+
+        // Set the appropriate values in the league object based on selected option
+        if (selectedOption === "team1wins20") {
+            props.league['Matches'][props.matchIndex]['WinnerTeam'] = props.match['team1']
+            props.league['Matches'][props.matchIndex]['Score'] = "2-0"
+        } else if (selectedOption === "team2wins20") {
+            props.league['Matches'][props.matchIndex]['WinnerTeam'] = props.match['team2']
+            props.league['Matches'][props.matchIndex]['Score'] = "2-0"
+        } else if (selectedOption === "team1wins21") {
+            props.league['Matches'][props.matchIndex]['WinnerTeam'] = props.match['team1']
+            props.league['Matches'][props.matchIndex]['Score'] = "2-1"
+        } else if (selectedOption === "team2wins21"){
+            props.league['Matches'][props.matchIndex]['WinnerTeam'] = props.match['team2']
+            props.league['Matches'][props.matchIndex]['Score'] = "2-1"
+        }
     
-        // Update the winner team and score fields in the league object
-        props.league['Matches'][props.matchIndex]['WinnerTeam'] = teamWinner
-        props.league['Matches'][props.matchIndex]['Score'] = scoreInput
 
         // Make the patch request to update the leagues
         const requestOptions = {
@@ -42,42 +74,32 @@ export default function ScoreEnterBox(props) {
 
     return (
         <div id="score-enter-box">
-            <form onSubmit={handleSubmit}>
-                <br/>
-                {/* Question 1: Multiple Choice */}
-                <label htmlFor="teamWinner">Which team won?</label>
-                <br/>
-                <select
-                id="teamWinner"
-                name="teamWinner"
-                value={teamWinner}
-                onChange={(e) => setTeamWinner(e.target.value)}
-                required
-                >
-                <option value="">Select a team</option>
-                <option value="Tie">Tie</option>
-                <option value={props.match['team1']}>{props.match['team1']}</option>
-                <option value={props.match['team2']}>{props.match['team2']}</option>
-                </select>
-                <br />
+            <form id="score-edit-form" onSubmit={handleSubmit}>
+                
+                <p>Select the outcome of the match:</p>
+                <label for="team1wins20">
+                    <input type="radio" id="team1wins20" name="choice" value="team1wins20"/>
+                    {props.match['team1']} won 2-0
+                </label><br/>
+                <label for="team1wins21">
+                    <input type="radio" id="team1wins21" name="choice" value="team1wins21"/>
+                    {props.match['team1']} won 2-1
+                </label><br/>
+                <label for="team2wins20">
+                    <input type="radio" id="team2wins20" name="choice" value="team2wins20"/>
+                    {props.match['team2']} won 2-0
+                </label><br/>
+                <label for="team1wins21">
+                    <input type="radio" id="team2wins21" name="choice" value="team2wins21"/>
+                    {props.match['team2']} won 2-1
+                </label><br/>
 
-                {/* Question 2: Number Input */}
-                <label htmlFor="scoreInput">Enter the score in the form #-#, where the first number is the winning team's # of wins</label>
-                <br></br>
-                <input
-                    type="text"
-                    id="scoreInput"
-                    name="scoreInput"
-                    value={scoreInput}
-                    onChange={(e) => setScoreInput(e.target.value)}
-                    required
-                />
-                <br />
-                <br />
-
-                {/* Submit Button */}
                 <button submit={handleSubmit}>Submit</button>
+                {/* <div onClick={handleSubmit}>submit</div> */}
+                <br/>
             </form>
+            <br/>
+    
         </div>
     )
 }
