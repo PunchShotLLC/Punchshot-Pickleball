@@ -7,13 +7,15 @@ import { Root } from "./pages/root/root";
 import { About } from "./pages/about/about";
 import { Home } from "./pages/home/home";
 import { Play } from "./pages/play/play";
-import { Tournaments } from "./pages/tournaments/tournaments";
+import { Leaderboard } from "./pages/leaderboard/leaderboard";
 import { Account } from "./pages/Account/account";
 import { What } from "./pages/what/what";
 import { Login } from "./components/login/login";
 import { SignUp } from "./components/SignUp/signup";
 import { League } from "./pages/League/league";
 import { TeamSelect } from "./pages/Team/team";
+import { Matches } from "./pages/Matches/Matches";
+import { CreateLeague } from "./components/LeagueComp/CreateLeague";
 
 const router = createBrowserRouter([
   {
@@ -37,8 +39,8 @@ const router = createBrowserRouter([
         element: <Play />,
       },
       {
-        path: "tournaments",
-        element: <Tournaments />,
+        path: "leaderboard",
+        element: <Leaderboard />,
       },
       {
         path: "leagues",
@@ -52,6 +54,10 @@ const router = createBrowserRouter([
         path: "account",
         element: <Account />,
       }, 
+      {
+        path: "matches",
+        element: <Matches />,
+      }, 
     ]
   },
 
@@ -63,6 +69,14 @@ const router = createBrowserRouter([
     path: "signup",
     element: <SignUp render={true} />,
   },
+  {
+    path: "createLeague", 
+    element: <CreateLeague render={true} />
+  }, 
+  {
+    path: "*",
+    element: <h1>Page not found</h1>
+  }
 ]);
 
 createRoot(document.getElementById("root")).render(

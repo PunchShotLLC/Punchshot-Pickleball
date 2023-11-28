@@ -51,6 +51,7 @@ export const Header = (props) => {
     if (user) {
       window.location.href = "/account";
     } else {
+      console.log(props); 
       props.setRender((oldRender) => !oldRender);
     }
   };
@@ -137,7 +138,7 @@ export const Header = (props) => {
             PICKLEBALL?
           </Button>
           <Button
-            href="/play"
+            href="/matches"
             sx={{
               color: "black",
               fontSize: "calc(0.1em + 1vw)",
@@ -150,10 +151,10 @@ export const Header = (props) => {
               },
             }}
           >
-            PLAY
+            MATCHES
           </Button>
           <Button
-            href="/tournaments"
+            href="/leaderboard"
             sx={{
               color: "black",
               fontSize: "calc(0.1em + 1vw)",
@@ -166,7 +167,7 @@ export const Header = (props) => {
               },
             }}
           >
-            TOURNAMENTS
+            LEADERBOARD
           </Button>
           <Button
             href="/leagues"

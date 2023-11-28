@@ -6,12 +6,6 @@ import { borderRadius } from "@mui/system";
 export const LeagueComp = (props) => {
   return (
     <Box sx={styles.main}>
-      <img
-        src={props.logo}
-        width={"120vh"}
-        height={"120vh"}
-        style={{ borderRadius: "20%", marginLeft: "2%" }}
-      />
       <Box onClick={props.onClick} sx={styles.side}>
         <Typography sx={styles.name}>{props.name}</Typography>
         <Box sx={styles.row}>

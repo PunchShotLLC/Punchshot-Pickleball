@@ -19,6 +19,7 @@ import { TeamSelect } from "../Team/team";
 import { LeagueComp } from "../../components/LeagueComp/LeagueComp.js";
 import { useContext } from "react";
 import { UserContext } from "../../components/UserContext/usercontext";
+import { CreateLeague } from "../../components/LeagueComp/CreateLeague.js";
 
 const StyledInput = styled(TextField)({
   borderRadius: "1em",
@@ -53,6 +54,9 @@ export const League = () => {
 
   const [leagues, setLeagues] = useState(null);
   const { loading, user } = useContext(UserContext);
+  const [renderCreateLeauge, setrenderCreateLeauge] = useState(false);
+  const openModal = () => setrenderCreateLeauge(true);
+  const closeModal = () => setrenderCreateLeauge(false);
   const navigate = useNavigate();
 
   // These two states activate when a user selects a league
@@ -168,12 +172,22 @@ export const League = () => {
     return <TeamSelect league={leagues[teamSelectLeagueIndex]} />;
   } else {
     return (
-      <Box sx={{ width: "100vw", height: "77.69vh", display: "flex" }}>
+      <Box
+        sx={{
+          height: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          padding: "2em",
+          overflowY: "auto",
+        }}
+      >
+        <CreateLeague
+          show={renderCreateLeauge}
+          onClose={closeModal}
+        ></CreateLeague>
         <Box
           sx={{
-            position: "relative",
             width: "100%",
-            height: "100%",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -182,30 +196,45 @@ export const League = () => {
           <Typography
             className="titleText"
             sx={{
-              display: "flex",
-              fontSize: "calc(0.7em + 1vw)",
+              fontSize: "calc(1em + 1.5vw)",
               fontWeight: "bold",
-              pt: "1%",
-              marginBottom: "2%",
+              marginBottom: "1em",
             }}
           >
             LEAGUES
           </Typography>
-          <Typography
-            className="bodyText"
-            sx={{
-              display: "absolute",
-              fontSize: "calc(0.5em + 1vw)",
-              fontWeight: "bold",
-            }}
-          ></Typography>
-          <Box sx={{ position: "relative", height: "100%", width: "90%" }}>
-            {/* <LeagueGrid/> */}
+
+          <Box sx={{ width: "70%", marginBottom: "2em", alignItems: "center" }}>
             <StyledInput
               onChange={(event) => getLeagues(event.target.value)}
               id="zipcode"
               placeholder="Search zipcodes"
+              sx={{
+                marginBottom: "1em",
+                width: "100%",
+                paddingLeft: "1em",
+                paddingRight: "1em",
+              }}
             />
+
+            {user?.Username === "test" && (
+              <ThemeProvider theme={buttonTheme}>
+                <Button
+                  onClick={openModal}
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    borderRadius: "calc(1.5em + 1vw)",
+                    marginTop: "1em",
+                    marginBottom: "3em",
+                    width: "100%",
+                  }}
+                >
+                  Create League
+                </Button>
+              </ThemeProvider>
+            )}
+
             {leagues !== null
               ? leagues.map((item, index) => (
                   <LeagueComp
@@ -238,128 +267,6 @@ export const League = () => {
             ></Box>
           </Box>
         </Box>
-
-        {user?.Username === "test" ? (
-          <Box
-            sx={{
-              width: "45vw",
-              height: "77.69vh",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-start",
-              flexDirection: "column",
-            }}
-          >
-            <Typography
-              className="titleText"
-              sx={{
-                display: "flex",
-                fontSize: "calc(0.7em + 1vw)",
-                fontWeight: "bold",
-                pt: "1%",
-              }}
-            >
-              CREATE LEAGUE
-            </Typography>
-            <Box
-              sx={{
-                height: "70vh",
-                width: "35vw",
-                borderLeft: "2px solid rgba(145, 70, 216, 1)",
-              }}
-            >
-              <FormControl sx={{ height: "5vw", marginLeft: "1.5vw" }}>
-                <StyledLabel htmlFor="leagueName">
-                  League Name <span style={{ color: "red" }}>*</span>
-                </StyledLabel>
-                <StyledInput
-                  onChange={(event) => setLeagueName(event.target.value)}
-                  id="leagueName"
-                  placeholder="Atlanta Classic League"
-                  required
-                />
-              </FormControl>
-              <FormControl sx={{ height: "5vw", marginLeft: "1.5vw" }}>
-                <StyledLabel htmlFor="nbCompetitors">
-                  Maximum Number of Teams{" "}
-                  <span style={{ color: "red" }}>*</span>
-                </StyledLabel>
-                <StyledInput
-                  onChange={(event) => setNumTeams(event.target.value)}
-                  id="nbCompetitors"
-                  placeholder="5"
-                  required
-                />
-              </FormControl>
-              {/* <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
-                          <StyledLabel htmlFor="skillLevel">Skill Level <span style={{color:"red"}}>*</span></StyledLabel>
-                          <StyledInput id="skillLevel" placeholder="Beginner" required />
-                      </FormControl> */}
-              <FormControl sx={{ height: "5vw", marginLeft: "1.5vw" }}>
-                <StyledLabel htmlFor="zipCode">
-                  Zip Code <span style={{ color: "red" }}>*</span>
-                </StyledLabel>
-                <StyledInput
-                  onChange={(event) => setZipCode(event.target.value)}
-                  id="zipCode"
-                  placeholder="30332"
-                  required
-                />
-              </FormControl>
-              <FormControl sx={{ height: "5vw", marginLeft: "1.5vw" }}>
-                <StyledLabel htmlFor="city">
-                  City <span style={{ color: "red" }}>*</span>
-                </StyledLabel>
-                <StyledInput
-                  onChange={(event) => setCity(event.target.value)}
-                  id="city"
-                  placeholder="Atlanta"
-                  required
-                />
-              </FormControl>
-              <FormControl sx={{ height: "5vw", marginLeft: "1.5vw" }}>
-                <StyledLabel htmlFor="date">
-                  Start Date <span style={{ color: "red" }}>*</span>
-                </StyledLabel>
-                <StyledInput
-                  type="date"
-                  onChange={(event) => {
-                    setStartDate(
-                      new Date(
-                        event.target.value.split("-")[0],
-                        event.target.value.split("-")[1] - 1,
-                        event.target.value.split("-")[2]
-                      )
-                    );
-                  }}
-                  id="date"
-                  required
-                />
-              </FormControl>
-              <FormControl sx={{ height: "10vw", marginLeft: "1.5vw" }}>
-                <ThemeProvider theme={buttonTheme}>
-                  <Button
-                    onClick={createLeague}
-                    variant="contained"
-                    color="primary"
-                    sx={{
-                      position: "relative",
-                      borderRadius: "calc(0.1em + 1vw)",
-                      pl: "calc(1.5vw)",
-                      pr: "calc(1.8vw)",
-                    }}
-                  >
-                    Create League
-                  </Button>
-                </ThemeProvider>
-              </FormControl>
-              {/* <FormControl sx={{height:"5vw", marginLeft:'1.5vw'}}>
-                          <StyledLabel htmlFor="email">Email <span style={{color:"red"}}>*</span></StyledLabel>
-                          <StyledInput id="email" placeholder="email@example.com" required />
-                      </FormControl> */}
-            </Box>
-          </Box>
-        ) : null}
       </Box>
     );
   }
