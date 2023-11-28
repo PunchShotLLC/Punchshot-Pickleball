@@ -160,6 +160,30 @@ export const getAddressInfo = async (req, res) => {
 };
 
 /**
+ * function used by createMatchups that randomizes the order of the matches
+ * @param {*} array 
+ * @returns shuffled array
+ */
+function shuffle(array) {
+  let currentIndex = array.length,  randomIndex;
+
+  // While there remain elements to shuffle.
+  while (currentIndex > 0) {
+
+    // Pick a remaining element.
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+
+  return array;
+}
+
+
+/**
  * function that takes a list of teams and creates matchups with dates
  * @param {list} teamList 
  * @returns matchup objects
@@ -180,7 +204,7 @@ const createMatchups = (teamList) => {
   // Find the next Saturday
   nextSaturday.setDate(today.getDate() + (6 - today.getDay()) + 1);
 
-  const matchups = [];
+  let matchups = [];
   
   combos.forEach((combo, index) => {
     const assignedDate = new Date(nextSaturday);
@@ -196,6 +220,7 @@ const createMatchups = (teamList) => {
     matchups.push(matchup)
 });
 
+  matchups = shuffle(matchups)
   return matchups
 }
 
