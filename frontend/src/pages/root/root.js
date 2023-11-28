@@ -15,7 +15,7 @@ export const Root = () => {
         {renderLoginPopup && <Login render={renderLoginPopup} setRender={setRenderLoginPopup} setRenderSignup={setRenderSignupPopup} />}
         {renderSignupPopup && <SignUp render={renderSignupPopup} setRender={setRenderSignupPopup} />}
         <Header setRender={setRenderLoginPopup} />
-        <Outlet />
+        <Outlet />x
       </Box>
     </UserProvider>
   );
