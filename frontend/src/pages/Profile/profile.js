@@ -138,7 +138,7 @@ export const Profile = () => {
             sx={{
               display: "flex",
               flexDirection: "column",
-              height: "13vw",
+              height: "25em",
               fontWeight: "bold",
               justifyContent: "space-between",
             }}
@@ -147,30 +147,39 @@ export const Profile = () => {
               sx={{
                 color: "rgba(145, 70, 216, 1)",
                 fontWeight: "bold",
-                fontSize: "calc(0.8em + 1vw)",
+                fontSize: "2em",
+                fontFamily: "inter"
               }}
             >
               {user?.Username}
             </Typography>
             <Box sx={{ display: "flex" }}>
-              <StyledLabel>Name: </StyledLabel>
-              <StyledText>{`${user?.FirstName} ${user?.LastName}`}</StyledText>
+              <StyledLabel style={{ fontFamily: "Inter", marginRight: "0.25em", fontSize: "1.75em" }}>
+                Name:</StyledLabel>
+              <StyledText sx={{ fontFamily: "Inter", marginRight: "0.25em", fontSize: "1.75em" }}>
+                {`${user?.FirstName} ${user?.LastName}`}</StyledText>
             </Box>
             <Box sx={{ display: "flex" }}>
-              <StyledLabel>ZipCode: </StyledLabel>
-              <StyledText>{user?.ZipCode}</StyledText>
+              <StyledLabel style={{ fontFamily: "Inter", marginRight: "0.25em", fontSize: "1.75em" }}>
+                ZipCode:</StyledLabel>
+              <StyledText sx = {{ fontFamily: "Inter", marginRight: "0.25em", fontSize: "1.75em" }}>
+                {user?.ZipCode}</StyledText>
             </Box>
-            <Box sx={{ display: "flex" }}>
-              <StyledLabel>Skill Level:</StyledLabel>
-              <StyledText>{user?.SkillLevel}</StyledText>
+            <Box sx={{ display: "flex", marginBottom: "1em"}}>
+              <StyledLabel style={{fontFamily: "Inter", marginRight: "0.25em", fontSize: "1.75em"}}>
+                Skill Level:</StyledLabel>
+              <StyledText sx = {{ fontFamily: "Inter", marginRight: "0.25em", fontSize: "1.75em" }}>
+                {user?.SkillLevel}</StyledText>
             </Box>
 
             <Box sx={{ display: "flex" }}>
-              <StyledLabel>Change Password:</StyledLabel>
+              <StyledLabel style={{ fontFamily: "Inter", fontSize: "2em", marginBottom: "0.25em" }}>Change Password:</StyledLabel>
             </Box>
             <Box sx={{ display: "flex" }}>
-              <FormControl sx={{ width: "30vw" }}>
-                <StyledLabel htmlFor="password">Old Password</StyledLabel>
+              <FormControl sx={{ width: "30vw", marginBottom: "0.5em" }}>
+                <StyledLabel style={{ fontFamily: "Inter", fontSize: "1.75em" }} htmlFor="password">
+                  Old Password <span style={{ color: "red" }}>*</span>
+                  </StyledLabel>
                 <StyledInput
                   id="password"
                   placeholder="********"
@@ -194,10 +203,10 @@ export const Profile = () => {
                 />
               </FormControl>
             </Box>
-            <Box sx={{ display: "flex" }}>
+            <Box sx={{ display: "flex", marginBottom: "1em" }}>
               <FormControl sx={{ width: "30vw" }}>
-                <StyledLabel htmlFor="confirmpassword">
-                  New Password
+                <StyledLabel style={{ fontFamily: "Inter", fontSize: "1.75em" }} htmlFor="confirmpassword">
+                  New Password <span style={{ color: "red" }}>*</span>
                 </StyledLabel>
                 <StyledInput
                   id="confirmpassword"
@@ -234,6 +243,7 @@ export const Profile = () => {
                   justifySelf: "center",
                   alignSelf: "flex-end",
                   borderRadius: "1em",
+                  fontWeight: "bold"
                 }}
                 color="secondary"
                 onClick={changePassword}
@@ -252,6 +262,7 @@ export const Profile = () => {
                   justifySelf: "center",
                   alignSelf: "flex-end",
                   borderRadius: "1em",
+                  fontWeight: "bold"
                 }}
                 color="secondary"
                 onClick={handleLogout}

@@ -9,7 +9,7 @@ import Paper from "@mui/material/Paper";
 
 const LeaderboardTable = ({ selectedLeague }) => {
   const [tableData, setTableData] = useState([]);
-  const cellStyle = { fontSize: "1.5rem" };
+  const cellStyle = { fontSize: "1em" };
 
   useEffect(() => {
     // Fetch standings data based on the selected league
@@ -50,30 +50,32 @@ const LeaderboardTable = ({ selectedLeague }) => {
   }, [selectedLeague]);
 
   return (
-    <TableContainer component={Paper} sx={{ maxHeight: "90vh" }}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell style={cellStyle}>Team </TableCell>
-            <TableCell style={cellStyle}>Team Wins</TableCell>
-            <TableCell style={cellStyle}>Team Losses</TableCell>
-            <TableCell style={cellStyle}>Matches Won</TableCell>
-            <TableCell style={cellStyle}>Matches Lost</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {tableData.map((team) => (
-            <TableRow key={team.teamName}>
-              <TableCell style={cellStyle}>{team.teamName}</TableCell>
-              <TableCell style={cellStyle}>{team.teamWins}</TableCell>
-              <TableCell style={cellStyle}>{team.teamLosses}</TableCell>
-              <TableCell style={cellStyle}>{team.matchWins}</TableCell>
-              <TableCell style={cellStyle}>{team.matchLosses}</TableCell>
+    <Paper elevation={0} sx={{ width: "100%", overflow: "hidden" }}>
+      <TableContainer sx={{ maxHeight: "40vh", overflow: "auto" }}>
+        <Table stickyHeader aria-label="sticky table">
+          <TableHead>
+            <TableRow>
+              <TableCell style={cellStyle}>Team </TableCell>
+              <TableCell style={cellStyle}>Team Wins</TableCell>
+              <TableCell style={cellStyle}>Team Losses</TableCell>
+              <TableCell style={cellStyle}>Matches Won</TableCell>
+              <TableCell style={cellStyle}>Matches Lost</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {tableData.map((team) => (
+              <TableRow key={team.teamName}>
+                <TableCell style={cellStyle}>{team.teamName}</TableCell>
+                <TableCell style={cellStyle}>{team.teamWins}</TableCell>
+                <TableCell style={cellStyle}>{team.teamLosses}</TableCell>
+                <TableCell style={cellStyle}>{team.matchWins}</TableCell>
+                <TableCell style={cellStyle}>{team.matchLosses}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Paper>
   );
 };
 
