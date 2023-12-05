@@ -145,6 +145,10 @@ export const TeamSelect = (props) => {
 
     let teamCaptain = teamState.Teams[teamIndex].TeamCaptain;
     var leagueInfo = teamState;
+
+    // If the captain is leaving the team, 
+    // If there are no more players in the team, delete the team
+    // Otherwise the next person on the list becomes the captain
     if (teamCaptain === user.Username) {
       if (PlayerList.length === 0) {
         leagueInfo.Teams.splice(teamIndex, 1);
@@ -153,11 +157,11 @@ export const TeamSelect = (props) => {
         leagueInfo.Teams[teamIndex].TeamCaptain = PlayerList[0];
         leagueInfo.Teams[teamIndex].TeamMembers.splice(0, 1);
         alert("Assigning new captain");
-      }
+      } 
     } else {
       //find user in memberlist and remove from memberlist
       console.log("in filter");
-      let userIndex = PlayerList.indexof(user.Username);
+      let userIndex = PlayerList.indexOf(user.Username);
       if (userIndex === -1) {
         alert("User already not in team");
         return;
@@ -197,6 +201,7 @@ export const TeamSelect = (props) => {
     let potentialPlayerList = teamState.Teams[teamIndex].PotentialTeamMembers;
     console.log(potentialPlayerList);
 
+    // Check if the user is the captain of this or another team
     let isCaptain = teamState["Teams"].find(
       (obj) => obj.TeamCaptain === user.Username
     );
@@ -206,18 +211,28 @@ export const TeamSelect = (props) => {
       return;
     }
 
-    let inTeam = potentialPlayerList.find((obj) => obj === user.Username);
+    // Check if the user is in the potenteial players list of this team
+    let inPotentialTeam = potentialPlayerList.find((obj) => obj === user.Username);
 
-    if (inTeam) {
+    if (inPotentialTeam) {
       alert("Already in potential player list");
       return;
     }
 
+    // Check if the user is in the potenteial players list of another team
     let inPotentialList = teamState.Teams.some((team) =>
       team.PotentialTeamMembers.find((obj) => obj === user.Username)
     );
     if (inPotentialList) {
       alert("Already in a potential player list");
+      return;
+    }
+
+    // Check if the user is already in the team
+    let playerList = teamState.Teams[teamIndex]['TeamMembers'];
+    let isInTeam = playerList.find((obj) => obj === user.Username);
+    if (isInTeam) {
+      alert("Already in the team");
       return;
     }
 
@@ -244,6 +259,7 @@ export const TeamSelect = (props) => {
         console.error("Error:", error);
       });
 
+      alert("A request is being sent to the captain");
     // Make the GET request to send an email
     const emailApiUrl = `http://localhost:8000/leagues/sendRequestEmail?sendTo=${location.state.Teams[teamIndex].CaptainEmail}&user=${user.Username}`;
 

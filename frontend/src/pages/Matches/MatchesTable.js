@@ -46,7 +46,7 @@ export default function MatchesTable(props) {
     // if (!(user['Username'] === match['team1captain'] || user['Username'] === match['team2captain'])) {
     //   alert("You must be a captain of one of these teams to edit the score")
     //   return;
-    // }
+    // } TODO: UNCOMMENT
 
     setSelectedMatch(match);
     setSelectedMatchIndex(index);
