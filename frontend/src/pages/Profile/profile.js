@@ -113,12 +113,14 @@ export const Profile = () => {
             justifyContent: "center",
             alignItems: "center",
             marginBottom: "2vh",
+            display: "flex"
           }}
         >
           <Box
             sx={{
-              width: "15.5vw",
-              height: "15.5vw",
+              width: "calc(20em + 1vw)",
+              height: "calc(20em + 1vw)",
+              justifyContent: "space-between",
               background:
                 "linear-gradient(rgba(145, 70, 216, 1), rgba(213, 253, 81, 1))",
               display: "flex",
@@ -126,11 +128,13 @@ export const Profile = () => {
               marginRight: "2vw",
               justifyContent: "center",
               borderRadius: "40%",
+              marginBottom: "calc(-2.5em + 1vw)"
+
             }}
           >
             <Box
               component="img"
-              sx={{ height: "15vw", width: "15vw", borderRadius: "40%" }}
+              sx={{ height: "calc(19.5em + 1vw)", width: "calc(19.em + 1vw)", borderRadius: "40%", display: "flex" }}
               src={defaultImage}
             />
           </Box>
@@ -141,47 +145,50 @@ export const Profile = () => {
               height: "25em",
               fontWeight: "bold",
               justifyContent: "space-between",
+              marginTop: "calc(5em + 1vw)",
             }}
           >
             <Typography
               sx={{
                 color: "rgba(145, 70, 216, 1)",
                 fontWeight: "bold",
-                fontSize: "2em",
-                fontFamily: "inter"
+                fontSize: "1.5em",
+                fontFamily: "inter",
+                marginTop: "calc(-1em + 1vw)"
               }}
             >
               {user?.Username}
             </Typography>
             <Box sx={{ display: "flex" }}>
-              <StyledLabel style={{ fontFamily: "Inter", marginRight: "0.25em", fontSize: "1.75em" }}>
+              <StyledLabel style={{ fontFamily: "Inter", marginRight: "0.25em", fontSize: "1.25em" }}>
                 Name:</StyledLabel>
-              <StyledText sx={{ fontFamily: "Inter", marginRight: "0.25em", fontSize: "1.75em" }}>
+              <StyledText sx={{ fontFamily: "Inter", marginRight: "0.25em", fontSize: "1.25em" }}>
                 {`${user?.FirstName} ${user?.LastName}`}</StyledText>
             </Box>
             <Box sx={{ display: "flex" }}>
-              <StyledLabel style={{ fontFamily: "Inter", marginRight: "0.25em", fontSize: "1.75em" }}>
+              <StyledLabel style={{ fontFamily: "Inter", marginRight: "0.25em", fontSize: "1.25em" }}>
                 ZipCode:</StyledLabel>
-              <StyledText sx = {{ fontFamily: "Inter", marginRight: "0.25em", fontSize: "1.75em" }}>
+              <StyledText sx = {{ fontFamily: "Inter", marginRight: "0.25em", fontSize: "1.25em" }}>
                 {user?.ZipCode}</StyledText>
             </Box>
             <Box sx={{ display: "flex", marginBottom: "1em"}}>
-              <StyledLabel style={{fontFamily: "Inter", marginRight: "0.25em", fontSize: "1.75em"}}>
+              <StyledLabel style={{fontFamily: "Inter", marginRight: "0.25em", fontSize: "1.25em"}}>
                 Skill Level:</StyledLabel>
-              <StyledText sx = {{ fontFamily: "Inter", marginRight: "0.25em", fontSize: "1.75em" }}>
+              <StyledText sx = {{ fontFamily: "Inter", marginRight: "0.25em", fontSize: "1.25em" }}>
                 {user?.SkillLevel}</StyledText>
             </Box>
 
             <Box sx={{ display: "flex" }}>
-              <StyledLabel style={{ fontFamily: "Inter", fontSize: "2em", marginBottom: "0.25em" }}>Change Password:</StyledLabel>
+              <StyledLabel style={{ fontFamily: "Inter", fontSize: "1.5em", marginBottom: "0.22em" }}>Change Password:</StyledLabel>
             </Box>
             <Box sx={{ display: "flex" }}>
-              <FormControl sx={{ width: "30vw", marginBottom: "0.5em" }}>
-                <StyledLabel style={{ fontFamily: "Inter", fontSize: "1.75em" }} htmlFor="password">
+              <FormControl sx={{ width: "25vw", marginBottom: "0.5em" }}>
+                <StyledLabel style={{ fontFamily: "Inter", fontSize: "1.25em" }} htmlFor="password">
                   Old Password <span style={{ color: "red" }}>*</span>
                   </StyledLabel>
                 <StyledInput
                   id="password"
+                  borderRadius="20em"
                   placeholder="********"
                   value={oldPassword}
                   onChange={(event) => {
@@ -204,8 +211,8 @@ export const Profile = () => {
               </FormControl>
             </Box>
             <Box sx={{ display: "flex", marginBottom: "1em" }}>
-              <FormControl sx={{ width: "30vw" }}>
-                <StyledLabel style={{ fontFamily: "Inter", fontSize: "1.75em" }} htmlFor="confirmpassword">
+              <FormControl sx={{ width: "25vw" }}>
+                <StyledLabel style={{ fontFamily: "Inter", fontSize: "1.25em" }} htmlFor="confirmpassword">
                   New Password <span style={{ color: "red" }}>*</span>
                 </StyledLabel>
                 <StyledInput
