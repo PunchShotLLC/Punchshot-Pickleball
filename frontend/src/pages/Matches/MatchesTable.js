@@ -27,9 +27,6 @@ export default function MatchesTable(props) {
   const [selectedMatch, setSelectedMatch] = React.useState(null);
   const [selectedMatchIndex, setSelectedMatchIndex] = React.useState(null);
 
-  // Load in the user context
-  const { loading, user } = useContext(UserContext);
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -53,20 +50,10 @@ export default function MatchesTable(props) {
     setEnterScoreActive(true);
   };
 
-  useEffect(() => {
-    const isSignedIn = async () => {
-      if (!loading && !user) {
-        window.location.href = "/";
-        alert("Sign in to access leagues page!");
-      }
-    };
-    isSignedIn();
-  }, [user, loading]);
-
   if (!enterScoreActive) {
     return (
-      <Paper elevation={0} sx={{ width: "100%", overflow: "hidden" }}>
-        <TableContainer sx={{ maxHeight: "40vh" }}>
+      <Paper elevation={0} sx={{ width: "100%", overflow: "auto" }}>
+        <TableContainer sx={{ maxHeight: "40vh", overflow: "auto" }}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>

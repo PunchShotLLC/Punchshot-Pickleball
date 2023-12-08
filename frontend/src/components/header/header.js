@@ -150,6 +150,7 @@ export const Header = (props) => {
                 backgroundColor: "transparent",
               },
             }}
+            disabled={!user}
           >
             MATCHES
           </Button>
@@ -166,6 +167,7 @@ export const Header = (props) => {
                 backgroundColor: "transparent",
               },
             }}
+            disabled={!user}
           >
             LEADERBOARD
           </Button>

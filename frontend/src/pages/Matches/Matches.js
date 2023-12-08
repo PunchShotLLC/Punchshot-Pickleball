@@ -178,8 +178,10 @@ export const Matches = () => {
               paddingLeft: "1em",
               paddingRight: "1em",
               borderRadius: 4,
+              marginTop: "3em",
               backgroundColor: "#ffffff",
               border: "3px solid #D5FD51",
+              overflow: "auto",
               "&:hover": {
                 boxShadow: `${alpha("#ffffff", 0.25)} 0 0 0 0.2rem`,
               },

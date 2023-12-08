@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import LeaderboardTable from "./LeaderboardTable";
+import { alpha } from "@mui/material/styles";
+import { UserContext } from "../../components/UserContext/usercontext";
+
 
 export const Leaderboard = () => {
   const [leagues, setLeagues] = useState([]);
@@ -58,9 +61,10 @@ export const Leaderboard = () => {
               paddingTop: ".5vw",
             }}
           >
-            Select a league to see the league's leaderboards.
+            Select a league to see the league's leaderboard.
           </Typography>
         </Box>
+        
         <Box
           display="flex"
           flexDirection="column"
@@ -69,39 +73,55 @@ export const Leaderboard = () => {
           paddingTop="3em"
           paddingBottom="3em"
         >
-          <Select
-            labelId="league-select-label"
+          <select
+            name="league-select-label"
             id="league-select"
             value={selectedLeague}
-            label="Select League"
             onChange={handleLeagueChange}
-            sx={{
-              ".MuiSelect-select": {
-                fontSize: "1.25rem",
-                color: "white",
-                // textAlign: 'center'
-              },
+            style={{
+              width: "200px",
+              height: "50px",
+              marginBottom: "10px",
+              padding: "10px",
+              borderRadius: "10px",
+
+              fontFamily: "Arial",
             }}
           >
+             <option id="none">Select League</option>
+
             {leagues.map((league) => (
-              <MenuItem key={league._id} value={league._id}>
+              <option key={league._id} value={league._id}>
                 {league.LeagueName}
-              </MenuItem>
+              </option>
             ))}
-          </Select>
+          </select>
         </Box>
+
         <Box
           display="flex"
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
         >
-          <Box>
-            {selectedLeague && (
-              <Box>
-                <LeaderboardTable selectedLeague={selectedLeague} />
-              </Box>
-            )}
+          <Box
+            sx={{
+                width: "80%",
+                paddingLeft: "1em",
+                paddingRight: "1em",
+                borderRadius: 4,
+                backgroundColor: "#ffffff",
+                border: "3px solid #D5FD51",
+                "&:hover": {
+                  boxShadow: `${alpha("#ffffff", 0.25)} 0 0 0 0.2rem`,
+                },
+              }}
+            >
+              {selectedLeague && (
+                <Box>
+                  <LeaderboardTable selectedLeague={selectedLeague} />
+                </Box>
+              )}
           </Box>
         </Box>
       </Box>
