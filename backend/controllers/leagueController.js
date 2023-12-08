@@ -160,72 +160,87 @@ export const getAddressInfo = async (req, res) => {
 };
 
 /**
- * function used by createMatchups that randomizes the order of the matches
- * @param {*} array 
- * @returns shuffled array
+ * helper function for createMatchups that gets the next saturday
+ * @returns the next saturday
  */
-function shuffle(array) {
-  let currentIndex = array.length,  randomIndex;
-
-  // While there remain elements to shuffle.
-  while (currentIndex > 0) {
-
-    // Pick a remaining element.
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-
-    // And swap it with the current element.
-    [array[currentIndex], array[randomIndex]] = [
-      array[randomIndex], array[currentIndex]];
-  }
-
-  return array;
+function getNextSaturday() {
+  const today = new Date();
+  const daysUntilSaturday = 6 - today.getDay(); // Calculate days until Saturday
+  const nextSaturday = new Date(today);
+  nextSaturday.setDate(today.getDate() + daysUntilSaturday);
+  return nextSaturday;
 }
 
-
 /**
- * function that takes a list of teams and creates matchups with dates
- * @param {list} teamList 
- * @returns matchup objects
+ * function written by chatgpt to generate team matchupes
+ *   - ensures that floor(#teams/2) are scheduled for each week
+ *   - ensures that no team plays on two matches on the same day
+ * @param {*} teams 
+ * @returns matchups per week
  */
-const createMatchups = (teamList) => {
-  const combos = [];
-
-  for (let i = 0; i < teamList.length - 1; i++) {
-    for (let j = i + 1; j < teamList.length; j++) {
-      combos.push([teamList[i], teamList[j]]);
-    }
+function scheduler(teams) {
+  if (teams.length % 2 !== 0) {
+    teams.push(null); // Add a dummy team if the number of teams is odd
   }
 
-  // Set up the dates
-  const today = new Date();
-  const nextSaturday = new Date(today);
+  const weeks = [];
+  let currentSaturday = getNextSaturday();
 
-  // Find the next Saturday
-  nextSaturday.setDate(today.getDate() + (6 - today.getDay()) + 1);
+  for (let weekNum = 1; weekNum < teams.length; weekNum++) {
+    const matchups = [];
+    for (let i = 0; i < teams.length / 2; i++) {
+      const match = [teams[i], teams[teams.length - i - 1]];
+      matchups.push(match);
+    }
+    weeks.push({ date: currentSaturday.toDateString(), matchups });
 
+    // Move to the next Saturday for the next week
+    currentSaturday.setDate(currentSaturday.getDate() + 7);
 
-  let matchups = [];
+    // Rotate the teams for the next week
+    teams = [teams[0]].concat([teams[teams.length - 1]], teams.slice(1, -1));
+  }
 
-  combos.forEach((combo, index) => {
-    const assignedDate = new Date(nextSaturday);
-    assignedDate.setDate((assignedDate.getDate() + index * 7) - 1);
-    // matchupAssignments[matchup] = assignedDate.toDateString();
-    let matchup = {
-      "Date": assignedDate.toDateString(),
-      "Team1": combos[index][0],
-      "Team2": combos[index][1],
+  return weeks;
+}
+
+/**
+ * function that takes a list of teams and returns an array of matches in this format:
+ * @param {*} teams the list of team names (found in the object)
+ * @returns array of matches in the following format
+ * {
+      "Date": week.date,
+      "Team1": week.matchups[i][0],
+      "Team2": week.matchups[i][1],
       "Score": "",
       "WinnerTeam": ""
     }
-    matchups.push(matchup)
+ */
+function createMatchups(teams) {
+  const schedule = scheduler(teams);
+
+  let matches = [];
+  schedule.forEach((week, weekNum) => {
+
+    for (let i = 0; i < week.matchups.length; i++) {
+      if (week.matchups[i][0] !== null && week.matchups[i][1] !== null) {
+        matches.push(
+          {
+            "Date": week.date,
+            "Team1": week.matchups[i][0],
+            "Team2": week.matchups[i][1],
+            "Score": "",
+            "WinnerTeam": ""
+          }
+        )
+      }
+    }
   });
 
-  matchups = shuffle(matchups)
-  return matchups
+  return matches
 }
 
-// createMatchups(["Team1", "Team2", "Team3", "Team4", "Team5"])
+// console.log(createMatchups(["Team1", "Team2", "Team3", "Team4", "Team5"]))
 
 /**
  * startLeague is responsible for:
