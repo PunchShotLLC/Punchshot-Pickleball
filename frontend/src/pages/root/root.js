@@ -9,13 +9,14 @@ export const Root = () => {
   const [renderLoginPopup, setRenderLoginPopup] = useState(false);
   const [renderSignupPopup, setRenderSignupPopup] = useState(false);
 
+
   return (
     <UserProvider>
       <Box>
         {renderLoginPopup && <Login render={renderLoginPopup} setRender={setRenderLoginPopup} setRenderSignup={setRenderSignupPopup} />}
         {renderSignupPopup && <SignUp render={renderSignupPopup} setRender={setRenderSignupPopup} />}
         <Header setRender={setRenderLoginPopup} />
-        <Outlet />x
+        <Outlet context={setRenderLoginPopup} />x
       </Box>
     </UserProvider>
   );
