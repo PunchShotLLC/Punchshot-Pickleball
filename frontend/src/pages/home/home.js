@@ -49,7 +49,9 @@ export const Home = () => {
                 fontSize: "calc(1.4em + 1vw)",
                 fontWeight: "bold",
                 textAlign: "left",
+                marginTop: "4%",
                 width: "90%",
+                lineHeight: "1.25"
               }}
             >
               REGISTER FOR LEAGUES
