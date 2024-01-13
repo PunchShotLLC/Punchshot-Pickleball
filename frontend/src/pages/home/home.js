@@ -49,7 +49,9 @@ export const Home = () => {
                 fontSize: "calc(1.4em + 1vw)",
                 fontWeight: "bold",
                 textAlign: "left",
+                marginTop: "4%",
                 width: "90%",
+                lineHeight: "1.25",
               }}
             >
               REGISTER FOR LEAGUES
@@ -99,6 +101,7 @@ export const Home = () => {
           alignItems: "center",
           backgroundColor: "black",
           height: "28vh",
+          justifyContent: "center",
         }}
       >
         <Typography
@@ -106,13 +109,13 @@ export const Home = () => {
             color: "white",
             fontFamily: "Inter",
             fontSize: "calc(1.5em + 1vw)",
-            textAlign: "left",
+            textAlign: "center",
             fontWeight: "Bold",
           }}
         >
-          WANT TO
+          WANT TO LEARN MORE?
         </Typography>
-        <Typography
+        {/* <Typography
           sx={{
             color: "white",
             fontFamily: "Inter",
@@ -122,14 +125,14 @@ export const Home = () => {
           }}
         >
           LEARN MORE?
-        </Typography>
+        </Typography> */}
         <Stack
           direction="row"
           justifyContent="center"
           spacing={2}
           sx={{
             width: "100%",
-            marginTop: "2%",
+            marginTop: "3%",
             position: "relative",
             bottom: "15%",
           }}

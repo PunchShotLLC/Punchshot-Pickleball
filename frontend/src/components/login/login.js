@@ -89,8 +89,8 @@ export const Login = (props) => {
       <ThemeProvider theme={buttonTheme}>
         <Box
           sx={{
-            width: "30vw",
-            height: "30vw",
+            width: "35vw",
+            height: "35vw",
             background: "white",
             borderRadius: "calc(0.1em + 1vw)",
             position: "absolute",
@@ -124,7 +124,7 @@ export const Login = (props) => {
           <div className="login_input">
             <StyledInput
               id="username"
-              placeholder="john123"
+              placeholder="Username"
               value={Username}
               onChange={(event) => {
                 setUsername(event.target.value);
@@ -135,7 +135,7 @@ export const Login = (props) => {
           <div className="login_input">
             <StyledInput
               id="password"
-              placeholder="********"
+              placeholder="Password"
               value={Password}
               onChange={(event) => {
                 setPassword(event.target.value);
@@ -157,11 +157,11 @@ export const Login = (props) => {
           </div>
           <Box
             sx={{
-              width: "25vw",
+              width: "83%",
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
-              marginTop: "1vh",
+              marginTop: "2vh",
             }}
           >
             <Button
@@ -173,9 +173,9 @@ export const Login = (props) => {
                 borderRadius: "calc(0.1em + 0.5vw)",
                 pl: "calc(1.8vw)",
                 pr: "calc(1.8vw)",
-                width: "11vw",
-                height: "2vw",
-                fontSize: "calc(0.8vh + 0.29em)",
+                width: "14vw",
+                height: "2.5vw",
+                fontSize: "calc(0.7vw + 0.1em)",
               }}
             >
               Create Account
@@ -189,15 +189,15 @@ export const Login = (props) => {
                 borderRadius: "calc(0.1em + 0.5vw)",
                 pl: "calc(4vw)",
                 pr: "calc(4vw)",
-                width: "11vw",
-                height: "2vw",
-                fontSize: "calc(0.8vh + 0.29em)",
+                width: "14vw",
+                height: "2.5vw",
+                fontSize: "calc(0.7vw + 0.1em)",
               }}
             >
               Sign In
             </Button>
           </Box>
-          <Link color="primary" sx={{ marginTop: "2vh" }}>
+          <Link color="primary" sx={{ marginTop: "2vh", fontSize: "calc(1.2vw + 0.1em)" }}>
             Forgot Password?
           </Link>
         </Box>
