@@ -4,7 +4,6 @@ import * as React from "react";
 import defaultImage from "./default.png";
 import raquetImage from "./raquet.png";
 import Typography from "@mui/material/Typography";
-import { FeedItem } from "../../components/FeedItem/feedItem.js";
 import { useContext } from "react";
 import { UserContext } from "../../components/UserContext/usercontext.js";
 import { FormControl } from "@mui/material";

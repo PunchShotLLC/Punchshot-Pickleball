@@ -1,19 +1,8 @@
-import { Header } from "../../components/header/header";
 import { Profile } from "../Profile/profile.js";
-import { Upcoming } from "../Upcoming/upcoming.js";
-import { MyTournaments } from "../MyTournaments/my_tournaments.js";
-import { League } from "../League/league.js";
 import { Results } from "../Results/results.js";
-import { Friends } from "../Friends/friends.js";
-import { Settings } from "../Settings/settings.js";
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
-import { requirePropFactory } from "@mui/material";
-import home from "../../assets/images/home.svg";
 import { styled } from "@mui/system";
 import * as React from "react";
 import { AccountLeague } from "../League/accountLeague.js";
@@ -51,7 +40,7 @@ export const Account = () => {
             height: "77.69vh",
             "& button.Mui-selected": {
               backgroundColor: "black",
-              color: "white", 
+              color: "white",
             },
           }}
         >

@@ -3,14 +3,13 @@ import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
-import { Root } from "./pages/root/root";
-import { About } from "./pages/about/about";
-import { Home } from "./pages/home/home";
-import { Play } from "./pages/play/play";
-import { Leaderboard } from "./pages/leaderboard/leaderboard";
+import { Root } from "./pages/Root/root";
+import { About } from "./pages/About/about";
+import { Home } from "./pages/Home/home";
+import { Leaderboard } from "./pages/Leaderboard/leaderboard";
 import { Account } from "./pages/Account/account";
-import { What } from "./pages/what/what";
-import { Login } from "./components/login/login";
+import { What } from "./pages/What/what";
+import { Login } from "./components/Login/login";
 import { SignUp } from "./components/SignUp/signup";
 import { League } from "./pages/League/league";
 import { TeamSelect } from "./pages/Team/team";
@@ -35,10 +34,6 @@ const router = createBrowserRouter([
         element: <What />,
       },
       {
-        path: "play",
-        element: <Play />,
-      },
-      {
         path: "leaderboard",
         element: <Leaderboard />,
       },
@@ -48,17 +43,17 @@ const router = createBrowserRouter([
       },
       {
         path: "leagueInfo",
-        element: <TeamSelect />
+        element: <TeamSelect />,
       },
       {
         path: "account",
         element: <Account />,
-      }, 
+      },
       {
         path: "matches",
         element: <Matches />,
-      }, 
-    ]
+      },
+    ],
   },
 
   {
@@ -70,13 +65,13 @@ const router = createBrowserRouter([
     element: <SignUp render={true} />,
   },
   {
-    path: "createLeague", 
-    element: <CreateLeague render={true} />
-  }, 
+    path: "createLeague",
+    element: <CreateLeague render={true} />,
+  },
   {
     path: "*",
-    element: <h1>Page not found</h1>
-  }
+    element: <h1>Page not found</h1>,
+  },
 ]);
 
 createRoot(document.getElementById("root")).render(

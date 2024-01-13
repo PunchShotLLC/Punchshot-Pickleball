@@ -63,7 +63,13 @@ export const Home = () => {
                 width: "90%",
               }}
             >
-              Welcome to the ultimate destination for Pickleball enthusiasts! Ready to take your Pickleball game to the next level? Dive into the exhilarating world of competitive play by joining our Pickleball leagues. Whether you're a seasoned pro or a beginner looking to sharpen your skills, our platform is your gateway to thrilling matches, vibrant community engagement, and unforgettable moments on the court.
+              Welcome to the ultimate destination for Pickleball enthusiasts!
+              Ready to take your Pickleball game to the next level? Dive into
+              the exhilarating world of competitive play by joining our
+              Pickleball leagues. Whether you're a seasoned pro or a beginner
+              looking to sharpen your skills, our platform is your gateway to
+              thrilling matches, vibrant community engagement, and unforgettable
+              moments on the court.
             </Typography>
             <Button
               href="/leagues"
@@ -85,7 +91,16 @@ export const Home = () => {
           </Box>
         </Box>
       </Box>
-      <Box sx={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "black", height: "28vh" }}>
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          backgroundColor: "black",
+          height: "28vh",
+        }}
+      >
         <Typography
           sx={{
             color: "white",
@@ -93,8 +108,6 @@ export const Home = () => {
             fontSize: "calc(1.5em + 1vw)",
             textAlign: "left",
             fontWeight: "Bold",
-            paddingLeft: "5%",
-            paddingTop: "2%",
           }}
         >
           WANT TO
@@ -106,7 +119,6 @@ export const Home = () => {
             fontSize: "calc(1.5em + 1vw)",
             textAlign: "left",
             fontWeight: "Bold",
-            paddingLeft: "5%",
           }}
         >
           LEARN MORE?

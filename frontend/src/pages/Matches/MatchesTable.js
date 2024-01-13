@@ -27,6 +27,8 @@ export default function MatchesTable(props) {
   const [selectedMatch, setSelectedMatch] = React.useState(null);
   const [selectedMatchIndex, setSelectedMatchIndex] = React.useState(null);
 
+  const { loading, user } = useContext(UserContext);
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -40,8 +42,13 @@ export default function MatchesTable(props) {
     console.log("Check if the user is the captain of either team");
     let match = props.matches[index];
 
-    if (!(user['Username'] === match['team1captain'] || user['Username'] === match['team2captain'])) {
-      alert("You must be a captain of one of these teams to edit the score")
+    if (
+      !(
+        user["Username"] === match["team1captain"] ||
+        user["Username"] === match["team2captain"]
+      )
+    ) {
+      alert("You must be a captain of one of these teams to edit the score");
       return;
     }
 
