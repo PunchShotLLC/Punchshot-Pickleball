@@ -21,9 +21,9 @@ const StyledHeader = styled("header")({
   display: "flex",
   flexDirection: "row",
   justifyContent: "space-between",
-  alignContent: "flex-start",
+  alignItems: "center",
   width: "100vw",
-  height: "22.31vh",
+  height: "22.31vh"
 });
 
 const StyledTitle = styled("header")({
@@ -57,17 +57,20 @@ export const Header = (props) => {
   };
   return (
     <StyledHeader>
-      <img className="logo_image" src={logo} alt="logo" />
+      <Box sx={{display:"flex", alignItems:"Center", marginLeft:"1%"}}>
+        <img className="logo_image" src={logo} alt="logo"/>
+      </Box>
       <Box
         sx={{
           ml: "auto",
           mr: "auto",
           display: "flex",
+          justifyContent: "space-between",
           flexDirection: "column",
           minWidth: "44.9%",
-          position: "relative",
-          top: "19.09%",
-          alignItems: "center",
+          width: "60%",
+          height: "60%",
+          //alignItems: "center"
         }}
       >
         <StyledTitle onClick={homeRedirect}>PUNCHSHOT PICKLEBALL</StyledTitle>
@@ -84,9 +87,9 @@ export const Header = (props) => {
           sx={{
             mt: "3.333%",
             position: "relative",
-            width: "50vw",
+            width: "100%",
             height: "auto",
-            alignSelf: "center",
+            //alignSelf: "baseline",
           }}
         >
           <Button
@@ -192,15 +195,12 @@ export const Header = (props) => {
       </Box>
       <Box
         sx={{
-          alignSelf: "flex-start",
           display: "flex",
           flexDirection: "column",
           width: "fit-content",
-          top: "10.79%",
-          right: "1.458%",
-          position: "relative",
-          justifyContent: "space-around",
-          height: "19vh",
+          height: "60%",
+          justifyContent: "space-between",
+          marginRight:"1%"
         }}
       >
         <Button
@@ -210,7 +210,7 @@ export const Header = (props) => {
             flexDirection: "row",
             alignItems: "center",
             width: "fit-content%",
-            justifyContent: "flex-end",
+            justifyContent: "flex-end"
           }}
         >
           <Box
