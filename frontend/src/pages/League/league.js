@@ -9,12 +9,9 @@ import "@fontsource/inter";
 import "@fontsource/inter/200.css";
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/700.css";
-import LeagueGrid from "./leagueGrid.js";
 import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/InputBase";
-import { FormControl } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { LeagueButton } from "./leagueButton";
 import { TeamSelect } from "../Team/team";
 import { LeagueComp } from "../../components/LeagueComp/LeagueComp.js";
 import { useContext } from "react";
@@ -29,10 +26,6 @@ const StyledInput = styled(TextField)({
   paddingLeft: "1vw",
 });
 
-const StyledLabel = styled("label")({
-  paddingLeft: "1vw",
-  marginBottom: "0.5vh",
-});
 
 const buttonTheme = createTheme({
   palette: {
@@ -73,79 +66,9 @@ export const League = () => {
     isSignedIn();
   }, [user, loading]);
 
-  // When a league is selected, activate the team selection page
-  const switchToTeamSelectionMode = (teamIndex) => {
-    console.log(teamIndex);
-    setTeamSelection(true);
-    setTeamSelectLeagueIndex(teamIndex);
-  };
-
   const navigateToLeagueInfo = (teamIndex) => {
     // Navigate to the new page with the data in the route's state
     navigate("/leagueInfo", { state: leagues[teamIndex] });
-  };
-
-  // Dates are inputted as mm-dd-yyyy
-  // MongoDB requires ISO string whtvr format
-  function convertDateToMongoFormat(dateString) {
-    const parts = dateString.split("-");
-    if (parts.length === 3) {
-      const year = parseInt(parts[0]);
-      const month = parseInt(parts[1]) - 1; // Months are zero-based (0-11)
-      const day = parseInt(parts[2]);
-
-      if (!isNaN(year) && !isNaN(month) && !isNaN(day)) {
-        const date = new Date(Date.UTC(year, month, day));
-        if (!isNaN(date)) {
-          return date.toISOString(); // Convert to ISO 8601 format
-        }
-      }
-    }
-
-    return null; // Invalid date format
-  }
-
-  /*
-  Function to create a league with the values currently in the input boxes
-  */
-  const createLeague = async () => {
-    // Put the parameters in the request body
-    const body = {
-      LeagueName: leagueName,
-      NumTeams: numTeams,
-      ZipCodes: zipCode
-        .split(",")
-        .map((e) => e.trim())
-        .filter((e) => e),
-      City: city,
-      LeagueOwner: "tempOwner",
-      LeagueOwnerEmail: user?.Email, // change in production,
-      StartDate: startDate,
-      Status: "PENDING",
-      Matches: [],
-    };
-
-    // Create POST request
-    // Catch error if exists
-    const rawResponse = await fetch(
-      "http://localhost:8000/leagues/createLeague",
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      }
-    ).catch((err) => alert(err));
-
-    const content = await rawResponse.json();
-
-    if (!content.error) {
-      alert(content.message);
-    } else {
-      alert(content.error);
-    }
   };
 
   // Make a get request to retrieve all the leagues
