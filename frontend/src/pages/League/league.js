@@ -39,11 +39,6 @@ const buttonTheme = createTheme({
 });
 
 export const League = () => {
-  const [leagueName, setLeagueName] = useState(null);
-  const [numTeams, setNumTeams] = useState(null);
-  const [zipCode, setZipCode] = useState(null);
-  const [city, setCity] = useState(null);
-  const [startDate, setStartDate] = useState(null);
 
   const [leagues, setLeagues] = useState(null);
   const { loading, user } = useContext(UserContext);
@@ -51,10 +46,6 @@ export const League = () => {
   const openModal = () => setrenderCreateLeauge(true);
   const closeModal = () => setrenderCreateLeauge(false);
   const navigate = useNavigate();
-
-  // These two states activate when a user selects a league
-  const [teamSelection, setTeamSelection] = useState(false);
-  const [teamSelectLeagueIndex, setTeamSelectLeagueIndex] = useState(null);
 
   useEffect(() => {
     const isSignedIn = async () => {
