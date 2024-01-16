@@ -1,25 +1,10 @@
 import React from "react";
-import Box from "@mui/material/Box";
-import { flexbox } from "@mui/system";
-import { Divider } from "@mui/material";
-import { alignProperty } from "@mui/material/styles/cssUtils";
-import { positions } from "@mui/system";
-import { sizing } from "@mui/system";
-import { grid } from "@mui/system";
-import { display } from "@mui/system";
-import zIndex from "@mui/material/styles/zIndex";
-import { Table } from "@mui/material";
-import downArrow from "../../assets/images/image10.png";
-import courtPicture from "../../assets/images/Rectangle27.png";
-import { ImageList } from "@mui/material";
-import "./about.scss";
-import { Typography } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 import "@fontsource/inter/200.css";
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/700.css";
-
-//vh - 800
-//vw - 1280
+import courtPicture from "../../assets/images/Rectangle27.png";
+import "./about.scss";
 
 export const About = () => {
   return (
@@ -32,18 +17,14 @@ export const About = () => {
           zIndex: "0",
         }}
       >
-        <Box
-          className="blackBoxLeftDiv"
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            backgroundColor: "black",
-            width: "50%",
-            height: "77.69vh",
-            zIndex: 2,
-            alignContent: "leading",
-          }}
-        >
+        <Box sx ={{
+          display: "flex",
+          flexDirection: "column",
+          backgroundColor: "black",
+          width: "50%",
+          height: "77.69vh",
+          zIndex: 2,
+          alignContent: "leading",}}>
           <Typography
             align="left"
             sx={{
@@ -103,33 +84,14 @@ export const About = () => {
               marginBottom: "auto",
             }}
           >
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
+            Punchshot was established in the Alanta area as a way to foster the evergrowing pickleball community. Whether you are a beginner, intermediate, or professional we've got a place for you! Our platform is divided into different leagues players can join. Once in a league, players have the ability to join a team or create a new team in order to compete in tournament play. Tournaments are round robin style in which each team will compete against another in their respective league until a winner is determined. Have more questions? Feel free to contact us!
           </Typography>
           <Box
             sx={{
               marginTop: "auto",
             }}
           >
-            <Box
-              sx={{
-                position: "relative",
-                display: "inline-flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                pb: "2.75vh",
-                paddingLeft: "3vw",
-              }}
-            >
-              <img className="downArrow1" src={downArrow} zIndex="4" />
-              <text className="scrollToReadMore">SCROLL TO READ MORE</text>
-              <img className="downArrow2" src={downArrow} zIndex="4" />
-            </Box>
+            
           </Box>
         </Box>
         <Box
