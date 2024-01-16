@@ -1,10 +1,7 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
-// import './ScoreEnterBox.css'
+import { useState } from "react";
 
 export default function ScoreEnterBox(props) {
-  const [teamWinner, setTeamWinner] = useState("");
-  const [scoreInput, setScoreInput] = useState("");
 
   const handleSubmit = (e) => {
     let form = document.getElementById("score-edit-form");
@@ -118,7 +115,6 @@ export default function ScoreEnterBox(props) {
         <br />
 
         <button submit={handleSubmit}>Submit</button>
-        {/* <div onClick={handleSubmit}>submit</div> */}
         <br />
       </form>
       <br />

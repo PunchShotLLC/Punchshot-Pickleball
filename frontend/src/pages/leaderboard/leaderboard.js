@@ -1,10 +1,8 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import LeaderboardTable from "./LeaderboardTable";
 import { alpha } from "@mui/material/styles";
-import { UserContext } from "../../components/UserContext/usercontext";
 
 
 export const Leaderboard = () => {

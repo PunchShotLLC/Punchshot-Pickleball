@@ -2,11 +2,8 @@ import React from "react";
 import { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import CustomizedInputs from "./CustomizedInputs";
 import MatchesTable from "./MatchesTable";
 import { alpha } from "@mui/material/styles";
-import AntTab from "./AntTab";
-import { fontFamily } from "@mui/system";
 
 function createData(
   league,
@@ -19,10 +16,6 @@ function createData(
 ) {
   return { league, team1, team2, winner, score, team1captain, team2captain };
 }
-
-// function createData(league, team1, team2, winner, score) {
-//   return { league, team1, team2, winner, score };
-// }
 
 export const Matches = () => {
   const [matches, setMatches] = useState([]);
@@ -125,7 +118,7 @@ export const Matches = () => {
         <Box display="flex" justifyContent="center" alignItems="center">
           <Typography
             sx={{
-              width: "44%",
+              width: "75%",
               color: "white",
               fontFamily: "Inter",
               fontSize: "1rem",
@@ -134,7 +127,7 @@ export const Matches = () => {
               paddingTop: ".5vw",
             }}
           >
-            Select a league to see the league's matches. If you are a team
+            Select a league to see the league's matches. If you are a team 
             captain, click on a match to edit or submit a score.
           </Typography>
         </Box>

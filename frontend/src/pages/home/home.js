@@ -2,9 +2,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import { requirePropFactory } from "@mui/material";
 import home from "../../assets/images/home.svg";
-import { styled } from "@mui/system";
 import { useOutletContext } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../../components/UserContext/usercontext";
@@ -115,17 +113,6 @@ export const Home = () => {
         >
           WANT TO LEARN MORE?
         </Typography>
-        {/* <Typography
-          sx={{
-            color: "white",
-            fontFamily: "Inter",
-            fontSize: "calc(1.5em + 1vw)",
-            textAlign: "left",
-            fontWeight: "Bold",
-          }}
-        >
-          LEARN MORE?
-        </Typography> */}
         <Stack
           direction="row"
           justifyContent="center"
