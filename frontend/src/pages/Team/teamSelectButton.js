@@ -6,15 +6,16 @@ import CloseIcon from '@mui/icons-material/Close';
 export const TeamSelectButton = (props) => {
 
   console.log(props)
-  const updateTeam = props.updateTeam
+
+  let isPotentialMember = props.leagueInfo.Teams[props.teamIndex].PotentialTeamMembers.some((name) => name === props.username)
+  let inTeam = (props.members.some((obj) => obj === props.username) || props.username === props.captain)
   const addPlayerToTeam = async (teamIndex, username) => {
 
     // Add the player to the team's player list
     let playerList = props.leagueInfo.Teams[teamIndex].TeamMembers;
+    let teamMember = props.leagueInfo.Teams.some((team) => team.TeamMembers.some(name => name === username));
 
-    let inTeam = playerList.find(name => name === username);
-
-    if (inTeam) {
+    if (teamMember) {
       alert("Already in team")
       return;
     }
@@ -30,28 +31,8 @@ export const TeamSelectButton = (props) => {
     let potentialPlayerList = props.leagueInfo.Teams[teamIndex].PotentialTeamMembers;
     potentialPlayerList = potentialPlayerList.filter(e => e !== username)
     props.leagueInfo.Teams[teamIndex].PotentialTeamMembers = potentialPlayerList
-
     // Make the PATCH request to update the leagues
-    const apiUrl = `http://localhost:8000/leagues/updateLeague/${props.leagueInfo["_id"]}`;
-
-    const requestOptions = {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(props.leagueInfo),
-    };
-
-    fetch(apiUrl, requestOptions)
-      .then((response) => response.json())
-      .then((responseData) => {
-        console.log(responseData);
-        updateTeam(responseData)
-        alert("User has been successfully added")
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+    props.updateLeague(props.leagueInfo)
   };
   const removePlayerToTeam = async (teamIndex, username) => {
 
@@ -61,26 +42,7 @@ export const TeamSelectButton = (props) => {
     props.leagueInfo.Teams[teamIndex].PotentialTeamMembers = potentialPlayerList
 
     // Make the PATCH request to update the leagues
-    const apiUrl = `http://localhost:8000/leagues/updateLeague/${props.leagueInfo["_id"]}`;
-
-    const requestOptions = {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(props.leagueInfo),
-    };
-
-    fetch(apiUrl, requestOptions)
-      .then((response) => response.json())
-      .then((responseData) => {
-        console.log(responseData);
-        updateTeam(responseData)
-        alert("User has been succesfully removed")
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+    props.updateLeague(props.leagueInfo)
   };
   // There are nulls in the potential members list for some reason
   // This filters the nulls out
@@ -122,9 +84,24 @@ export const TeamSelectButton = (props) => {
         </> :
         null
       }
+      {isPotentialMember ?
+        <>
+          {
+            <div class='team-username-container' onClick={() => removePlayerToTeam(props.teamIndex, props.username)}>
+              <p>Cancel Request</p>
+            </div>
+          }
+        </> :
+        null
+      }
       <br></br>
-      <Button onClick={props.onClick}>Request to Join</Button>
-      <Button onClick={props.onClickRemoveUser}> Leave Team </Button>
+      {
+        isPotentialMember ?
+          null :
+          inTeam ?
+            <Button onClick={props.onClickRemoveUser}> Leave Team </Button> :
+            <Button onClick={props.onClick}>Request to Join</Button>
+      }
     </div>
   );
 };
