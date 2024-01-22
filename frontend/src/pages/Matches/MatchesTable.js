@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useContext } from "react";
+import { useContext } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -22,14 +22,13 @@ const columns = [
 export default function MatchesTable(props) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [matches, setMatches] = React.useState([]);
   const [enterScoreActive, setEnterScoreActive] = React.useState(false);
   const [selectedMatch, setSelectedMatch] = React.useState(null);
   const [selectedMatchIndex, setSelectedMatchIndex] = React.useState(null);
 
-  const { loading, user } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (newPage) => {
     setPage(newPage);
   };
 
