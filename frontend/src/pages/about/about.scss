@@ -21,3 +21,13 @@
 .downArrow2 {
     width: 8%;
 }
+
+.blackBoxLeftDiv {
+    display: "flex";
+    flex-direction: "column";
+    background-color: "black";
+    width: "50%";
+    height: "77.69vh";
+    z-index: 2;
+    align-content: "leading";
+}
