@@ -26,7 +26,6 @@ const StyledInput = styled(TextField)({
   paddingLeft: "1vw",
 });
 
-
 const buttonTheme = createTheme({
   palette: {
     primary: {
@@ -39,8 +38,10 @@ const buttonTheme = createTheme({
 });
 
 export const League = () => {
-
   const [leagues, setLeagues] = useState(null);
+  // These two states activate when a user selects a league
+  const [teamSelection, setTeamSelection] = useState(false);
+  const [teamSelectLeagueIndex, setTeamSelectLeagueIndex] = useState(null);
   const { loading, user } = useContext(UserContext);
   const [renderCreateLeauge, setrenderCreateLeauge] = useState(false);
   const openModal = () => setrenderCreateLeauge(true);
