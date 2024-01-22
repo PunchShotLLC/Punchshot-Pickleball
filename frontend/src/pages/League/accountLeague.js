@@ -10,6 +10,7 @@ import "@fontsource/inter/700.css";
 import { LeagueComp } from "../../components/LeagueComp/LeagueCompSimplified.js";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../components/UserContext/usercontext";
+
 export const AccountLeague = () => {
   const { loading, user } = useContext(UserContext);
   const [userLeagues, setUserLeagues] = useState([]);

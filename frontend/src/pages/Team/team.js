@@ -31,14 +31,14 @@ const StyledLabel = styled("label")({
   marginBottom: "0.5vh",
 });
 
-const buttonTheme = createTheme({
-  palette: {
-    primary: {
-      main: "#9146D8",
-    },
-    secondary: {
-      main: "#D9D9D9",
-    },
+// define a styled component for the suggestions list items
+const SuggestionItem = styled("li")({
+  padding: "10px 20px",
+  cursor: "pointer",
+  fontSize: "0.8em",
+
+  "&:hover": {
+    backgroundColor: "#f0f0f0",
   },
 });
 
@@ -47,14 +47,15 @@ export const TeamSelect = (props) => {
   const { loading, user } = useContext(UserContext);
   // location.state holds the info about the league
   const location = useLocation();
-  console.log(user);
-  console.log(location);
   // For the input for a new team
   const [teamState, setTeamState] = useState(location.state);
   const [teamName, setTeamName] = useState(null);
   const [homeCourtAddress, setHomeCourtAddress] = useState(null);
   const [homeCourtMessage, setHomeCourtMessage] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+
+  // State to determine whether to show the team creation form
+  const [showTeamCreationForm, setShowTeamCreationForm] = useState(true)
 
   // Adds the team to the league
   const addTeamToLeague = async () => {
@@ -344,18 +345,6 @@ export const TeamSelect = (props) => {
     left: 0,
   });
 
-  // define a styled component for the suggestions list items
-  const SuggestionItem = styled("li")({
-    padding: "10px 20px",
-    cursor: "pointer",
-    fontSize: "0.8em",
-
-    "&:hover": {
-      backgroundColor: "#f0f0f0",
-    },
-  });
-
-  console.log(location.state);
 
   return (
     <Box sx={{ width: "80vw", height: "77.69vh", display: "flex" }}>
@@ -368,42 +357,31 @@ export const TeamSelect = (props) => {
           flexDirection: "column",
         }}
       >
-        <Typography
-          className="titleText"
-          sx={{
-            display: "flex",
-            fontSize: "calc(0.7em + 1vw)",
-            fontWeight: "bold",
-            pt: "1%",
-            align: "center",
-            marginLeft: "10vw",
-          }}
-        >
-          {teamState.LeagueName}
-        </Typography>
-        <Typography
-          className="bodyText"
-          sx={{
-            display: "absolute",
-            fontSize: "calc(0.1em + 1vw)",
-            align: "left",
-            marginLeft: "10vw",
-          }}
-        >
-          Teams Required: {teamState.NumTeams}
-        </Typography>
-        <Typography
-          className="bodyText"
-          sx={{
-            display: "absolute",
-            fontSize: "calc(0.1em + 1vw)",
-            align: "left",
-            marginLeft: "10vw",
-          }}
-        >
-          Start Date: {new Date(teamState.StartDate).toLocaleDateString()}
-        </Typography>
-        <Typography
+
+        { showTeamCreationForm ? null
+        : 
+        <Button
+            onClick={()=>setShowTeamCreationForm(true)}
+            variant="contained"
+            color="primary"
+            sx={{
+              position: "relative",
+              margin: "0 auto",
+              borderRadius: "calc(0.1em + 0.5vw)",
+              width: '20%',
+              right: '0px',
+              pl: "calc(1.5vw)",
+              pr: "calc(1.8vw)",
+              marginTop: "1em",
+            }}
+          >
+        Create Team
+        </Button>
+
+        }
+
+        { showTeamCreationForm ? 
+          <Typography
           className="bodyText"
           sx={{
             display: "absolute",
@@ -416,6 +394,7 @@ export const TeamSelect = (props) => {
           <FormControl
             sx={{ height: "7vw", marginLeft: "1.5vw", position: "relative" }}
           >
+
             <StyledLabel htmlFor="leagueName">
               Team Name<span style={{ color: "red" }}>*</span>
             </StyledLabel>
@@ -471,22 +450,45 @@ export const TeamSelect = (props) => {
             >
               {homeCourtMessage}
             </Typography>
-            <Button
-              onClick={addTeamToLeague}
-              variant="contained"
-              color="primary"
-              sx={{
-                position: "relative",
-                borderRadius: "calc(0.1em + 0.5vw)",
-                pl: "calc(1.5vw)",
-                pr: "calc(1.8vw)",
-                marginTop: "1em",
-              }}
-            >
-              Create Team
-            </Button>
+
+            <Box>
+              <Button
+                onClick={()=>setShowTeamCreationForm(false)}
+                variant="contained"
+                color="grey"
+                sx={{
+                  position: "relative",
+                  borderRadius: "calc(0.1em + 0.5vw)",
+                  width: '50%',
+                  pl: "calc(1.5vw)",
+                  pr: "calc(1.8vw)",
+                  marginTop: "1em",
+                }}
+              >
+                Cancel
+              </Button>
+
+              <Button
+                onClick={addTeamToLeague}
+                variant="contained"
+                color="primary"
+                sx={{
+                  position: "relative",
+                  borderRadius: "calc(0.1em + 0.5vw)",
+                  width: '50%',
+                  right: '0px',
+                  pl: "calc(1.5vw)",
+                  pr: "calc(1.8vw)",
+                  marginTop: "1em",
+                }}
+              >
+                Create Team
+              </Button>
+            </Box>
+
           </FormControl>
         </Typography>
+        : null}
 
         <Box sx={{ position: "relative", left: "3svw", overflow: 'scroll' }}>
           {/* Dynamically renders the teams within the league */}
