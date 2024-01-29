@@ -67,6 +67,16 @@ const leagueSchema = new Schema({
     type: String,
     enum: ["PENDING", "ONGOING", "COMPLETED"],
   },
+  SkillLevel: {
+    type: String,
+    enum: ["Novice", "Intermediate", "Advanced"],
+    required: true,
+  },
+  Category: {
+    type: String,
+    enum: ["Men", "Women", "Mixed"],
+    required: true,
+  },
   Matches: [
     Object
   ]
