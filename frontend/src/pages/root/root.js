@@ -1,6 +1,6 @@
-import { Header } from "../../components/Header/header.js";
+import { Header } from "../../components/header/header.js";
 import Box from "@mui/material/Box";
-import { Login } from "../../components/Login/login.js";
+import { Login } from "../../components/login/login.js";
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { SignUp } from "../../components/SignUp/signup.js";

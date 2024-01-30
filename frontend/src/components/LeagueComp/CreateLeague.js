@@ -56,6 +56,8 @@ const StyledLabel = styled("label")({
 export const CreateLeague = ({show, onClose}) => {
     const [leagueName, setLeagueName] = useState(null);
     const [numTeams, setNumTeams] = useState(null);
+    const [leagueSkillLevel, setLeagueSkillLevel] = useState(null);
+    const [leagueDivision, setLeagueDivision] = useState(null);
     const [zipCode, setZipCode] = useState(null);
     const [city, setCity] = useState(null);
     const [startDate, setStartDate] = useState(null);
@@ -172,6 +174,7 @@ export const CreateLeague = ({show, onClose}) => {
                   required
                 />
               </FormControl>
+
         </Box>
         <Box
           sx={{
@@ -207,32 +210,77 @@ export const CreateLeague = ({show, onClose}) => {
         <Box
           sx={{
             width: "65vw",
-            display: "flex",
+            display: "inline-block",
             justifyContent: "space-between",
             marginTop: "2vh",
           }}
         >
           <FormControl sx={{ width: "30vw" }}>
-                <StyledLabel htmlFor="date">
-                  Start Date <span style={{ color: "red" }}>*</span>
-                </StyledLabel>
-                <StyledInput
-                  type="date"
-                  onChange={(event) => {
-                    setStartDate(
-                      new Date(
-                        event.target.value.split("-")[0],
-                        event.target.value.split("-")[1] - 1,
-                        event.target.value.split("-")[2]
-                      )
-                    );
-                  }}
-                  id="date"
-                  required
-                />
-              </FormControl>
-             
-        </Box>
+            <StyledLabel htmlFor="date">
+              Start Date <span style={{ color: "red" }}>*</span>
+            </StyledLabel>
+            <StyledInput
+              type="date"
+              onChange={(event) => {
+                setStartDate(
+                  new Date(
+                    event.target.value.split("-")[0],
+                    event.target.value.split("-")[1] - 1,
+                    event.target.value.split("-")[2]
+                  )
+                );
+              }}
+              id="date"
+              required
+            />
+          </FormControl>
+
+          <Box
+          sx={{
+            // width: "65vw",
+            display: "inline-block",
+            textAlign:'center',
+            justifyContent: "space-between",
+            marginTop: "2vh",
+          }}
+          >
+
+            <FormControl sx={{ height: "10vw", marginLeft: "10vw" }} size="small">
+              <StyledLabel htmlFor="skillLevel">
+                Skill Level <span style={{ color: "red" }}>*</span>
+              </StyledLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={leagueSkillLevel}
+                label="Age"
+                onChange={(event) => setLeagueSkillLevel(event.target.value)}
+              >
+                <MenuItem value={"Beginner"}>Beginner</MenuItem>
+                <MenuItem value={"Intermediate"}>Intermediate</MenuItem>
+                <MenuItem value={"Advanced"}>Advanced</MenuItem>
+              </Select>
+            </FormControl>
+
+            <FormControl sx={{ height: "10vw", marginLeft: "2vw" }} size="small">
+              <StyledLabel htmlFor="skillLevel">
+                Division <span style={{ color: "red" }}>*</span>
+              </StyledLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={leagueDivision}
+                label="Age"
+                onChange={(event) => setLeagueDivision(event.target.value)}
+              >
+                <MenuItem value={"Beginner"}>Men</MenuItem>
+                <MenuItem value={"Intermediate"}>Women</MenuItem>
+                <MenuItem value={"Advanced"}>Mixed</MenuItem>
+              </Select>
+            </FormControl>
+
+          </Box>
+        </Box> 
         
           
           

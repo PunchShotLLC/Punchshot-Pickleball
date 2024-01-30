@@ -26,6 +26,7 @@ const StyledInput = styled(TextField)({
   paddingLeft: "1vw",
 });
 
+
 const buttonTheme = createTheme({
   palette: {
     primary: {
@@ -38,14 +39,12 @@ const buttonTheme = createTheme({
 });
 
 export const League = () => {
+
   const [leagues, setLeagues] = useState(null);
-  // These two states activate when a user selects a league
-  const [teamSelection, setTeamSelection] = useState(false);
-  const [teamSelectLeagueIndex, setTeamSelectLeagueIndex] = useState(null);
   const { loading, user } = useContext(UserContext);
-  const [renderCreateLeauge, setrenderCreateLeauge] = useState(false);
-  const openModal = () => setrenderCreateLeauge(true);
-  const closeModal = () => setrenderCreateLeauge(false);
+  const [renderCreateLeauge, setRenderCreateLeague] = useState(false);
+  const openModal = () => setRenderCreateLeague(true);
+  const closeModal = () => setRenderCreateLeague(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -83,9 +82,9 @@ export const League = () => {
   }, [user?.ZipCode]);
 
   // If the team selection state is true, render the team create/join component
-  if (teamSelection) {
-    return <TeamSelect league={leagues[teamSelectLeagueIndex]} />;
-  } else {
+  // if (teamSelection) {
+  //   return <TeamSelect league={leagues[teamSelectLeagueIndex]} />;
+  // } else {
     return (
       <Box
         sx={{
@@ -100,6 +99,7 @@ export const League = () => {
           show={renderCreateLeauge}
           onClose={closeModal}
         ></CreateLeague>
+
         <Box
           sx={{
             width: "100%",
@@ -184,5 +184,4 @@ export const League = () => {
         </Box>
       </Box>
     );
-  }
 };
