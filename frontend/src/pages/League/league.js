@@ -26,7 +26,6 @@ const StyledInput = styled(TextField)({
   paddingLeft: "1vw",
 });
 
-
 const buttonTheme = createTheme({
   palette: {
     primary: {
@@ -39,7 +38,6 @@ const buttonTheme = createTheme({
 });
 
 export const League = () => {
-
   const [leagues, setLeagues] = useState(null);
   const { loading, user } = useContext(UserContext);
   const [renderCreateLeauge, setRenderCreateLeague] = useState(false);
@@ -85,103 +83,103 @@ export const League = () => {
   // if (teamSelection) {
   //   return <TeamSelect league={leagues[teamSelectLeagueIndex]} />;
   // } else {
-    return (
+  return (
+    <Box
+      sx={{
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        padding: "2em",
+        overflowY: "auto",
+      }}
+    >
+      <CreateLeague
+        show={renderCreateLeauge}
+        onClose={closeModal}
+      ></CreateLeague>
+
       <Box
         sx={{
-          height: "100vh",
+          width: "100%",
           display: "flex",
           flexDirection: "column",
-          padding: "2em",
-          overflowY: "auto",
+          alignItems: "center",
         }}
       >
-        <CreateLeague
-          show={renderCreateLeauge}
-          onClose={closeModal}
-        ></CreateLeague>
-
-        <Box
+        <Typography
+          className="titleText"
           sx={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
+            fontSize: "calc(1em + 1.5vw)",
+            fontWeight: "bold",
+            marginBottom: "1em",
           }}
         >
-          <Typography
-            className="titleText"
+          LEAGUES
+        </Typography>
+
+        <Box sx={{ width: "70%", marginBottom: "2em", alignItems: "center" }}>
+          <StyledInput
+            onChange={(event) => getLeagues(event.target.value)}
+            id="zipcode"
+            placeholder="Search zipcodes"
             sx={{
-              fontSize: "calc(1em + 1.5vw)",
-              fontWeight: "bold",
               marginBottom: "1em",
+              width: "100%",
+              paddingLeft: "1em",
+              paddingRight: "1em",
             }}
-          >
-            LEAGUES
-          </Typography>
+          />
 
-          <Box sx={{ width: "70%", marginBottom: "2em", alignItems: "center" }}>
-            <StyledInput
-              onChange={(event) => getLeagues(event.target.value)}
-              id="zipcode"
-              placeholder="Search zipcodes"
-              sx={{
-                marginBottom: "1em",
-                width: "100%",
-                paddingLeft: "1em",
-                paddingRight: "1em",
-              }}
-            />
+          {user?.Username === "ADMIN_PUNCHSHOT" && (
+            <ThemeProvider theme={buttonTheme}>
+              <Button
+                onClick={openModal}
+                variant="contained"
+                color="primary"
+                sx={{
+                  borderRadius: "calc(1.5em + 1vw)",
+                  marginTop: "1em",
+                  marginBottom: "3em",
+                  width: "100%",
+                }}
+              >
+                Create League
+              </Button>
+            </ThemeProvider>
+          )}
 
-            {user?.Username === "test" && (
-              <ThemeProvider theme={buttonTheme}>
-                <Button
-                  onClick={openModal}
-                  variant="contained"
-                  color="primary"
-                  sx={{
-                    borderRadius: "calc(1.5em + 1vw)",
-                    marginTop: "1em",
-                    marginBottom: "3em",
-                    width: "100%",
+          {leagues !== null
+            ? leagues.map((item, index) => (
+                <LeagueComp
+                  logo={require("../../assets/images/ATL1.png")}
+                  name={leagues[index]["LeagueName"]}
+                  numberOfTeams={leagues[index]["NumTeams"]}
+                  teamsSignedUp={leagues[index]["Teams"].length}
+                  teams={leagues[index]["Teams"]}
+                  startDate={leagues[index]["StartDate"]}
+                  city={leagues[index]["City"]}
+                  id={leagues[index]["_id"]}
+                  showLeague={leagues[index]["Status"] === "PENDING"}
+                  allowStart={user?.Username === "test"}
+                  onClick={() => {
+                    navigateToLeagueInfo(index);
                   }}
-                >
-                  Create League
-                </Button>
-              </ThemeProvider>
-            )}
-
-            {leagues !== null
-              ? leagues.map((item, index) => (
-                  <LeagueComp
-                    logo={require("../../assets/images/ATL1.png")}
-                    name={leagues[index]["LeagueName"]}
-                    numberOfTeams={leagues[index]["NumTeams"]}
-                    teamsSignedUp={leagues[index]["Teams"].length}
-                    teams={leagues[index]["Teams"]}
-                    startDate={leagues[index]["StartDate"]}
-                    city={leagues[index]["City"]}
-                    id={leagues[index]["_id"]}
-                    showLeague={leagues[index]["Status"] === "PENDING"}
-                    allowStart={user?.Username === "test"}
-                    onClick={() => {
-                      navigateToLeagueInfo(index);
-                    }}
-                  />
-                ))
-              : null}
-            <Box
-              sx={{
-                position: "absolute",
-                top: "102%",
-                left: "9.5%",
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                flexDirection: "row",
-              }}
-            ></Box>
-          </Box>
+                />
+              ))
+            : null}
+          <Box
+            sx={{
+              position: "absolute",
+              top: "102%",
+              left: "9.5%",
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              flexDirection: "row",
+            }}
+          ></Box>
         </Box>
       </Box>
-    );
+    </Box>
+  );
 };

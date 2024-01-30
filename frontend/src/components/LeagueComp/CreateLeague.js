@@ -28,15 +28,15 @@ const StyledInput = styled(TextField)({
 });
 
 const buttonTheme = createTheme({
-    palette: {
-      primary: {
-        main: "#9146D8",
-      },
-      secondary: {
-        main: "#D9D9D9",
-      },
+  palette: {
+    primary: {
+      main: "#9146D8",
     },
-  });
+    secondary: {
+      main: "#D9D9D9",
+    },
+  },
+});
 
 const StyledSelect = styled(Select)({
   borderRadius: "1em",
@@ -53,61 +53,60 @@ const StyledLabel = styled("label")({
   marginBottom: "0.5vh",
 });
 
-export const CreateLeague = ({show, onClose}) => {
-    const [leagueName, setLeagueName] = useState(null);
-    const [numTeams, setNumTeams] = useState(null);
-    const [leagueSkillLevel, setLeagueSkillLevel] = useState(null);
-    const [leagueDivision, setLeagueDivision] = useState(null);
-    const [zipCode, setZipCode] = useState(null);
-    const [city, setCity] = useState(null);
-    const [startDate, setStartDate] = useState(null);
-    const [leagues, setLeagues] = useState(null);
+export const CreateLeague = ({ show, onClose }) => {
+  const [leagueName, setLeagueName] = useState(null);
+  const [numTeams, setNumTeams] = useState(null);
+  const [leagueSkillLevel, setLeagueSkillLevel] = useState(null);
+  const [leagueDivision, setLeagueDivision] = useState(null);
+  const [zipCode, setZipCode] = useState(null);
+  const [city, setCity] = useState(null);
+  const [startDate, setStartDate] = useState(null);
+  const [leagues, setLeagues] = useState(null);
 
-    const createLeague = async () => {
+  const createLeague = async () => {
+    if (
+      leagueName === null ||
+      numTeams === null ||
+      city === null ||
+      zipCode === null ||
+      startDate === null
+    ) {
+      alert("All fields are required!");
+      return;
+    }
 
-        if (
-            leagueName === null ||
-            numTeams === null ||
-            city === null ||
-            zipCode === null ||
-            startDate === null
-          ) {
-            alert("All fields are required!");
-            return;
-          }
-         
-        // Put the parameters in the request body
-        console.log(zipCode); 
-        const body = {
-          LeagueName: leagueName,
-          NumTeams: numTeams,
-          ZipCodes: zipCode
-            .split(",")
-            .map((e) => e.trim())
-            .filter((e) => e),
-          City: city,
-          LeagueOwner: "tempOwner",
-          LeagueOwnerEmail: "tiberius.colina@gmail.com", // change in production,
-          StartDate: startDate,
-          Status: "PENDING",
-        };
-    
-        console.log(body);
+    // Put the parameters in the request body
+    console.log(zipCode);
+    const body = {
+      LeagueName: leagueName,
+      NumTeams: numTeams,
+      ZipCodes: zipCode
+        .split(",")
+        .map((e) => e.trim())
+        .filter((e) => e),
+      City: city,
+      LeagueOwner: "ADMIN_PUNCHSHOT", // store admin details in file
+      LeagueOwnerEmail: "vigneshsreedhar2002@gmail.com", // store admin details in file
+      StartDate: startDate,
+      Status: "PENDING",
+    };
 
-        const resp = await axios.post(
-          "http://localhost:8000/leagues/createLeague", 
-          body
-        ); 
-    
-        if (resp.data.error) {
-          alert(resp.data.error);
-        } else {
-          // alert(content.error);
-        }
-      };
-    
-  if(!show){
-    return null; 
+    console.log(body);
+
+    const resp = await axios.post(
+      "http://localhost:8000/leagues/createLeague",
+      body
+    );
+
+    if (resp.data.error) {
+      alert(resp.data.error);
+    } else {
+      // alert(content.error);
+    }
+  };
+
+  if (!show) {
+    return null;
   }
 
   return (
@@ -156,25 +155,23 @@ export const CreateLeague = ({show, onClose}) => {
               League Name<span style={{ color: "red" }}>*</span>
             </StyledLabel>
             <StyledInput
-                  onChange={(event) => setLeagueName(event.target.value)}
-                  id="leagueName"
-                  placeholder="Atlanta Classic League"
-                  required
-                />
+              onChange={(event) => setLeagueName(event.target.value)}
+              id="leagueName"
+              placeholder="Atlanta Classic League"
+              required
+            />
           </FormControl>
           <FormControl sx={{ height: "5vw", marginLeft: "1.5vw" }}>
-                <StyledLabel htmlFor="nbCompetitors">
-                  Maximum Number of Teams{" "}
-                  <span style={{ color: "red" }}>*</span>
-                </StyledLabel>
-                <StyledInput
-                  onChange={(event) => setNumTeams(event.target.value)}
-                  id="nbCompetitors"
-                  placeholder="5"
-                  required
-                />
-              </FormControl>
-
+            <StyledLabel htmlFor="nbCompetitors">
+              Maximum Number of Teams <span style={{ color: "red" }}>*</span>
+            </StyledLabel>
+            <StyledInput
+              onChange={(event) => setNumTeams(event.target.value)}
+              id="nbCompetitors"
+              placeholder="5"
+              required
+            />
+          </FormControl>
         </Box>
         <Box
           sx={{
@@ -185,27 +182,28 @@ export const CreateLeague = ({show, onClose}) => {
           }}
         >
           <FormControl sx={{ width: "30vw" }}>
-                <StyledLabel htmlFor="zipCode">
-                  Zip Codes (Enter zipcodes seperated by a comma)<span style={{ color: "red" }}>*</span>
-                </StyledLabel>
-                <StyledInput
-                  onChange={(event) => setZipCode(event.target.value)}
-                  id="zipCode"
-                  placeholder="30332, 02038"
-                  required
-                />
-              </FormControl>
-              <FormControl sx={{ height: "5vw", marginLeft: "1.5vw" }}>
-                <StyledLabel htmlFor="city">
-                  City <span style={{ color: "red" }}>*</span>
-                </StyledLabel>
-                <StyledInput
-                  onChange={(event) => setCity(event.target.value)}
-                  id="city"
-                  placeholder="Atlanta"
-                  required
-                />
-              </FormControl>
+            <StyledLabel htmlFor="zipCode">
+              Zip Codes (Enter zipcodes seperated by a comma)
+              <span style={{ color: "red" }}>*</span>
+            </StyledLabel>
+            <StyledInput
+              onChange={(event) => setZipCode(event.target.value)}
+              id="zipCode"
+              placeholder="30332, 02038"
+              required
+            />
+          </FormControl>
+          <FormControl sx={{ height: "5vw", marginLeft: "1.5vw" }}>
+            <StyledLabel htmlFor="city">
+              City <span style={{ color: "red" }}>*</span>
+            </StyledLabel>
+            <StyledInput
+              onChange={(event) => setCity(event.target.value)}
+              id="city"
+              placeholder="Atlanta"
+              required
+            />
+          </FormControl>
         </Box>
         <Box
           sx={{
@@ -236,16 +234,18 @@ export const CreateLeague = ({show, onClose}) => {
           </FormControl>
 
           <Box
-          sx={{
-            // width: "65vw",
-            display: "inline-block",
-            textAlign:'center',
-            justifyContent: "space-between",
-            marginTop: "2vh",
-          }}
+            sx={{
+              // width: "65vw",
+              display: "inline-block",
+              textAlign: "center",
+              justifyContent: "space-between",
+              marginTop: "2vh",
+            }}
           >
-
-            <FormControl sx={{ height: "10vw", marginLeft: "10vw" }} size="small">
+            <FormControl
+              sx={{ height: "10vw", marginLeft: "10vw" }}
+              size="small"
+            >
               <StyledLabel htmlFor="skillLevel">
                 Skill Level <span style={{ color: "red" }}>*</span>
               </StyledLabel>
@@ -262,7 +262,10 @@ export const CreateLeague = ({show, onClose}) => {
               </Select>
             </FormControl>
 
-            <FormControl sx={{ height: "10vw", marginLeft: "2vw" }} size="small">
+            <FormControl
+              sx={{ height: "10vw", marginLeft: "2vw" }}
+              size="small"
+            >
               <StyledLabel htmlFor="skillLevel">
                 Division <span style={{ color: "red" }}>*</span>
               </StyledLabel>
@@ -278,12 +281,9 @@ export const CreateLeague = ({show, onClose}) => {
                 <MenuItem value={"Advanced"}>Mixed</MenuItem>
               </Select>
             </FormControl>
-
           </Box>
-        </Box> 
-        
-          
-          
+        </Box>
+
         {/* <Box sx={{width:"65vw", display:"flex", justifyContent:"space-between", marginTop:"2vh"}} >
                     <FormControl sx={{width:"30vw"}}>
                         <StyledLabel htmlFor="bio">Bio</StyledLabel>
