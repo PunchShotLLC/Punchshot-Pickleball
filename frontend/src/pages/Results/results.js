@@ -1,4 +1,3 @@
-import { Header } from "../../components/Header/header.js";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { hslToRgb, styled } from "@mui/system";

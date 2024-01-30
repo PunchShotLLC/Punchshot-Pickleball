@@ -67,17 +67,17 @@ export const createUser = async (req, res) => {
   const {
     Email,
     Username,
-    FirstName,
-    LastName,
+    Name,
+    Sex,
     Password,
     ZipCode,
     SkillLevel,
   } = req.body;
 
   console.log(
-    FirstName +
+    Name +
       " " +
-      LastName +
+      Sex +
       " " +
       Email +
       " " +
@@ -98,14 +98,14 @@ export const createUser = async (req, res) => {
       error: "Username is required",
     });
   }
-  if (!FirstName) {
+  if (!Name) {
     return res.json({
-      error: "First Name is required",
+      error: "Name is required",
     });
   }
-  if (!LastName) {
+  if (!Sex) {
     return res.json({
-      error: "First Name is required",
+      error: "Sex is required",
     });
   }
   if (!Password || Password.length < 6 || Password.length > 20) {
@@ -146,8 +146,8 @@ export const createUser = async (req, res) => {
       Email,
       Username,
       Password: hashedPassword,
-      FirstName,
-      LastName,
+      Name,
+      Sex,
       ZipCode,
       SkillLevel,
     }).save();

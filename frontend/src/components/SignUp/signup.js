@@ -44,9 +44,9 @@ const StyledLabel = styled("label")({
 export const SignUp = (props) => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
-  const [firstName, setFirstName] = useState("");
+  const [name, setName] = useState("");
   const [username, setUsername] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [sex, setSex] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -65,8 +65,8 @@ export const SignUp = (props) => {
   const onClickSignUp = async (event) => {
     event.preventDefault();
     if (
-      firstName === "" ||
-      lastName === "" ||
+      name === "" ||
+      sex === "" ||
       username === "" ||
       zipCode === "" ||
       skillLevel === "" ||
@@ -85,8 +85,8 @@ export const SignUp = (props) => {
       {
         Email: email,
         Username: username,
-        FirstName: firstName,
-        LastName: lastName,
+        Name: name,
+        Sex: sex,
         Password: password,
         ZipCode: zipCode,
         SkillLevel: skillLevel,
@@ -160,15 +160,15 @@ export const SignUp = (props) => {
             />
           </FormControl>
           <FormControl sx={{ width: "30vw" }}>
-            <StyledLabel htmlFor="firstname">
-              First Name<span style={{ color: "red" }}>*</span>
+            <StyledLabel htmlFor="name">
+              Name<span style={{ color: "red" }}>*</span>
             </StyledLabel>
             <StyledInput
-              id="firstname"
-              placeholder="John"
-              value={firstName}
+              id="name"
+              placeholder="John Doe"
+              value={name}
               onChange={(event) => {
-                setFirstName(event.target.value);
+                setName(event.target.value);
               }}
               required
             />
@@ -197,15 +197,15 @@ export const SignUp = (props) => {
             />
           </FormControl>
           <FormControl sx={{ width: "30vw" }}>
-            <StyledLabel htmlFor="lastname">
-              Last Name<span style={{ color: "red" }}>*</span>
+            <StyledLabel htmlFor="sex">
+              Sex<span style={{ color: "red" }}>*</span>
             </StyledLabel>
             <StyledInput
-              id="lastname"
-              placeholder="Doe"
-              value={lastName}
+              id="sex"
+              placeholder="Male/Female"
+              value={sex}
               onChange={(event) => {
-                setLastName(event.target.value);
+                setSex(event.target.value);
               }}
               required
             />
