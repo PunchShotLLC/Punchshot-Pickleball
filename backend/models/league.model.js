@@ -72,14 +72,12 @@ const leagueSchema = new Schema({
     enum: ["Novice", "Intermediate", "Advanced"],
     required: true,
   },
-  Category: {
+  Division: {
     type: String,
     enum: ["Men", "Women", "Mixed"],
     required: true,
   },
-  Matches: [
-    Object
-  ]
+  Matches: [Object],
 });
 
 export default mongoose.model("League", leagueSchema);

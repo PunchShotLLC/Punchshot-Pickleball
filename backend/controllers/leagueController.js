@@ -18,6 +18,8 @@ export const createLeague = async (req, res, body) => {
     StartDate,
     Status,
     Matches,
+    SkillLevel,
+    Division,
   } = req.body;
 
   if (!LeagueName) {
@@ -53,6 +55,18 @@ export const createLeague = async (req, res, body) => {
     });
   }
 
+  if (!SkillLevel) {
+    return res.json({
+      error: "Skill Level is required!",
+    });
+  }
+
+  if (!Division) {
+    return res.json({
+      error: "Division is required!",
+    });
+  }
+
   const existLeagueName = await League.findOne({ LeagueName });
   if (existLeagueName) {
     return res.json({
@@ -77,7 +91,9 @@ export const createLeague = async (req, res, body) => {
       City,
       StartDate,
       Status,
-      Matches
+      Matches,
+      SkillLevel,
+      Division,
     }).save();
 
     return res.json({ message: "League was successfully created!" });
@@ -141,7 +157,7 @@ export const getAddressInfo = async (req, res) => {
   const apiKey = process.env.GEOAPIFY;
   const input = req.query.input;
 
-  console.log(input)
+  console.log(input);
 
   const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${input}&apiKey=${apiKey}`;
   try {
@@ -175,7 +191,7 @@ function getNextSaturday() {
  * function written by chatgpt to generate team matchupes
  *   - ensures that floor(#teams/2) are scheduled for each week
  *   - ensures that no team plays on two matches on the same day
- * @param {*} teams 
+ * @param {*} teams
  * @returns matchups per week
  */
 function scheduler(teams) {
@@ -221,23 +237,20 @@ function createMatchups(teams) {
 
   let matches = [];
   schedule.forEach((week, weekNum) => {
-
     for (let i = 0; i < week.matchups.length; i++) {
       if (week.matchups[i][0] !== null && week.matchups[i][1] !== null) {
-        matches.push(
-          {
-            "Date": week.date,
-            "Team1": week.matchups[i][0],
-            "Team2": week.matchups[i][1],
-            "Score": "",
-            "WinnerTeam": ""
-          }
-        )
+        matches.push({
+          Date: week.date,
+          Team1: week.matchups[i][0],
+          Team2: week.matchups[i][1],
+          Score: "",
+          WinnerTeam: "",
+        });
       }
     }
   });
 
-  return matches
+  return matches;
 }
 
 // console.log(createMatchups(["Team1", "Team2", "Team3", "Team4", "Team5"]))
@@ -252,21 +265,21 @@ function createMatchups(teams) {
 export const startLeague = async (req, res) => {
   // Create an update object
   let updateObject = {
-    Status: "ONGOING"
-  }
+    Status: "ONGOING",
+  };
 
   // Get the list of team names from the database
   let league = await League.findById(req.params.id);
   let teams = league["Teams"];
-  let teamNames = []
+  let teamNames = [];
 
   // Get the team names from the teams list
   for (let i = 0; i < teams.length; i++) {
-    teamNames.push(teams[i]["TeamName"])
+    teamNames.push(teams[i]["TeamName"]);
   }
 
   // Get the matchups
-  updateObject['Matches'] = createMatchups(teamNames)
+  updateObject["Matches"] = createMatchups(teamNames);
 
   // Change the status of the league to ongoing
   await League.findByIdAndUpdate(req.params.id, updateObject)
@@ -276,7 +289,6 @@ export const startLeague = async (req, res) => {
     .catch((error) => {
       res.status(400).json({ error: error.message });
     });
-
 
   // Get the list of teams and their captains
   // Send an email to the captains of each team
@@ -293,19 +305,24 @@ export const startLeague = async (req, res) => {
 export const getStandings = async (req, res) => {
   try {
     let league = await League.findById(req.params.id);
-    let teams = league["Teams"]
+    let teams = league["Teams"];
     let matches = league["Matches"];
     let standings = {};
 
     // get team names from team objects list
     for (let i = 0; i < teams.length; i++) {
-      standings[teams[i]["TeamName"]] = { teamWins: 0, teamLosses: 0, matchWins: 0, matchLosses: 0};
+      standings[teams[i]["TeamName"]] = {
+        teamWins: 0,
+        teamLosses: 0,
+        matchWins: 0,
+        matchLosses: 0,
+      };
     }
 
     for (let i = 0; i < matches.length; i++) {
       let Team1 = matches[i]["Team1"];
       let Team2 = matches[i]["Team2"];
-      let WinnerTeam = matches[i]["WinnerTeam"]
+      let WinnerTeam = matches[i]["WinnerTeam"];
 
       // tally wins and losses
       if (WinnerTeam) {
@@ -315,8 +332,10 @@ export const getStandings = async (req, res) => {
         standings[WinnerTeam].matchWins += matchWins;
         standings[WinnerTeam].matchLosses += matchLosses;
         standings[WinnerTeam === Team1 ? Team2 : Team1].teamLosses += 1;
-        standings[WinnerTeam === Team1 ? Team2 : Team1].matchLosses += matchWins;
-        standings[WinnerTeam === Team1 ? Team2 : Team1].matchWins += matchLosses;
+        standings[WinnerTeam === Team1 ? Team2 : Team1].matchLosses +=
+          matchWins;
+        standings[WinnerTeam === Team1 ? Team2 : Team1].matchWins +=
+          matchLosses;
       }
     }
 
@@ -369,76 +388,107 @@ cron.schedule("0 0 * * *", () => {
   sendLeagueStartEmails();
 });
 cron.schedule("0 8 * * *", (date) => {
-  matchCronJob(date)
-})
+  matchCronJob(date);
+});
 const matchCronJob = async (date) => {
-  const leagues = await League.find({})
-  leagues.filter(league => league.Status === "ONGOING")
-    .forEach(league => {
+  const leagues = await League.find({});
+  leagues
+    .filter((league) => league.Status === "ONGOING")
+    .forEach((league) => {
       league.Matches.forEach((match, index, matches) => {
-        const matchTeams = league.Teams.filter(team => team.TeamName === match.Team1 || team.TeamName === match.Team2);
-        const afterMatch = date.getTime() > Date.parse(match.Date)
+        const matchTeams = league.Teams.filter(
+          (team) =>
+            team.TeamName === match.Team1 || team.TeamName === match.Team2
+        );
+        const afterMatch = date.getTime() > Date.parse(match.Date);
         //Day before match case
         if (isDayBeforeCurrentDate(match.Date)) {
           matchTeams.forEach((team) => {
-            sendEmail(team.teamCaptainEmail,
+            sendEmail(
+              team.teamCaptainEmail,
               "You have a match tommorow",
-              `It is the day before your match against ${team.TeamName === match.Team1 ? match.Team2 : match.Team1} starts. Make sure to let your team now. Good luck and have fun!`
-            )
-          })
+              `It is the day before your match against ${
+                team.TeamName === match.Team1 ? match.Team2 : match.Team1
+              } starts. Make sure to let your team now. Good luck and have fun!`
+            );
+          });
         }
         //Tuesday and no score case
         else if (afterMatch && !score && date.getDay() == 2) {
           matchTeams.forEach((team) => {
-            sendEmail(team.teamCaptainEmail,
+            sendEmail(
+              team.teamCaptainEmail,
               "Enter your scores for your match",
-              `You played a match last Saturday against ${team.TeamName === match.Team1 ? match.Team2 : match.Team1}. Make sure to enter your score by this Thursday or the match will be declared a tie.`
-            )
-          })
+              `You played a match last Saturday against ${
+                team.TeamName === match.Team1 ? match.Team2 : match.Team1
+              }. Make sure to enter your score by this Thursday or the match will be declared a tie.`
+            );
+          });
         }
         //Thursday and no score case
         else if (afterMatch && !score && date.getDay() == 4) {
           matchTeams.forEach((team) => {
-            sendEmail(team.teamCaptainEmail,
+            sendEmail(
+              team.teamCaptainEmail,
               "Match scores not entered",
-              `You played a match last Saturday against ${team.TeamName === match.Team1 ? match.Team2 : match.Team1} and neither of you have entered a score. The match has been declared a tie. Make sure to enter your score next time.`
-            )
-          })
-          match.Score = "0-0"
-          match.WinnerTeam = "Tie"
-          matches[index] = match
-          league.findByIdAndUpdate(league._id, { Matches: matches })
+              `You played a match last Saturday against ${
+                team.TeamName === match.Team1 ? match.Team2 : match.Team1
+              } and neither of you have entered a score. The match has been declared a tie. Make sure to enter your score next time.`
+            );
+          });
+          match.Score = "0-0";
+          match.WinnerTeam = "Tie";
+          matches[index] = match;
+          league.findByIdAndUpdate(league._id, { Matches: matches });
         }
-      })
-      if (league.Matches.length() == (league.Teams.length() * (league.Teams.length() - 1) / 2) && league.Matches.every(match => match.WinnerTeam)) {
-        let teamScores = {}
-        league.Matches.forEach(match => {
+      });
+      if (
+        league.Matches.length() ==
+          (league.Teams.length() * (league.Teams.length() - 1)) / 2 &&
+        league.Matches.every((match) => match.WinnerTeam)
+      ) {
+        let teamScores = {};
+        league.Matches.forEach((match) => {
           if (match.WinnerTeam == match.Team1) {
-            teamScores[match.Team1] = teamScores[match.Team1] ? teamScores[match.Team1] + 1 : 1
-            teamScores[match.Team2] = teamScores[match.Team2] ? teamScores[match.Team2] : 0
+            teamScores[match.Team1] = teamScores[match.Team1]
+              ? teamScores[match.Team1] + 1
+              : 1;
+            teamScores[match.Team2] = teamScores[match.Team2]
+              ? teamScores[match.Team2]
+              : 0;
           } else if (match.WinnerTeam == match.Team2) {
-            teamScores[match.Team2] = teamScores[match.Team2] ? teamScores[match.Team2] + 1 : 1
-            teamScores[match.Team1] = teamScores[match.Team1] ? teamScores[match.Team1] : 0
+            teamScores[match.Team2] = teamScores[match.Team2]
+              ? teamScores[match.Team2] + 1
+              : 1;
+            teamScores[match.Team1] = teamScores[match.Team1]
+              ? teamScores[match.Team1]
+              : 0;
           } else {
-            teamScores[match.Team1] = teamScores[match.Team1] ? teamScores[match.Team1] : 0
-            teamScores[match.Team2] = teamScores[match.Team2] ? teamScores[match.Team2] : 0
+            teamScores[match.Team1] = teamScores[match.Team1]
+              ? teamScores[match.Team1]
+              : 0;
+            teamScores[match.Team2] = teamScores[match.Team2]
+              ? teamScores[match.Team2]
+              : 0;
           }
         });
         let top2Teams = Object.entries(teamScores)
           .sort(({ 1: a }, { 1: b }) => b - a)
-          .slice(0, 2)
-        const nextSaturday = new Date(date.getDate() + (6 - date.getDay()) + 1)
+          .slice(0, 2);
+        const nextSaturday = new Date(date.getDate() + (6 - date.getDay()) + 1);
         let finalMatch = {
-          "Date": nextSaturday.toDateString(),
-          "Team1": top2Teams[0],
-          "Team2": top2Teams[1],
-          "Score": "",
-          "WinnerTeam": ""
-        }
-        league.findByIdAndUpdate(league._id, { $push: { Matches: finalMatch } })
+          Date: nextSaturday.toDateString(),
+          Team1: top2Teams[0],
+          Team2: top2Teams[1],
+          Score: "",
+          WinnerTeam: "",
+        };
+        league.findByIdAndUpdate(league._id, {
+          $push: { Matches: finalMatch },
+        });
       }
-    })
-}
+    });
+};
 
 function isDayBeforeCurrentDate(targetDate) {
   // Get the current date

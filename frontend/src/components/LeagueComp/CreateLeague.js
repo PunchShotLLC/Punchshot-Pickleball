@@ -69,7 +69,9 @@ export const CreateLeague = ({ show, onClose }) => {
       numTeams === null ||
       city === null ||
       zipCode === null ||
-      startDate === null
+      startDate === null ||
+      leagueDivision === null ||
+      leagueSkillLevel === null
     ) {
       alert("All fields are required!");
       return;
@@ -88,6 +90,8 @@ export const CreateLeague = ({ show, onClose }) => {
       LeagueOwner: "ADMIN_PUNCHSHOT", // store admin details in file
       LeagueOwnerEmail: "vigneshsreedhar2002@gmail.com", // store admin details in file
       StartDate: startDate,
+      Division: leagueDivision,
+      SkillLevel: leagueSkillLevel,
       Status: "PENDING",
     };
 
@@ -256,7 +260,7 @@ export const CreateLeague = ({ show, onClose }) => {
                 label="Age"
                 onChange={(event) => setLeagueSkillLevel(event.target.value)}
               >
-                <MenuItem value={"Beginner"}>Beginner</MenuItem>
+                <MenuItem value={"Novice"}>Novice</MenuItem>
                 <MenuItem value={"Intermediate"}>Intermediate</MenuItem>
                 <MenuItem value={"Advanced"}>Advanced</MenuItem>
               </Select>
@@ -276,9 +280,9 @@ export const CreateLeague = ({ show, onClose }) => {
                 label="Age"
                 onChange={(event) => setLeagueDivision(event.target.value)}
               >
-                <MenuItem value={"Beginner"}>Men</MenuItem>
-                <MenuItem value={"Intermediate"}>Women</MenuItem>
-                <MenuItem value={"Advanced"}>Mixed</MenuItem>
+                <MenuItem value={"Men"}>Men</MenuItem>
+                <MenuItem value={"Women"}>Women</MenuItem>
+                <MenuItem value={"Mixed"}>Mixed</MenuItem>
               </Select>
             </FormControl>
           </Box>
