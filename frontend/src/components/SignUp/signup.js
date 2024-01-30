@@ -104,6 +104,10 @@ export const SignUp = (props) => {
     setSkillLevel(event.target.value);
   };
 
+  const handleSexChange = (event) => {
+    setSex(event.target.value);
+  };
+
   return (
     <Box
       style={{
@@ -196,7 +200,7 @@ export const SignUp = (props) => {
               required
             />
           </FormControl>
-          <FormControl sx={{ width: "30vw" }}>
+          {/* <FormControl sx={{ width: "30vw" }}>
             <StyledLabel htmlFor="sex">
               Sex<span style={{ color: "red" }}>*</span>
             </StyledLabel>
@@ -209,6 +213,27 @@ export const SignUp = (props) => {
               }}
               required
             />
+          </FormControl> */}
+          <FormControl sx={{ width: "30vw" }}>
+            <StyledLabel htmlFor="sex">
+              Sex<span style={{ color: "red" }}>*</span>
+            </StyledLabel>
+            <StyledSelect
+              variant="standard"
+              disableUnderline
+              id="sex"
+              value={sex}
+              onChange={handleSexChange}
+              placeholder="Male, Female"
+              required
+            >
+              <MenuItem key="Male" value="Male">
+                Male
+              </MenuItem>
+              <MenuItem key="Female" value="Female">
+                Female
+              </MenuItem>
+            </StyledSelect>
           </FormControl>
         </Box>
         <Box
