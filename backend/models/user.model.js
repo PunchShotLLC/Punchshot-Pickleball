@@ -17,11 +17,11 @@ const userSchema = new Schema({
     required: true,
     minLength: 8,
   },
-  FirstName: {
+  Name: {
     type: String,
     required: true,
   },
-  LastName: {
+  Sex: {
     type: String,
     required: true,
   },

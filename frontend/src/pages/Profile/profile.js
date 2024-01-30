@@ -162,7 +162,7 @@ export const Profile = () => {
               <StyledLabel style={{ fontFamily: "Inter", marginRight: "0.25em", fontSize: "1.25em" }}>
                 Name:</StyledLabel>
               <StyledText sx={{ fontFamily: "Inter", marginRight: "0.25em", fontSize: "1.25em" }}>
-                {`${user?.FirstName} ${user?.LastName}`}</StyledText>
+                {`${user?.Name}`}</StyledText>
             </Box>
             <Box sx={{ display: "flex" }}>
               <StyledLabel style={{ fontFamily: "Inter", marginRight: "0.25em", fontSize: "1.25em" }}>
