@@ -4,7 +4,7 @@ import "@fontsource/inter/200.css";
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/700.css";
 import courtPicture from "../../assets/images/Rectangle27.png";
-import "./about.scss";
+import "./about.css";
 
 export const About = () => {
   return (

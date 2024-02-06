@@ -8,7 +8,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight.js";
 import { makeStyles } from "@mui/material";
-import "../Results/results.scss";
+import "../Results/results.css";
 import "@fontsource/inter";
 import "@fontsource/inter/200.css";
 import "@fontsource/inter/400.css";

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import * as React from "react";
 import { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
-import "../League/league.scss";
+import "../League/league.css";
 import "@fontsource/inter";
 import "@fontsource/inter/200.css";
 import "@fontsource/inter/400.css";

@@ -1,6 +1,6 @@
 import logo from "../../assets/images/logo.svg";
 import { styled } from "@mui/system";
-import "./header.scss";
+import "./header.css";
 import Box from "@mui/material/Box";
 import { Stack } from "@mui/material";
 import Divider from "@mui/material/Divider";
@@ -8,7 +8,6 @@ import login from "../../assets/images/login.svg";
 import search from "../../assets/images/search.svg";
 import shop from "../../assets/images/shop.svg";
 import Button from "@mui/material/Button";
-import "./header.scss";
 import { useContext } from "react";
 import { useCookies } from "react-cookie";
 import { UserContext } from "../UserContext/usercontext";

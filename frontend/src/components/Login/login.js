@@ -1,5 +1,5 @@
 import logo from "../../assets/images/logo.svg";
-import "./login.scss";
+import "./login.css";
 import Typography from "@mui/material/Typography";
 import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";

@@ -5,7 +5,7 @@ import * as React from "react";
 import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../../components/UserContext/usercontext";
 import Typography from "@mui/material/Typography";
-import "../League/league.scss";
+import "../League/league.css";
 import "@fontsource/inter";
 import "@fontsource/inter/200.css";
 import "@fontsource/inter/400.css";

@@ -6,7 +6,7 @@ import rightArrow from "../../assets/images/rightArrow.svg";
 import courtDiagram from "../../assets/images/courtDiagram.png";
 import equipmentButton from "../../assets/images/equipmentButton.png";
 import whatToWearButton from "../../assets/images/whatToWearButton.png";
-import "./what.scss";
+import "./what.css";
 import Button from "@mui/material/Button";
 
 export const What = () => {
