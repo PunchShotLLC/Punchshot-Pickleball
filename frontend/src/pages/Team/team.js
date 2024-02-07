@@ -252,7 +252,7 @@ export const TeamSelect = (props) => {
 
   // fetches address suggestions with dropdown
   const fetchAddressSuggestions = (input) => {
-    if (input.length > 2) {
+    if (input && input.length > 2) {
       const requestOptions = {
         method: "GET",
       };
@@ -262,7 +262,7 @@ export const TeamSelect = (props) => {
         .then((result) => {
           console.log("we got result");
           console.log(result);
-          setSuggestions(result.features);
+          setSuggestions(result.predictions);
         })
         .catch((error) => console.log("error", error));
     } else {
@@ -392,7 +392,7 @@ export const TeamSelect = (props) => {
                       key={index}
                       onClick={() => handleSuggestionClick(suggestion)}
                     >
-                      {suggestion.properties.formatted}
+                      {suggestion.description}
                     </SuggestionItem>
                   ))}
                 </SuggestionsList>

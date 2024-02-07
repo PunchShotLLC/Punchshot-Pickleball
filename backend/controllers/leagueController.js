@@ -154,12 +154,12 @@ export const deleteLeague = async (req, res) => {
 };
 
 export const getAddressInfo = async (req, res) => {
-  const apiKey = process.env.GEOAPIFY;
+  const apiKey = process.env.GOOGLE;
   const input = req.query.input;
 
   console.log(input);
 
-  const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${input}&apiKey=${apiKey}`;
+  const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${input}&key=${apiKey}`;
   try {
     const requestOptions = {
       method: "GET",
@@ -168,6 +168,8 @@ export const getAddressInfo = async (req, res) => {
       .then((response) => response.json())
       .then((result) => {
         res.status(200).json(result);
+        console.log(result);
+        console.log("hi");
       });
   } catch (error) {
     console.error("Error fetching address information:", error);
