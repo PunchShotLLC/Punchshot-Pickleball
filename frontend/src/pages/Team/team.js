@@ -279,7 +279,7 @@ export const TeamSelect = (props) => {
 
   // function to handle suggestion click
   const handleSuggestionClick = (suggestion) => {
-    setHomeCourtAddress(suggestion.properties.formatted);
+    setHomeCourtAddress(suggestion.description);
     setSuggestions([]);
   };
 
