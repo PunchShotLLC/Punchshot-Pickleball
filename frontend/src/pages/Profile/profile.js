@@ -95,7 +95,7 @@ export const Profile = () => {
     }
   };
   return (
-    <Box sx={{ width: "85vw", height: "77.69vh", display: "flex" }}>
+    <Box sx={{ width: "85vw", height: "77.69vh", display: "flex", border:"1px solid black", justifyContent:"center" }}>
       <Box
         sx={{
           height: "77.69vh",
@@ -115,28 +115,11 @@ export const Profile = () => {
             display: "flex"
           }}
         >
-          <Box
-            sx={{
-              width: "calc(20em + 1vw)",
-              height: "calc(20em + 1vw)",
-              justifyContent: "space-between",
-              background:
-                "linear-gradient(rgba(145, 70, 216, 1), rgba(213, 253, 81, 1))",
-              display: "flex",
-              alignItems: "center",
-              marginRight: "2vw",
-              justifyContent: "center",
-              borderRadius: "40%",
-              marginBottom: "calc(-2.5em + 1vw)"
-
-            }}
-          >
             <Box
               component="img"
-              sx={{ height: "calc(19.5em + 1vw)", width: "calc(19.em + 1vw)", borderRadius: "40%", display: "flex" }}
-              src={defaultImage}
+              sx={{ height: "calc(17em + 1vw)", width: "calc(17em + 1vw)", borderRadius: "40%", display: "flex", border:"5px solid rgba(145, 70, 216, 1)", marginRight:"3em" }}
+              src={user?.ProfilePhoto}
             />
-          </Box>
           <Box
             sx={{
               display: "flex",
