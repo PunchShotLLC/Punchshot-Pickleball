@@ -12,9 +12,11 @@ import {
   getAddressInfo,
   startLeague,
   getStandings,
+  checkAddressWithinRadius,
 } from "../controllers/leagueController.js";
 
 router.route("/address").get(getAddressInfo);
+router.route("/checkAddress").get(checkAddressWithinRadius);
 router.route("/sendRequestEmail").get(sendRequestEmail);
 router.route("/").get(getLeagues);
 router.route("/:id/standings").get(getStandings);
