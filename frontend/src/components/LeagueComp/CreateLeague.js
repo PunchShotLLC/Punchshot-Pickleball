@@ -55,20 +55,15 @@ const StyledLabel = styled("label")({
 
 export const CreateLeague = ({ show, onClose }) => {
   const [leagueName, setLeagueName] = useState(null);
-  const [numTeams, setNumTeams] = useState(null);
   const [leagueSkillLevel, setLeagueSkillLevel] = useState(null);
   const [leagueDivision, setLeagueDivision] = useState(null);
-  const [zipCode, setZipCode] = useState(null);
-  const [city, setCity] = useState(null);
   const [startDate, setStartDate] = useState(null);
-  const [leagues, setLeagues] = useState(null);
+  const [registrationDate, setRegistrationDate] = useState(null);
 
   const createLeague = async () => {
     if (
       leagueName === null ||
-      numTeams === null ||
-      city === null ||
-      zipCode === null ||
+      registrationDate == null ||
       startDate === null ||
       leagueDivision === null ||
       leagueSkillLevel === null
@@ -78,18 +73,12 @@ export const CreateLeague = ({ show, onClose }) => {
     }
 
     // Put the parameters in the request body
-    console.log(zipCode);
     const body = {
       LeagueName: leagueName,
-      NumTeams: numTeams,
-      ZipCodes: zipCode
-        .split(",")
-        .map((e) => e.trim())
-        .filter((e) => e),
-      City: city,
       LeagueOwner: "ADMIN_PUNCHSHOT", // store admin details in file
       LeagueOwnerEmail: "vigneshsreedhar2002@gmail.com", // store admin details in file
       StartDate: startDate,
+      RegistrationDate: registrationDate,
       Division: leagueDivision,
       SkillLevel: leagueSkillLevel,
       Status: "PENDING",
@@ -156,7 +145,7 @@ export const CreateLeague = ({ show, onClose }) => {
         >
           <FormControl sx={{ width: "30vw" }}>
             <StyledLabel htmlFor="email">
-              League Name<span style={{ color: "red" }}>*</span>
+              League Name <span style={{ color: "red" }}>*</span>
             </StyledLabel>
             <StyledInput
               onChange={(event) => setLeagueName(event.target.value)}
@@ -165,60 +154,8 @@ export const CreateLeague = ({ show, onClose }) => {
               required
             />
           </FormControl>
-          <FormControl sx={{ height: "5vw", marginLeft: "1.5vw" }}>
-            <StyledLabel htmlFor="nbCompetitors">
-              Maximum Number of Teams <span style={{ color: "red" }}>*</span>
-            </StyledLabel>
-            <StyledInput
-              onChange={(event) => setNumTeams(event.target.value)}
-              id="nbCompetitors"
-              placeholder="5"
-              required
-            />
-          </FormControl>
-        </Box>
-        <Box
-          sx={{
-            width: "65vw",
-            display: "flex",
-            justifyContent: "space-between",
-            marginTop: "2vh",
-          }}
-        >
           <FormControl sx={{ width: "30vw" }}>
-            <StyledLabel htmlFor="zipCode">
-              Zip Codes (Enter zipcodes seperated by a comma)
-              <span style={{ color: "red" }}>*</span>
-            </StyledLabel>
-            <StyledInput
-              onChange={(event) => setZipCode(event.target.value)}
-              id="zipCode"
-              placeholder="30332, 02038"
-              required
-            />
-          </FormControl>
-          <FormControl sx={{ height: "5vw", marginLeft: "1.5vw" }}>
-            <StyledLabel htmlFor="city">
-              City <span style={{ color: "red" }}>*</span>
-            </StyledLabel>
-            <StyledInput
-              onChange={(event) => setCity(event.target.value)}
-              id="city"
-              placeholder="Atlanta"
-              required
-            />
-          </FormControl>
-        </Box>
-        <Box
-          sx={{
-            width: "65vw",
-            display: "inline-block",
-            justifyContent: "space-between",
-            marginTop: "2vh",
-          }}
-        >
-          <FormControl sx={{ width: "30vw" }}>
-            <StyledLabel htmlFor="date">
+          <StyledLabel htmlFor="date">
               Start Date <span style={{ color: "red" }}>*</span>
             </StyledLabel>
             <StyledInput
@@ -236,56 +173,83 @@ export const CreateLeague = ({ show, onClose }) => {
               required
             />
           </FormControl>
-
-          <Box
-            sx={{
-              // width: "65vw",
-              display: "inline-block",
-              textAlign: "center",
-              justifyContent: "space-between",
-              marginTop: "2vh",
-            }}
-          >
-            <FormControl
-              sx={{ height: "10vw", marginLeft: "10vw" }}
-              size="small"
+        </Box>
+        <Box
+          sx={{
+            width: "65vw",
+            display: "flex",
+            justifyContent: "space-between",
+            marginTop: "2vh",
+          }}
+        >
+          <FormControl sx={{ width: "30vw" }}>
+            <StyledLabel htmlFor="skillLevel">
+              Skill Level <span style={{ color: "red" }}>*</span>
+            </StyledLabel>
+            <StyledSelect
+              variant="standard"
+              disableUnderline
+              id="skillLevel"
+              value={leagueSkillLevel}
+              onChange={(event) => setLeagueSkillLevel(event.target.value)}
+              placeholder="Novice, Intermediate, Advanced"
+              required
             >
-              <StyledLabel htmlFor="skillLevel">
-                Skill Level <span style={{ color: "red" }}>*</span>
-              </StyledLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={leagueSkillLevel}
-                label="Age"
-                onChange={(event) => setLeagueSkillLevel(event.target.value)}
-              >
-                <MenuItem value={"Novice"}>Novice</MenuItem>
-                <MenuItem value={"Intermediate"}>Intermediate</MenuItem>
-                <MenuItem value={"Advanced"}>Advanced</MenuItem>
-              </Select>
-            </FormControl>
-
-            <FormControl
-              sx={{ height: "10vw", marginLeft: "2vw" }}
-              size="small"
+              <MenuItem key="Novice" value="Novice">
+                Novice
+              </MenuItem>
+              <MenuItem key="Intermediate" value="Intermediate">
+                Intermediate
+              </MenuItem>
+              <MenuItem key="Advanced" value="Advanced">
+                Advanced
+              </MenuItem>
+            </StyledSelect>
+          </FormControl>
+          <FormControl sx={{ width: "30vw", height: "-5vw" }}>
+            <StyledLabel htmlFor="division">
+              Division <span style={{ color: "red" }}>*</span>
+            </StyledLabel>
+            <StyledSelect
+              variant="standard"
+              id="division"
+              value={leagueDivision}
+              onChange={(event) => setLeagueDivision(event.target.value)}
+              placeholder="Men, Women, Mixed"
             >
-              <StyledLabel htmlFor="skillLevel">
-                Division <span style={{ color: "red" }}>*</span>
-              </StyledLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={leagueDivision}
-                label="Age"
-                onChange={(event) => setLeagueDivision(event.target.value)}
-              >
-                <MenuItem value={"Men"}>Men</MenuItem>
-                <MenuItem value={"Women"}>Women</MenuItem>
-                <MenuItem value={"Mixed"}>Mixed</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
+              <MenuItem value={"Men"}>Men</MenuItem>
+              <MenuItem value={"Women"}>Women</MenuItem>
+              <MenuItem value={"Mixed"}>Mixed</MenuItem>
+            </StyledSelect>
+          </FormControl>
+        </Box>
+        <Box
+          sx={{
+            width: "65vw",
+            display: "inline-block",
+            justifyContent: "space-between",
+            marginTop: "2vh",
+          }}
+        >
+          <FormControl sx={{ width: "30vw" }}>
+          <StyledLabel htmlFor="registrationDate">
+              Team Registration Date <span style={{ color: "red" }}>*</span>
+            </StyledLabel>
+            <StyledInput
+              type="date"
+              onChange={(event) => {
+                setRegistrationDate(
+                  new Date(
+                    event.target.value.split("-")[0],
+                    event.target.value.split("-")[1] - 1,
+                    event.target.value.split("-")[2]
+                  )
+                );
+              }}
+              id="registrationDate"
+              required
+            />
+          </FormControl>
         </Box>
 
         {/* <Box sx={{width:"65vw", display:"flex", justifyContent:"space-between", marginTop:"2vh"}} >

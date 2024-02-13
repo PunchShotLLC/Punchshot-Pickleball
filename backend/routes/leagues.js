@@ -14,11 +14,11 @@ import {
   getStandings,
 } from "../controllers/leagueController.js";
 
+router.post("/createLeague", createLeague);
 router.route("/address").get(getAddressInfo);
 router.route("/sendRequestEmail").get(sendRequestEmail);
 router.route("/").get(getLeagues);
 router.route("/:id/standings").get(getStandings);
-router.post("/createLeague", createLeague);
 router.route("/:zip").get(getLeague);
 router.route("/updateLeague/:id").patch(updateLeague);
 router.route("/startLeague/:id").patch(startLeague);
