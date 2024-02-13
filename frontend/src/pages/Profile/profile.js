@@ -2,7 +2,6 @@ import Box from "@mui/material/Box";
 import { styled } from "@mui/system";
 import * as React from "react";
 import defaultImage from "./default.png";
-import raquetImage from "./raquet.png";
 import Typography from "@mui/material/Typography";
 import { useContext } from "react";
 import { UserContext } from "../../components/UserContext/usercontext.js";
@@ -14,6 +13,7 @@ import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/InputBase";
 import { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
+import EditIcon from '@mui/icons-material/Edit';
 import axios from "axios";
 import { useCookies } from "react-cookie";
 
@@ -95,7 +95,7 @@ export const Profile = () => {
     }
   };
   return (
-    <Box sx={{ width: "85vw", height: "77.69vh", display: "flex" }}>
+    <Box sx={{ width: "85vw", height: "77.69vh", display: "flex", justifyContent:"center"}}>
       <Box
         sx={{
           height: "77.69vh",
@@ -115,27 +115,16 @@ export const Profile = () => {
             display: "flex"
           }}
         >
-          <Box
-            sx={{
-              width: "calc(20em + 1vw)",
-              height: "calc(20em + 1vw)",
-              justifyContent: "space-between",
-              background:
-                "linear-gradient(rgba(145, 70, 216, 1), rgba(213, 253, 81, 1))",
-              display: "flex",
-              alignItems: "center",
-              marginRight: "2vw",
-              justifyContent: "center",
-              borderRadius: "40%",
-              marginBottom: "calc(-2.5em + 1vw)"
-
-            }}
-          >
+          <Box sx={{display:"flex", flexDirection:"column", alignItems:"flex-end"}}>
             <Box
               component="img"
-              sx={{ height: "calc(19.5em + 1vw)", width: "calc(19.em + 1vw)", borderRadius: "40%", display: "flex" }}
-              src={defaultImage}
+              sx={{ height: "calc(17em + 1vw)", width: "calc(17em + 1vw)", borderRadius: "40%", display: "flex", border:"5px solid rgba(145, 70, 216, 1)", marginRight:"3em" }}
+              src={user?.ProfilePhoto ? user?.ProfilePhoto : defaultImage}
             />
+            <input type="file" id="change-profile" hidden/>
+            <label for="change-profile" style={{ backgroundColor:"rgba(145, 70, 216, 1)", width:"4em", height:"4em", display:"flex", justifyContent:"center", alignItems:"center", borderRadius:"50%", position:"relative", bottom:"4em", right:"3.5em"}}>
+              <EditIcon sx={{color:"white", width:"2em", height:"2em"}}/>
+            </label>
           </Box>
           <Box
             sx={{
