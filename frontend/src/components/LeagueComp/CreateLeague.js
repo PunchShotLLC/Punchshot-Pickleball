@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import logo from "../../assets/images/logo.svg";
 import Typography from "@mui/material/Typography";
@@ -18,6 +18,10 @@ import Select from "@mui/material/Select";
 import defaultImage from "../../pages/Profile/default.png";
 import axios from "axios";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+
+import { setDefaults, fromAddress } from "react-geocode";
+
+import MapWithCircle from "./MapWithCircle";
 
 const StyledInput = styled(TextField)({
   borderRadius: "1em",
@@ -53,6 +57,8 @@ const StyledLabel = styled("label")({
   marginBottom: "0.5vh",
 });
 
+const RADIUS_TEST = 10000;
+
 export const CreateLeague = ({ show, onClose }) => {
   const [leagueName, setLeagueName] = useState(null);
   const [numTeams, setNumTeams] = useState(null);
@@ -61,7 +67,35 @@ export const CreateLeague = ({ show, onClose }) => {
   const [zipCode, setZipCode] = useState(null);
   const [city, setCity] = useState(null);
   const [startDate, setStartDate] = useState(null);
+
+  // States for location-setting, including coordinates and radius
+  const [leagueRadius, setLeagueRadius] = useState(RADIUS_TEST)
+  const [leagueCenterCoords, setLeagueCenterCoords] = useState(null)
+
   const [leagues, setLeagues] = useState(null);
+
+  // Set up geocode for address -> coord calls
+  setDefaults({
+    key: "insert api key here",
+    language: "en", // Default language for responses.
+    region: "es", // Default region for responses.
+  });
+
+  /**
+   * Centers the map at a particular address.
+   * Uses google maps geocode api to receive coordinates from an addresss
+   * @param {string} address address of where to center the map
+   */
+  const updateMapWithAddress = (address) => {
+    fromAddress(address)
+    .then(({ results }) => {
+      const { lat, lng } = results[0].geometry.location;
+      console.log(lat, lng);
+
+      setLeagueCenterCoords({ lat: lat , lng: lng })
+    })
+    .catch(console.error);
+  }
 
   const createLeague = async () => {
     if (
@@ -109,6 +143,10 @@ export const CreateLeague = ({ show, onClose }) => {
     }
   };
 
+  useEffect(() => {
+    updateMapWithAddress("Lincoln memorial")
+  }, []);
+
   if (!show) {
     return null;
   }
@@ -124,6 +162,7 @@ export const CreateLeague = ({ show, onClose }) => {
         alignItems: "center",
       }}
     >
+
       <form
         style={{
           width: "80vw",
@@ -146,6 +185,7 @@ export const CreateLeague = ({ show, onClose }) => {
           ></img>
         </Box>
         <img height="20%" width="auto" src={logo}></img>
+        <MapWithCircle center={leagueCenterCoords} radius={leagueRadius}/>
         <Box
           sx={{
             width: "65vw",
@@ -294,6 +334,7 @@ export const CreateLeague = ({ show, onClose }) => {
                         <StyledInput multiline rows={4} sx={{width: "65vw"}} id="bio" placeholder="John Doe is an avid pickleball athlete, competing in open tournaments in the greater Atlanta area since 2013. His favorite place to play is in his hometown, Portland. He’s looking forward to competing against you!  " />
                     </FormControl>
                 </Box> */}
+
         <Box sx={{ display: "flex", height: "10vh" }}>
           <Button
             type="submit"
