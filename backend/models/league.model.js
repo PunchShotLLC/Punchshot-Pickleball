@@ -47,7 +47,11 @@ const leagueSchema = new Schema({
     type: Date,
     required: true,
   },
-  TeamRegistration: {
+  EndDate: {
+    type: Date,
+    required: true,
+  },
+  TeamRegistrationDate: {
     type: Date,
     required: true,
   },
