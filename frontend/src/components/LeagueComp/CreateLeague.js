@@ -69,14 +69,14 @@ export const CreateLeague = ({ show, onClose }) => {
   const [startDate, setStartDate] = useState(null);
 
   // States for location-setting, including coordinates and radius
-  const [leagueRadius, setLeagueRadius] = useState(RADIUS_TEST)
-  const [leagueCenterCoords, setLeagueCenterCoords] = useState(null)
+  const [leagueRadius, setLeagueRadius] = useState(RADIUS_TEST);
+  const [leagueCenterCoords, setLeagueCenterCoords] = useState(null);
 
   const [leagues, setLeagues] = useState(null);
 
   // Set up geocode for address -> coord calls
   setDefaults({
-    key: "insert api key here",
+    key: "AIzaSyASByHOyayF2D5qfd8Y2muEA6dfRkeK84c",
     language: "en", // Default language for responses.
     region: "es", // Default region for responses.
   });
@@ -88,14 +88,14 @@ export const CreateLeague = ({ show, onClose }) => {
    */
   const updateMapWithAddress = (address) => {
     fromAddress(address)
-    .then(({ results }) => {
-      const { lat, lng } = results[0].geometry.location;
-      console.log(lat, lng);
+      .then(({ results }) => {
+        const { lat, lng } = results[0].geometry.location;
+        console.log(lat, lng);
 
-      setLeagueCenterCoords({ lat: lat , lng: lng })
-    })
-    .catch(console.error);
-  }
+        setLeagueCenterCoords({ lat: lat, lng: lng });
+      })
+      .catch(console.error);
+  };
 
   const createLeague = async () => {
     if (
@@ -144,7 +144,7 @@ export const CreateLeague = ({ show, onClose }) => {
   };
 
   useEffect(() => {
-    updateMapWithAddress("Lincoln memorial")
+    updateMapWithAddress("Peter's Parking Deck");
   }, []);
 
   if (!show) {
@@ -162,7 +162,6 @@ export const CreateLeague = ({ show, onClose }) => {
         alignItems: "center",
       }}
     >
-
       <form
         style={{
           width: "80vw",
@@ -185,7 +184,7 @@ export const CreateLeague = ({ show, onClose }) => {
           ></img>
         </Box>
         <img height="20%" width="auto" src={logo}></img>
-        <MapWithCircle center={leagueCenterCoords} radius={leagueRadius}/>
+        <MapWithCircle center={leagueCenterCoords} radius={leagueRadius} />
         <Box
           sx={{
             width: "65vw",

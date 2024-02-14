@@ -1,10 +1,14 @@
-import { GoogleMap, Marker, useLoadScript, Circle } from "@react-google-maps/api";
+import {
+  GoogleMap,
+  Marker,
+  useLoadScript,
+  Circle,
+} from "@react-google-maps/api";
 import { useMemo } from "react";
 // import dotenv from "dotenv";
 // dotenv.config()
 
-const GOOGLE_MAPS_API_KEY = "insert api key here"
-
+const GOOGLE_MAPS_API_KEY = "AIzaSyASByHOyayF2D5qfd8Y2muEA6dfRkeK84c";
 
 const MapWithCircle = ({ center, radius }) => {
   // Load in the API key
@@ -13,8 +17,8 @@ const MapWithCircle = ({ center, radius }) => {
   });
 
   const mapContainerStyle = {
-    width: '400px',
-    height: '300px',
+    width: "400px",
+    height: "300px",
   };
 
   return (
@@ -23,23 +27,21 @@ const MapWithCircle = ({ center, radius }) => {
         <h1>Loading...</h1>
       ) : (
         <GoogleMap
-            mapContainerStyle={mapContainerStyle}
-            center={center}
-            zoom={10}
+          mapContainerStyle={mapContainerStyle}
+          center={center}
+          zoom={10}
         >
-
-        <Circle
+          <Circle
             center={center}
             radius={radius}
             options={{
-            fillColor: '#FF0000',
-            fillOpacity: 0.35,
-            strokeColor: '#FF0000',
-            strokeOpacity: 1,
-            strokeWeight: 2,
+              fillColor: "#FF0000",
+              fillOpacity: 0.35,
+              strokeColor: "#FF0000",
+              strokeOpacity: 1,
+              strokeWeight: 2,
             }}
-        />
-
+          />
         </GoogleMap>
       )}
     </div>
