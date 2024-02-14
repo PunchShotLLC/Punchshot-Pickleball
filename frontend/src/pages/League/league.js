@@ -1,24 +1,19 @@
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import { useNavigate } from "react-router-dom";
-import * as React from "react";
-import { useState, useEffect } from "react";
-import Typography from "@mui/material/Typography";
-import "../League/league.css";
-import "@fontsource/inter";
-import "@fontsource/inter/200.css";
-import "@fontsource/inter/400.css";
-import "@fontsource/inter/700.css";
-import { styled } from "@mui/material/styles";
-import TextField from "@mui/material/InputBase";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { TeamSelect } from "../Team/team";
-import { LeagueComp } from "../../components/LeagueComp/LeagueComp.js";
-import { useContext } from "react";
-import { UserContext } from "../../components/UserContext/usercontext";
-import { CreateLeague } from "../../components/LeagueComp/CreateLeague.js";
+import React, { useState, useEffect, useContext } from 'react';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import InputBase from '@mui/material/InputBase';
+import MyLocationIcon from '@mui/icons-material/MyLocation';
+import { useNavigate } from 'react-router-dom';
+import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
+import { UserContext } from '../../components/UserContext/usercontext';
+import { LeagueComp } from '../../components/LeagueComp/LeagueComp.js';
+import { CreateLeague } from '../../components/LeagueComp/CreateLeague.js';
+import axios from 'axios';
 
-const StyledInput = styled(TextField)({
+// Assuming your styled component and theme are correctly defined as before
+const StyledInput = styled(InputBase)({
   borderRadius: "1em",
   border: "3px solid #000000",
   fontSize: "calc(0.8vw + 0.1em)",
@@ -40,145 +35,88 @@ const buttonTheme = createTheme({
 export const League = () => {
   const [leagues, setLeagues] = useState(null);
   const { loading, user } = useContext(UserContext);
-  const [renderCreateLeauge, setRenderCreateLeague] = useState(false);
-  const openModal = () => setRenderCreateLeague(true);
-  const closeModal = () => setRenderCreateLeague(false);
+  const [renderCreateLeague, setRenderCreateLeague] = useState(false);
+  const [searchZip, setSearchZip] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
-    const isSignedIn = async () => {
-      if (!loading && !user) {
-        window.location.href = "/";
-        alert("Sign in to access leagues page!");
-      }
-    };
-    isSignedIn();
-  }, [user, loading]);
-
-  const navigateToLeagueInfo = (teamIndex) => {
-    // Navigate to the new page with the data in the route's state
-    navigate("/leagueInfo", { state: leagues[teamIndex] });
-  };
-
-  // Make a get request to retrieve all the leagues
-  // Set the state so that it includes the leagues and dynamically renders
-  const getLeagues = async (zip) => {
-    if (!zip) {
-      zip = user?.ZipCode;
+    if (!loading && !user) {
+      navigate("/");
+      alert("Sign in to access leagues page!");
+    } else {
+      getLeagues(user?.ZipCode);
     }
-    const rawResponse = await fetch(
-      `http://localhost:8000/leagues/${zip}`
-    ).catch((err) => console.log(err));
-    const content = await rawResponse.json();
+  }, [user, loading, navigate]);
 
-    setLeagues(content);
+  const getLeagues = async (zip) => {
+    try {
+      const response = await axios.get(`http://localhost:8000/leagues/${zip || user?.ZipCode}`);
+      setLeagues(response.data);
+    } catch (error) {
+      console.error('Error fetching leagues:', error);
+      alert('Failed to fetch leagues');
+    }
   };
 
-  // Make a get request to get the leagues on the component loading
-  useEffect(() => {
-    getLeagues(user?.ZipCode);
-  }, [user?.ZipCode]);
+  const fetchCurrentLocationAndLeagues = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const { latitude, longitude } = position.coords;
+        // Placeholder for converting lat/long to zip and fetching leagues
+        console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+        // You might use a third-party API to convert coords to ZIP code here
+      }, () => {
+        alert('Unable to retrieve your location');
+      });
+    } else {
+      alert('Geolocation is not supported by your browser');
+    }
+  };
 
-  // If the team selection state is true, render the team create/join component
-  // if (teamSelection) {
-  //   return <TeamSelect league={leagues[teamSelectLeagueIndex]} />;
-  // } else {
   return (
-    <Box
-      sx={{
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        padding: "2em",
-        overflowY: "auto",
-      }}
-    >
-      <CreateLeague
-        show={renderCreateLeauge}
-        onClose={closeModal}
-      ></CreateLeague>
+    <Box sx={{ height: "100vh", display: "flex", flexDirection: "column", padding: "2em", overflowY: "auto" }}>
+      <CreateLeague show={renderCreateLeague} onClose={() => setRenderCreateLeague(false)} />
 
-      <Box
-        sx={{
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Typography
-          className="titleText"
-          sx={{
-            fontSize: "calc(1em + 1.5vw)",
-            fontWeight: "bold",
-            marginBottom: "1em",
+      <Typography className="titleText" sx={{ fontSize: "calc(1em + 1.5vw)", fontWeight: "bold", marginBottom: "1em" }}>
+        LEAGUES
+      </Typography>
+
+      <Box sx={{ width: "70%", marginBottom: "2em", alignItems: "center" }}>
+        <StyledInput
+          value={searchZip}
+          onChange={(e) => {
+            setSearchZip(e.target.value);
+            getLeagues(e.target.value);
           }}
-        >
-          LEAGUES
-        </Typography>
+          placeholder="Search zipcodes"
+          sx={{ marginBottom: "1em", width: "100%", paddingLeft: "1em", paddingRight: "1em" }}
+        />
+        <IconButton onClick={fetchCurrentLocationAndLeagues} aria-label="current location">
+          <MyLocationIcon />
+        </IconButton>
 
-        <Box sx={{ width: "70%", marginBottom: "2em", alignItems: "center" }}>
-          <StyledInput
-            onChange={(event) => getLeagues(event.target.value)}
-            id="zipcode"
-            placeholder="Search zipcodes"
-            sx={{
-              marginBottom: "1em",
-              width: "100%",
-              paddingLeft: "1em",
-              paddingRight: "1em",
-            }}
+        {user?.Username === "ADMIN_PUNCHSHOT" && (
+          <ThemeProvider theme={buttonTheme}>
+            <Button variant="contained" color="primary" onClick={() => setRenderCreateLeague(true)} sx={{ borderRadius: "calc(1.5em + 1vw)", marginTop: "1em", width: "100%" }}>
+              Create League
+            </Button>
+          </ThemeProvider>
+        )}
+
+        {leagues !== null ? leagues.map((league, index) => (
+          <LeagueComp
+            key={league._id} // Assuming each league has a unique ID
+            logo={require("../../assets/images/ATL1.png")} // Make sure this path is correct
+            name={league.LeagueName}
+            numberOfTeams={league.NumTeams}
+            teamsSignedUp={league.Teams.length}
+            startDate={league.StartDate}
+            city={league.City}
+            id={league._id}
+            showLeague={league.Status === "PENDING"}
+            onClick={() => navigate(`/leagueInfo/${league._id}`)}
           />
-
-          {user?.Username === "ADMIN_PUNCHSHOT" && (
-            <ThemeProvider theme={buttonTheme}>
-              <Button
-                onClick={openModal}
-                variant="contained"
-                color="primary"
-                sx={{
-                  borderRadius: "calc(1.5em + 1vw)",
-                  marginTop: "1em",
-                  marginBottom: "3em",
-                  width: "100%",
-                }}
-              >
-                Create League
-              </Button>
-            </ThemeProvider>
-          )}
-
-          {leagues !== null
-            ? leagues.map((item, index) => (
-                <LeagueComp
-                  logo={require("../../assets/images/ATL1.png")}
-                  name={leagues[index]["LeagueName"]}
-                  numberOfTeams={leagues[index]["NumTeams"]}
-                  teamsSignedUp={leagues[index]["Teams"].length}
-                  teams={leagues[index]["Teams"]}
-                  startDate={leagues[index]["StartDate"]}
-                  city={leagues[index]["City"]}
-                  id={leagues[index]["_id"]}
-                  showLeague={leagues[index]["Status"] === "PENDING"}
-                  allowStart={user?.Username === "test"}
-                  onClick={() => {
-                    navigateToLeagueInfo(index);
-                  }}
-                />
-              ))
-            : null}
-          <Box
-            sx={{
-              position: "absolute",
-              top: "102%",
-              left: "9.5%",
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              flexDirection: "row",
-            }}
-          ></Box>
-        </Box>
+        )) : "No leagues found"}
       </Box>
     </Box>
   );
