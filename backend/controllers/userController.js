@@ -5,6 +5,13 @@ import jwt from "jsonwebtoken";
 import createSecretToken from "../util/secretToken.js";
 import dotenv from "dotenv";
 dotenv.config();
+import Aws from 'aws-sdk';
+
+
+const s3 = new Aws.S3({
+  accessKeyId:process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey:process.env.AWS_ACCESS_KEY_SECRET
+})
 
 const hashPassword = (password) => {
   return new Promise((resolve, reject) => {
@@ -62,8 +69,14 @@ export const loginUser = async (req, res) => {
   }
 };
 
+// upload new profile pic to S3 bucket
+// export const uploadPic = async (req, res) => {
+  
+// }
+
 // create new user
 export const createUser = async (req, res) => {
+
   const {
     Email,
     Username,
@@ -141,6 +154,27 @@ export const createUser = async (req, res) => {
     });
   }
   const hashedPassword = await hashPassword(Password);
+
+  let location = ""
+  if (req.file) {
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: req.file.originalname,
+      Body: req.file.buffer,
+      ACL:"public-read-write",
+      ContentType:"image/jpeg"
+    }
+  
+    const upload = await s3.upload(params, (error, data) => {
+      if (error) {
+        res.status(500).send({"err":error})
+      }
+    }).promise()
+
+    location = upload["Location"]
+  }
+
+
   try {
     const user = await new User({
       Email,
@@ -149,6 +183,7 @@ export const createUser = async (req, res) => {
       Name,
       Sex,
       ZipCode,
+      ProfilePhoto: location,
       SkillLevel,
     }).save();
 

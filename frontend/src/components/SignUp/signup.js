@@ -52,6 +52,7 @@ export const SignUp = (props) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [zipCode, setZipCode] = useState("");
   const [skillLevel, setSkillLevel] = useState("");
+  const [image, setImage] = useState("");
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -80,18 +81,23 @@ export const SignUp = (props) => {
       alert("Passwords don't match!");
       return;
     }
+
+    console.log(image)
+
+    const formData = new FormData();
+    formData.append('Email', email);
+    formData.append('Username', username);
+    formData.append('Name', name);
+    formData.append('Sex', sex);
+    formData.append('Password', password);
+    formData.append('ZipCode', zipCode);
+    formData.append('image', image); // assuming image is a File object
+    formData.append('SkillLevel', skillLevel);
+
     const resp = await axios.post(
       `http://localhost:8000/users/signup`,
-      {
-        Email: email,
-        Username: username,
-        Name: name,
-        Sex: sex,
-        Password: password,
-        ZipCode: zipCode,
-        SkillLevel: skillLevel,
-      },
-      { withCredentials: true }
+      formData,
+      { withCredentials: true },
     );
     if (resp.data.error) {
       alert(resp.data.error);
@@ -132,7 +138,7 @@ export const SignUp = (props) => {
           alignItems: "center",
         }}
       >
-        <Box sx={{ display: "flex", justifyContent: "end", width: "100%" }}>
+        <Box sx={{ display: "flex", justifyContent: "end", width: "100%"}}>
           <img
             className=".login_x_button"
             style={{ marginTop: "1vw", marginRight: "1vw" }}
@@ -141,6 +147,18 @@ export const SignUp = (props) => {
           ></img>
         </Box>
         <img height="20%" width="auto" src={logo}></img>
+        <FormControl sx={{ width: "30vw" }}>
+          <Box sx={{display:"flex", flexDirection:"row", alignItems:"flex-end"}}>
+            {image ? (<img src={URL.createObjectURL(image)} width="100" height="100" style={{borderRadius:"10%"}}/>) : 
+            (<img src={defaultImage} width="100" height="100" style={{borderRadius:"10%"}}/>)}
+            <Box sx={{height: "50%", display:"flex", flexDirection:"Column", alignContent:"flex-end"}}>
+              <StyledLabel htmlFor="upload-photo" >
+                  Profile Picture
+              </StyledLabel>
+              <input type="file" onChange={(e)=>setImage(e.target.files[0])} style={{color:"transparent"}}/>
+            </Box>
+          </Box>
+        </FormControl>
         <Box
           sx={{
             width: "65vw",
