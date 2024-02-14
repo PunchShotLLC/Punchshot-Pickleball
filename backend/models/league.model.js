@@ -16,22 +16,6 @@ const leagueSchema = new Schema({
     type: String,
     required: true,
   },
-  NumTeams: {
-    type: Number,
-    required: true,
-  },
-  ZipCodes: [
-    {
-      type: String,
-      required: true,
-      minLength: 5,
-      maxLength: 5,
-    },
-  ],
-  City: {
-    type: String,
-    required: true,
-  },
   Teams: [
     {
       TeamName: {
@@ -60,6 +44,10 @@ const leagueSchema = new Schema({
     },
   ],
   StartDate: {
+    type: Date,
+    required: true,
+  },
+  TeamRegistration: {
     type: Date,
     required: true,
   },
