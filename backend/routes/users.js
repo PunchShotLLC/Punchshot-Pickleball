@@ -23,7 +23,7 @@ const upload = multer({ storage: storage, fileFilter: filefilter });
 import { createUser, loginUser, verifyUser, updatePassword, joinTeam, uploadFile } from "../controllers/userController.js";
 
 router.post("/login", loginUser);
-router.post("/signup", upload.single('image'), createUser);
+router.post("/signup", createUser);
 router.post("/upload", upload.single('image'), uploadFile)
 router.post("/verify", verifyUser);
 router.post("/update", updatePassword);

@@ -155,25 +155,6 @@ export const createUser = async (req, res) => {
   }
   const hashedPassword = await hashPassword(Password);
 
-  let location = ""
-  if (req.file) {
-    const params = {
-      Bucket: process.env.AWS_BUCKET_NAME,
-      Key: req.file.originalname,
-      Body: req.file.buffer,
-      ACL:"public-read-write",
-      ContentType:"image/jpeg"
-    }
-  
-    const upload = await s3.upload(params, (error, data) => {
-      if (error) {
-        res.status(500).send({"err":error})
-      }
-    }).promise()
-
-    location = upload["Location"]
-  }
-
 
   try {
     const user = await new User({
@@ -183,7 +164,7 @@ export const createUser = async (req, res) => {
       Name,
       Sex,
       ZipCode,
-      ProfilePhoto: location,
+      ProfilePhoto: "",
       SkillLevel,
     }).save();
 

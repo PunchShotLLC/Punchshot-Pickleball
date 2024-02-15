@@ -134,8 +134,7 @@ export const Profile = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            marginBottom: "2vh",
-            display: "flex"
+            marginBottom: "2vh"
           }}
         >
           <Box sx={{display:"flex", flexDirection:"column", alignItems:"flex-end"}}>
