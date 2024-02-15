@@ -201,6 +201,58 @@ export const createUser = async (req, res) => {
   }
 };
 
+//Uploads a new profile picture for the User
+export const uploadFile = async (req, res) => {
+  const { Username, Location } = req.body
+  const user = await User.findOne({ Username });
+  
+  if (!user) {
+    return res.json({
+      error: "No user found",
+    });
+  }
+
+  let newLocation = ""
+  if (req.file) {
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: req.file.originalname,
+      Body: req.file.buffer,
+      ACL:"public-read-write",
+      ContentType:"image/jpeg"
+    }
+
+    const upload = await s3.upload(params, (error, data) => {
+      if (error) {
+        res.status(500).send({"err":error})
+      }
+    }).promise()
+
+    newLocation = upload["Location"]
+  }
+
+
+
+  if (Location != "") {
+    const key = Location.slice(45)
+    console.log(key)
+
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: key
+    }
+
+    const object = await s3.deleteObject(params, (error, data) => {
+      if (error){
+        res.status(500).send({"err":error})
+      }
+      console.log("success")
+    }).promise()
+  }
+
+  const updateRes = await User.updateOne({ Username }, { ProfilePhoto: newLocation });
+}
+
 export const verifyUser = async (req, res) => {
   const token = req.cookies.token;
   console.log(token);

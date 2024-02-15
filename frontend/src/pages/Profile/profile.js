@@ -44,6 +44,7 @@ export const Profile = () => {
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [newImage, setNewImage] = useState("");
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
 
@@ -69,6 +70,28 @@ export const Profile = () => {
     removeCookie("token");
     window.location.href = "/";
   };
+
+  const handleUpload = async (e) => {
+    setNewImage(e.target.files[0])
+
+    const formData = new FormData();
+    formData.append('Username', user?.Username);
+    formData.append('Location', user?.ProfilePhoto);
+    formData.append('image', e.target.files[0]);
+
+    const resp = await axios.post(
+      `http://localhost:8000/users/upload`,
+      formData,
+      { withCredentials: true },
+    );
+    if (resp.data.error) {
+      alert(resp.data.error);
+    } else {
+      window.location.reload(false);
+    }
+
+  }
+
   const changePassword = async (e) => {
     let response = null;
 
@@ -119,9 +142,9 @@ export const Profile = () => {
             <Box
               component="img"
               sx={{ height: "calc(17em + 1vw)", width: "calc(17em + 1vw)", borderRadius: "40%", display: "flex", border:"5px solid rgba(145, 70, 216, 1)", marginRight:"3em" }}
-              src={user?.ProfilePhoto ? user?.ProfilePhoto : defaultImage}
+              src={newImage ? URL.createObjectURL(newImage) : user?.ProfilePhoto ? user?.ProfilePhoto : defaultImage}
             />
-            <input type="file" id="change-profile" hidden/>
+            <input type="file" id="change-profile" onChange={handleUpload}hidden/>
             <label for="change-profile" style={{ backgroundColor:"rgba(145, 70, 216, 1)", width:"4em", height:"4em", display:"flex", justifyContent:"center", alignItems:"center", borderRadius:"50%", position:"relative", bottom:"4em", right:"3.5em"}}>
               <EditIcon sx={{color:"white", width:"2em", height:"2em"}}/>
             </label>
