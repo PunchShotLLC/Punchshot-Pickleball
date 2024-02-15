@@ -184,9 +184,9 @@ export const createUser = async (req, res) => {
 
 //Uploads a new profile picture for the User
 export const uploadFile = async (req, res) => {
-  const { Username, Location } = req.body
+  const { Username } = req.body
   const user = await User.findOne({ Username });
-  
+
   if (!user) {
     return res.json({
       error: "No user found",
@@ -197,7 +197,7 @@ export const uploadFile = async (req, res) => {
   if (req.file) {
     const params = {
       Bucket: process.env.AWS_BUCKET_NAME,
-      Key: req.file.originalname,
+      Key: `${Username}-${Date.now()}`,
       Body: req.file.buffer,
       ACL:"public-read-write",
       ContentType:"image/jpeg"
@@ -214,9 +214,8 @@ export const uploadFile = async (req, res) => {
 
 
 
-  if (Location != "") {
-    const key = Location.slice(45)
-    console.log(key)
+  if (user.ProfilePhoto != "") {
+    const key = user.ProfilePhoto.slice(45)
 
     const params = {
       Bucket: process.env.AWS_BUCKET_NAME,

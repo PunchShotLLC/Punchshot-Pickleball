@@ -45,6 +45,7 @@ export const Profile = () => {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [newImage, setNewImage] = useState("");
+  const [oldImage, setOldImage] = useState(user?.ProfilePhoto ? user?.ProfilePhoto : "")
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
 
@@ -58,6 +59,8 @@ export const Profile = () => {
     };
     isSignedIn();
   }, [user, loading]);
+
+
 
   const handleClickConfirmPassword = () =>
     setShowConfirmPassword((show) => !show);
@@ -76,7 +79,6 @@ export const Profile = () => {
 
     const formData = new FormData();
     formData.append('Username', user?.Username);
-    formData.append('Location', user?.ProfilePhoto);
     formData.append('image', e.target.files[0]);
 
     const resp = await axios.post(
@@ -89,6 +91,7 @@ export const Profile = () => {
     } else {
       window.location.reload(false);
     }
+    window.location.href("/account"); //will change later on, right now app doesn't udpate old location, so image will keep piling up in S3 bucket
 
   }
 
