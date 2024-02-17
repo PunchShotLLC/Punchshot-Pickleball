@@ -8,7 +8,7 @@ import { useMemo } from "react";
 // import dotenv from "dotenv";
 // dotenv.config()
 
-const GOOGLE_MAPS_API_KEY = "AIzaSyASByHOyayF2D5qfd8Y2muEA6dfRkeK84c";
+const GOOGLE_MAPS_API_KEY = "TODO: INSERT GOOGLE API KEY";
 
 const MapWithCircle = ({ center, radius }) => {
   // Load in the API key

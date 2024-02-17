@@ -74,7 +74,7 @@ export const CreateLeague = ({ show, onClose }) => {
 
   // Set up geocode for address -> coord calls
   setDefaults({
-    key: "AIzaSyASByHOyayF2D5qfd8Y2muEA6dfRkeK84c",
+    key: "TODO: INSERT GOOGLE API KEY",
     language: "en", // Default language for responses.
     region: "es", // Default region for responses.
   });
