@@ -144,6 +144,7 @@ export const League = () => {
               borderRadius: "calc(1.5em + 1vw)",
               marginTop: "1em",
               width: "30%",
+              marginBottom: "2em"
             }}
           >
             Create League
