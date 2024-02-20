@@ -1,13 +1,12 @@
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import * as React from "react";
-import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { borderRadius } from "@mui/system";
 import { Button } from "@mui/material";
 import { useState, useEffect } from "react";
 import { Modal } from "@mui/material";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
 
 export const LeagueComp = (props) => {
   function isBeforeToday(dateStr) {
