@@ -534,3 +534,42 @@ const sendLeagueStartEmails = async () => {
     }
   }
 };
+
+/**
+ * Deletes a team from a league based on league id and team id
+ * @param {*} req request object
+ * @param {*} res response object
+ */
+export const deleteTeam = async (req, res) => {
+
+  // Find the league specified by the request
+  const league = await League.findById(req.params.leagueId)
+
+  // Filter out the team with the matching ID
+  league.Teams = league.Teams.filter(team => team._id.toString() !== req.params.teamId);
+
+  // Update league object and make response
+  await League.findByIdAndUpdate(req.params.leagueId, league)
+  res.status(200).json(league);
+
+}
+
+/**
+ * Changes a captain of a team. leagueId, teamId, and username are specified in the request
+ * @param {*} req request object
+ * @param {*} res response object
+ */
+export const updateTeamCaptain = async (req, res) => {
+  // Find the league specified by the request
+  const league = await League.findById(req.params.leagueId)
+
+  // Find the team specified by the request
+  const teamIndex = league.Teams.findIndex(team => team._id.toString() === req.params.teamId);
+
+  // Update the proper team's captain
+  league.Teams[teamIndex].TeamCaptain = req.params.username
+
+  // Update league object and make response
+  await League.findByIdAndUpdate(req.params.leagueId, league)
+  res.status(200).json(league);
+}
