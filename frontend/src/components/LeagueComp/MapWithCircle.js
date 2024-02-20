@@ -17,7 +17,7 @@ const MapWithCircle = ({ center, radius }) => {
   });
 
   const mapContainerStyle = {
-    width: "400px",
+    width: "600px",
     height: "300px",
   };
 
