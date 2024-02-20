@@ -19,7 +19,7 @@ router.route("/address").get(getAddressInfo);
 router.route("/sendRequestEmail").get(sendRequestEmail);
 router.route("/").get(getLeagues);
 router.route("/:id/standings").get(getStandings);
-router.route("/:zip").get(getLeague);
+router.route("/:leagueName").get(getLeague);
 router.route("/updateLeague/:id").patch(updateLeague);
 router.route("/startLeague/:id").patch(startLeague);
 router.route("/deleteLeague/:id").delete(deleteLeague);
