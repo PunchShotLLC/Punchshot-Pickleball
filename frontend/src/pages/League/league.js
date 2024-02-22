@@ -86,6 +86,7 @@ export const League = () => {
         flexDirection: "column",
         padding: "2em",
         overflowY: "auto",
+        alignItems: "center"
       }}
     >
       <CreateLeague
@@ -104,7 +105,7 @@ export const League = () => {
         LEAGUES
       </Typography>
 
-      <Box sx={{ width: "70%", marginBottom: "2em", alignItems: "center" }}>
+      <Box sx={{ width: "50%", marginBottom: "2em", display: "flex", flexDirection: "column", alignItems: "center" }}>
         <StyledInput
           value={searchZip}
           onChange={(e) => {
@@ -133,7 +134,7 @@ export const League = () => {
               color="primary"
               onClick={() => setRenderCreateLeague(true)}
               sx={{
-                borderRadius: "calc(1.5em + 1vw)",
+                borderRadius: "calc(1em + 1vw)",
                 marginTop: "1em",
                 width: "100%",
               }}

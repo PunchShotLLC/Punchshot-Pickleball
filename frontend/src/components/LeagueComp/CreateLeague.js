@@ -74,7 +74,7 @@ export const CreateLeague = ({ show, onClose }) => {
 
   // Set up geocode for address -> coord calls
   setDefaults({
-    key: "TODO: INSERT GOOGLE API KEY",
+    key: "AIzaSyASByHOyayF2D5qfd8Y2muEA6dfRkeK84c",
     language: "en", // Default language for responses.
     region: "es", // Default region for responses.
   });
@@ -165,7 +165,7 @@ export const CreateLeague = ({ show, onClose }) => {
           alignItems: "center",
         }}
       >
-        <Box sx={{ display: "flex", justifyContent: "end", width: "100%" }}>
+        <Box sx={{ display: "flex", justifyContent: "end", width: "100%", overflow: "auto" }}>
           <img
             className=".login_x_button"
             style={{ marginTop: "1vw", marginRight: "1vw" }}
