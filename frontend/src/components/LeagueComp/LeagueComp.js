@@ -276,8 +276,7 @@ export const LeagueComp = (props) => {
                     style={{ border: "2px solid black", borderRadius: "50%" }}
                   />
                   <Typography sx={styles.modalData}>
-                    Number of Teams: {props.teamsSignedUp}/{props.numberOfTeams}{" "}
-                    Teams
+                    Number of Teams: {props.teamsSignedUp}
                   </Typography>
                 </Box>
                 <Box sx={{ ...styles.data, ...styles.modalData }}>
