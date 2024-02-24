@@ -88,6 +88,7 @@ export const League = () => {
         flexDirection: "column",
         padding: "2em",
         overflowY: "auto",
+        alignItems: "center"
       }}
     >
       <CreateLeague
@@ -144,7 +145,7 @@ export const League = () => {
               color="primary"
               onClick={() => setRenderCreateLeague(true)}
               sx={{
-                borderRadius: "calc(1.5em + 1vw)",
+                borderRadius: "calc(1em + 1vw)",
                 marginTop: "1em",
                 width: "100%",
               }}
