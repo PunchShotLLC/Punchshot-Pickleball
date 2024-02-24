@@ -338,7 +338,7 @@ export const LeagueComp = (props) => {
             </ThemeProvider>
           </Box>
 
-          <Box sx={styles.row}>
+          {/* <Box sx={styles.row}>
             <Box sx={styles.data}>
               <img
                 src={require("../../assets/images/Team.png")}
@@ -392,7 +392,7 @@ export const LeagueComp = (props) => {
                 </Typography>
               </Box>
             )}
-          </Box>
+          </Box> */}
         </Box>
       </Box>
     );
@@ -425,13 +425,14 @@ const styles = {
   },
   main: {
     backgroundColor: "#F5F5F5",
-    borderRadius: "10px",
-    height: "16vh",
+    height: "15vh",
     cursor: "pointer",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     borderRadius: "20px",
+    marginTop: "2em",
     marginBottom: LeagueComp.isSmallScreen ? "2%" : "3%",
   },
   row: {

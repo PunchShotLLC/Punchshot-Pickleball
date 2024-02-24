@@ -153,33 +153,18 @@ export const TeamSelect = (props) => {
     let PlayerList = teamState.Teams[teamIndex].TeamMembers;
     console.log(PlayerList);
 
-    let teamCaptain = teamState.Teams[teamIndex].TeamCaptain;
     var leagueInfo = teamState;
 
-    // If the captain is leaving the team,
-    // If there are no more players in the team, delete the team
-    // Otherwise the next person on the list becomes the captain
-    if (teamCaptain === user.Username) {
-      if (PlayerList.length === 0) {
-        leagueInfo.Teams.splice(teamIndex, 1);
-        alert("Dropping team");
-      } else {
-        leagueInfo.Teams[teamIndex].TeamCaptain = PlayerList[0];
-        leagueInfo.Teams[teamIndex].TeamMembers.splice(0, 1);
-        alert("Assigning new captain");
-      }
-    } else {
-      //find user in memberlist and remove from memberlist
-      console.log("in filter");
-      let userIndex = PlayerList.indexOf(user.Username);
-      if (userIndex === -1) {
-        alert("User already not in team");
-        return;
-      }
-      leagueInfo.Teams[teamIndex].TeamMembers.splice(userIndex, 1);
-      alert("Leaving team");
+    //find user in memberlist and remove from memberlist
+    let userIndex = PlayerList.indexOf(user.Username);
+    if (userIndex === -1) {
+      alert("User already not in team");
+      return;
     }
-
+    leagueInfo.Teams[teamIndex].TeamMembers.splice(userIndex, 1);
+    alert("Leaving team");
+  
+    // Update the league with the new league object
     updateLeague(leagueInfo);
     location.state = leagueInfo;
   };

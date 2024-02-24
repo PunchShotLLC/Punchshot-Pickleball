@@ -11,6 +11,7 @@ import { UserContext } from "../../components/UserContext/usercontext";
 import { LeagueComp } from "../../components/LeagueComp/LeagueComp.js";
 import { CreateLeague } from "../../components/LeagueComp/CreateLeague.js";
 import axios from "axios";
+import { display } from "@mui/system";
 
 const StyledInput = styled(InputBase)({
   borderRadius: "1em",
@@ -36,7 +37,7 @@ export const League = () => {
   const [leagues, setLeagues] = useState(null);
   const { loading, user } = useContext(UserContext);
   const [renderCreateLeague, setRenderCreateLeague] = useState(false);
-  const [searchZip, setSearchZip] = useState("");
+  const [searchLeagueName, setSearchLeagueName] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,13 +45,16 @@ export const League = () => {
       navigate("/");
       alert("Sign in to access leagues page!");
     } else {
-      getLeagues(user?.ZipCode);
+      getLeagues();
     }
   }, [user, loading, navigate]);
 
-  const getLeagues = async (zip) => {
+  const getLeagues = async (leagueName) => {
     try {
-      const response = await axios.get(`http://localhost:8000/leagues/${zip || user?.ZipCode}`);
+      const url = `http://localhost:8000/leagues/${
+        leagueName ? leagueName : ""
+      }`;
+      const response = await axios.get(url);
       setLeagues(response.data);
     } catch (error) {
       console.error("Error fetching leagues:", error);
@@ -84,7 +88,7 @@ export const League = () => {
         flexDirection: "column",
         padding: "2em",
         overflowY: "auto",
-        alignItems: "center",
+        alignItems: "center"
       }}
     >
       <CreateLeague
@@ -93,6 +97,7 @@ export const League = () => {
       />
 
       <Typography
+        className="titleText"
         sx={{
           fontSize: "calc(1em + 1.5vw)",
           fontWeight: "bold",
@@ -102,72 +107,73 @@ export const League = () => {
         LEAGUES
       </Typography>
 
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          width: '70%',
-          marginBottom: '2em',
-          position: 'relative', // Allows absolute positioning of the icon inside
-        }}
-      >
-        <StyledInput
-          fullWidth
-          value={searchZip}
-          onChange={(e) => {
-            setSearchZip(e.target.value);
-            getLeagues(e.target.value);
-          }}
-          placeholder="Search zipcodes"
-        />
-        <IconButton
-          onClick={fetchCurrentLocationAndLeagues}
+      <Box sx={{ width: "70%", marginBottom: "2em", alignItems: "center" }}>
+        <Box
           sx={{
-            position: 'absolute',
-            right: 0,
-            top: '50%',
-            transform: 'translateY(-50%)', // Center vertically
-            p: '10px',
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "100%",
           }}
         >
-          <MyLocationIcon />
-        </IconButton>
-      </Box>
-
-      {user?.Username === "ADMIN_PUNCHSHOT" && (
-        <ThemeProvider theme={buttonTheme}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setRenderCreateLeague(true)}
-            sx={{
-              borderRadius: "calc(1.5em + 1vw)",
-              marginTop: "1em",
-              width: "30%",
-              marginBottom: "2em"
+          <StyledInput
+            value={searchLeagueName}
+            onChange={(e) => {
+              setSearchLeagueName(e.target.value);
+              getLeagues(e.target.value);
             }}
+            placeholder="Search League Name"
+            sx={{
+              width: "100%",
+              paddingLeft: "1em",
+              paddingRight: "1em",
+            }}
+          />
+          <IconButton
+            onClick={fetchCurrentLocationAndLeagues}
+            aria-label="current location"
           >
-            Create League
-          </Button>
-        </ThemeProvider>
-      )}
+            <MyLocationIcon />
+          </IconButton>
+        </Box>
 
-      {leagues !== null
-        ? leagues.map((league, index) => (
-            <LeagueComp
-              key={league._id}
-              logo={require("../../assets/images/ATL1.png")}
-              name={league.LeagueName}
-              numberOfTeams={league.NumTeams}
-              teamsSignedUp={league.Teams.length}
-              startDate={league.StartDate}
-              city={league.City}
-              id={league._id}
-              showLeague={league.Status === "PENDING"}
-              onClick={() => navigate("/leagueInfo", { state: leagues[index] })}
-            />
-          ))
-        : "No leagues found"}
+        {user?.Username === "ADMIN_PUNCHSHOT" && (
+          <ThemeProvider theme={buttonTheme}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setRenderCreateLeague(true)}
+              sx={{
+                borderRadius: "calc(1em + 1vw)",
+                marginTop: "1em",
+                width: "100%",
+              }}
+            >
+              Create League
+            </Button>
+          </ThemeProvider>
+        )}
+
+        {leagues !== null
+          ? leagues.map((league, index) => (
+              <LeagueComp
+                key={league._id} // Assuming each league has a unique ID
+                logo={require("../../assets/images/ATL1.png")} // Make sure this path is correct
+                name={league.LeagueName}
+                numberOfTeams={league.NumTeams}
+                teamsSignedUp={league.Teams.length}
+                startDate={league.StartDate}
+                city={league.City}
+                id={league._id}
+                showLeague={league.Status === "PENDING"}
+                onClick={() =>
+                  navigate("/leagueInfo", { state: leagues[index] })
+                }
+              />
+            ))
+          : "No leagues found"}
+      </Box>
     </Box>
   );
 };
