@@ -20,10 +20,8 @@ router.route("/address").get(getAddressInfo);
 router.route("/sendRequestEmail").get(sendRequestEmail);
 router.route("/").get(getLeagues);
 router.route("/:id/standings").get(getStandings);
+router.route("/:leagueName").get(getLeague);
 router.post("/createLeague", createLeague);
-router.route("/:zip").get(getLeague);
-
-// League routes
 router.route("/updateLeague/:id").patch(updateLeague);
 router.route("/updateLeague/updateTeamCaptain/:leagueId/:teamId/:username").patch(updateTeamCaptain);
 router.route("/startLeague/:id").patch(startLeague);

@@ -134,7 +134,10 @@ export const getLeagues = async (req, res) => {
 };
 
 export const getLeague = async (req, res) => {
-  const leagues = await League.find({ ZipCodes: req.params.zip })
+  const trimmedInput = req.params.leagueName.trim();
+  const regex = new RegExp(trimmedInput, "i");
+  League.find({ LeagueName: { $regex: regex } })
+    .exec()
     .then((docs) => {
       res.status(200).json(docs);
     })

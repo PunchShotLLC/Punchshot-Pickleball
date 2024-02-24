@@ -11,6 +11,7 @@ import { UserContext } from "../../components/UserContext/usercontext";
 import { LeagueComp } from "../../components/LeagueComp/LeagueComp.js";
 import { CreateLeague } from "../../components/LeagueComp/CreateLeague.js";
 import axios from "axios";
+import { display } from "@mui/system";
 
 // Assuming your styled component and theme are correctly defined as before
 const StyledInput = styled(InputBase)({
@@ -36,7 +37,7 @@ export const League = () => {
   const [leagues, setLeagues] = useState(null);
   const { loading, user } = useContext(UserContext);
   const [renderCreateLeague, setRenderCreateLeague] = useState(false);
-  const [searchZip, setSearchZip] = useState("");
+  const [searchLeagueName, setSearchLeagueName] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,15 +45,16 @@ export const League = () => {
       navigate("/");
       alert("Sign in to access leagues page!");
     } else {
-      getLeagues(user?.ZipCode);
+      getLeagues();
     }
   }, [user, loading, navigate]);
 
-  const getLeagues = async (zip) => {
+  const getLeagues = async (leagueName) => {
     try {
-      const response = await axios.get(
-        `http://localhost:8000/leagues/${zip || user?.ZipCode}`
-      );
+      const url = `http://localhost:8000/leagues/${
+        leagueName ? leagueName : ""
+      }`;
+      const response = await axios.get(url);
       setLeagues(response.data);
     } catch (error) {
       console.error("Error fetching leagues:", error);
@@ -105,27 +107,36 @@ export const League = () => {
         LEAGUES
       </Typography>
 
-      <Box sx={{ width: "50%", marginBottom: "2em", display: "flex", flexDirection: "column", alignItems: "center" }}>
-        <StyledInput
-          value={searchZip}
-          onChange={(e) => {
-            setSearchZip(e.target.value);
-            getLeagues(e.target.value);
-          }}
-          placeholder="Search zipcodes"
+      <Box sx={{ width: "70%", marginBottom: "2em", alignItems: "center" }}>
+        <Box
           sx={{
-            marginBottom: "1em",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
             width: "100%",
-            paddingLeft: "1em",
-            paddingRight: "1em",
           }}
-        />
-        <IconButton
-          onClick={fetchCurrentLocationAndLeagues}
-          aria-label="current location"
         >
-          <MyLocationIcon />
-        </IconButton>
+          <StyledInput
+            value={searchLeagueName}
+            onChange={(e) => {
+              setSearchLeagueName(e.target.value);
+              getLeagues(e.target.value);
+            }}
+            placeholder="Search League Name"
+            sx={{
+              width: "100%",
+              paddingLeft: "1em",
+              paddingRight: "1em",
+            }}
+          />
+          <IconButton
+            onClick={fetchCurrentLocationAndLeagues}
+            aria-label="current location"
+          >
+            <MyLocationIcon />
+          </IconButton>
+        </Box>
 
         {user?.Username === "ADMIN_PUNCHSHOT" && (
           <ThemeProvider theme={buttonTheme}>
