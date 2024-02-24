@@ -5,7 +5,6 @@ import { useMemo } from "react";
 
 const GOOGLE_MAPS_API_KEY = ""
 
-
 const MapWithCircle = ({ center, radius }) => {
   // Load in the API key
   const { isLoaded } = useLoadScript({
