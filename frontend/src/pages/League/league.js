@@ -13,13 +13,13 @@ import { CreateLeague } from "../../components/LeagueComp/CreateLeague.js";
 import axios from "axios";
 import { display } from "@mui/system";
 
-// Assuming your styled component and theme are correctly defined as before
 const StyledInput = styled(InputBase)({
   borderRadius: "1em",
   border: "3px solid #000000",
   fontSize: "calc(0.8vw + 0.1em)",
-  width: "30vw",
   paddingLeft: "1vw",
+  paddingRight: "48px", // Make room for the icon button on the right
+  width: "100%", // Ensure the input stretches to fill the flex container
 });
 
 const buttonTheme = createTheme({
