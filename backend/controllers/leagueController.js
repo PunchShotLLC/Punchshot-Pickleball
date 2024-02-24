@@ -11,15 +11,13 @@ export const createLeague = async (req, res, body) => {
   const {
     LeagueName,
     LeagueOwner,
-    LeagueOwnerEmail,
-    NumTeams,
-    ZipCodes,
-    City,
+    LeagueOwnerEmail, // store admin details in file
     StartDate,
-    Status,
-    Matches,
-    SkillLevel,
+    EndDate,
+    TeamRegistrationDate,
     Division,
+    SkillLevel,
+    Status,
   } = req.body;
 
   if (!LeagueName) {
@@ -32,35 +30,26 @@ export const createLeague = async (req, res, body) => {
       error: "LeagueOwner is required!",
     });
   }
-  if (!NumTeams || NumTeams < 3) {
-    return res.json({
-      error: "There has to be a minimum of 3 teams!",
-    });
-  }
-
-  if (!ZipCodes || ZipCodes.some((e) => e.length !== 5)) {
-    return res.json({
-      error: "Valid zip code is required!",
-    });
-  }
-  if (!City) {
-    return res.json({
-      error: "City is required!",
-    });
-  }
-
   if (!StartDate) {
     return res.json({
       error: "Start Date is required!",
     });
   }
-
+  if (!EndDate) {
+    return res.json({
+      error: "End Date is required!",
+    });
+  }
+  if (!TeamRegistrationDate) {
+    return res.json({
+      error: "Registration Date is required!",
+    });
+  }
   if (!SkillLevel) {
     return res.json({
       error: "Skill Level is required!",
     });
   }
-
   if (!Division) {
     return res.json({
       error: "Division is required!",
@@ -86,14 +75,12 @@ export const createLeague = async (req, res, body) => {
       LeagueName,
       LeagueOwner,
       LeagueOwnerEmail,
-      NumTeams,
-      ZipCodes,
-      City,
       StartDate,
-      Status,
-      Matches,
-      SkillLevel,
+      EndDate,
+      TeamRegistrationDate,
       Division,
+      SkillLevel,
+      Status,
     }).save();
 
     return res.json({ message: "League was successfully created!" });
@@ -544,18 +531,18 @@ const sendLeagueStartEmails = async () => {
  * @param {*} res response object
  */
 export const deleteTeam = async (req, res) => {
-
   // Find the league specified by the request
-  const league = await League.findById(req.params.leagueId)
+  const league = await League.findById(req.params.leagueId);
 
   // Filter out the team with the matching ID
-  league.Teams = league.Teams.filter(team => team._id.toString() !== req.params.teamId);
+  league.Teams = league.Teams.filter(
+    (team) => team._id.toString() !== req.params.teamId
+  );
 
   // Update league object and make response
-  await League.findByIdAndUpdate(req.params.leagueId, league)
+  await League.findByIdAndUpdate(req.params.leagueId, league);
   res.status(200).json(league);
-
-}
+};
 
 /**
  * Changes a captain of a team. leagueId, teamId, and username are specified in the request
@@ -564,15 +551,17 @@ export const deleteTeam = async (req, res) => {
  */
 export const updateTeamCaptain = async (req, res) => {
   // Find the league specified by the request
-  const league = await League.findById(req.params.leagueId)
+  const league = await League.findById(req.params.leagueId);
 
   // Find the team specified by the request
-  const teamIndex = league.Teams.findIndex(team => team._id.toString() === req.params.teamId);
+  const teamIndex = league.Teams.findIndex(
+    (team) => team._id.toString() === req.params.teamId
+  );
 
   // Update the proper team's captain
-  league.Teams[teamIndex].TeamCaptain = req.params.username
+  league.Teams[teamIndex].TeamCaptain = req.params.username;
 
   // Update league object and make response
-  await League.findByIdAndUpdate(req.params.leagueId, league)
+  await League.findByIdAndUpdate(req.params.leagueId, league);
   res.status(200).json(league);
-}
+};

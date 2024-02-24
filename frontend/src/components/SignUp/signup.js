@@ -81,20 +81,19 @@ export const SignUp = (props) => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append('Email', email);
-    formData.append('Username', username);
-    formData.append('Name', name);
-    formData.append('Sex', sex);
-    formData.append('Password', password);
-    formData.append('ZipCode', zipCode);
-    formData.append('SkillLevel', skillLevel);
+    const body = {
+      Email: email,
+      Username: username, // store admin details in file
+      Name: name, // store admin details in file
+      Sex: sex,
+      Password: password,
+      ZipCode: zipCode,
+      SkillLevel: skillLevel,
+    };
 
-    const resp = await axios.post(
-      `http://localhost:8000/users/signup`,
-      formData,
-      { withCredentials: true },
-    );
+    const resp = await axios.post(`http://localhost:8000/users/signup`, body, {
+      withCredentials: true,
+    });
     if (resp.data.error) {
       alert(resp.data.error);
     } else {
@@ -134,7 +133,7 @@ export const SignUp = (props) => {
           alignItems: "center",
         }}
       >
-        <Box sx={{ display: "flex", justifyContent: "end", width: "100%"}}>
+        <Box sx={{ display: "flex", justifyContent: "end", width: "100%" }}>
           <img
             className=".login_x_button"
             style={{ marginTop: "1vw", marginRight: "1vw" }}
