@@ -55,7 +55,7 @@ const ModalContent = styled(Box)({
   gap: "16px",
 });
 
-const RADIUS_TEST = 10000;
+//const RADIUS_TEST = 10000;
 
 export const CreateLeague = ({ show, onClose }) => {
   const [leagueName, setLeagueName] = useState("");
@@ -65,8 +65,10 @@ export const CreateLeague = ({ show, onClose }) => {
   const [registrationDate, setRegistrationDate] = useState("");
   const [endDate, setEndDate] = useState("");
   // States for location-setting, including coordinates and radius
-  const [leagueRadius, setLeagueRadius] = useState(RADIUS_TEST);
+  const [leagueRadiusMile, setLeagueRadiusMile] = useState("0");
+  const [leagueRadiusMeter, setLeagueRadiusMeter] = useState(0);
   const [leagueCenterCoords, setLeagueCenterCoords] = useState(null);
+  const [address, setAddress] = useState("");
 
   const [leagues, setLeagues] = useState(null);
 
@@ -83,6 +85,7 @@ export const CreateLeague = ({ show, onClose }) => {
    * @param {string} address address of where to center the map
    */
   const updateMapWithAddress = (address) => {
+    if (!address) address = "Atlanta";
     fromAddress(address)
       .then(({ results }) => {
         const { lat, lng } = results[0].geometry.location;
@@ -124,14 +127,14 @@ export const CreateLeague = ({ show, onClose }) => {
     // Put the parameters in the request body
     const body = {
       LeagueName: leagueName,
-      LeagueOwner: "ADMIN_PUNCHSHOT", // store admin details in file
-      LeagueOwnerEmail: "vigneshsreedhar2002@gmail.com", // store admin details in file
       StartDate: startDate,
       EndDate: endDate,
       TeamRegistrationDate: registrationDate,
       Division: leagueDivision,
       SkillLevel: leagueSkillLevel,
-      Status: "PENDING",
+      Latitude: leagueCenterCoords.lat,
+      Longitude: leagueCenterCoords.lng,
+      Radius: leagueRadiusMeter,
     };
 
     console.log(body);
@@ -149,8 +152,11 @@ export const CreateLeague = ({ show, onClose }) => {
   };
 
   useEffect(() => {
-    updateMapWithAddress("Peter's Parking Deck");
-  }, []);
+    if (leagueRadiusMile) {
+      setLeagueRadiusMeter(parseFloat(leagueRadiusMile) * 1609.344);
+    }
+    updateMapWithAddress(address);
+  }, [address, leagueRadiusMile]);
 
   if (!show) {
     return null;
@@ -229,7 +235,32 @@ export const CreateLeague = ({ show, onClose }) => {
               <MenuItem value="Mixed">Mixed</MenuItem>
             </Select>
           </FormRow>
-
+          <FormRow>
+            <TextField
+              label="Address"
+              type="text"
+              fullWidth
+              value={address}
+              onChange={(e) => {
+                setAddress(e.target.value);
+              }}
+              placeholder=""
+            />
+            <TextField
+              label="Radius(miles)"
+              type="number"
+              fullWidth
+              value={leagueRadiusMile}
+              onChange={(e) => {
+                setLeagueRadiusMile(e.target.value);
+              }}
+              inputProps={{
+                step: 0.1,
+                min: 0,
+              }}
+              placeholder="Enter Radius"
+            />
+          </FormRow>
           <Box
             sx={{
               my: 2,
@@ -238,7 +269,10 @@ export const CreateLeague = ({ show, onClose }) => {
               alignItems: "center",
             }}
           >
-            <MapWithCircle center={leagueCenterCoords} radius={leagueRadius} />
+            <MapWithCircle
+              center={leagueCenterCoords}
+              radius={leagueRadiusMeter}
+            />
           </Box>
           <Button variant="contained" color="primary" onClick={createLeague}>
             Create League
