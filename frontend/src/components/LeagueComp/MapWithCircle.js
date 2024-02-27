@@ -15,6 +15,8 @@ const MapWithCircle = ({ center, radius }) => {
     googleMapsApiKey: GOOGLE_MAPS_API_KEY,
   });
 
+  if (radius === 0) radius = 0.000001;
+
   const mapContainerStyle = {
     width: "600px",
     height: "300px",
@@ -30,6 +32,7 @@ const MapWithCircle = ({ center, radius }) => {
           center={center}
           zoom={10}
         >
+          <Marker position={center} />
           <Circle
             center={center}
             radius={radius}
