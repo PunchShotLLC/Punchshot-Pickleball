@@ -50,6 +50,16 @@ export const TeamSelectButton = (props) => {
     // Make the PATCH request to update the leagues
     props.updateLeague(props.leagueInfo)
   };
+
+  const changeCaptain = async (teamIndex, username) => {
+    let oldCaptain = props.leagueInfo.Teams[teamIndex].TeamCaptain
+    props.leagueInfo.Teams[teamIndex].TeamCaptain = username;
+
+    // This function must also make the former captain a member of the team
+    props.leagueInfo.Teams[teamIndex].TeamMembers.push(oldCaptain)
+    props.updateLeague(props.leagueInfo)
+  }
+
   // There are nulls in the potential members list for some reason
   // This filters the nulls out
   let potentials = []
@@ -114,7 +124,7 @@ export const TeamSelectButton = (props) => {
           <Button
             onClick={() => {
               if (props.showPotentialMembers) {
-                console.log("Should drop")
+                props.onClickDropTeam()
               } else if (inTeam) {
                 props.onClickRemoveUser()
               } else {
@@ -127,7 +137,8 @@ export const TeamSelectButton = (props) => {
           >
             {
               props.showPotentialMembers ? "Drop Team" :
-                inTeam ? "Leave Team" : "Request to Join"
+                inTeam ? "Leave Team" :
+                  isPotentialMember ? "Request Pending" : "Request to Join"
             }
           </Button>
         </ThemeProvider>
@@ -150,7 +161,7 @@ export const TeamSelectButton = (props) => {
                       {
                         props.showPotentialMembers ? <ThemeProvider theme={buttonTheme}>
                           <Button
-                            onClick={() => console.log("Should make person captain")}
+                            onClick={() => changeCaptain(props.teamIndex, props.members[index])}
                             variant="contained"
                             color="primary"
                             sx={{ ...styles.button, width: "auto" }}
