@@ -164,6 +164,7 @@ export const League = () => {
                 numberOfTeams={league.NumTeams}
                 teamsSignedUp={league.Teams.length}
                 startDate={league.StartDate}
+                registrationDate={league.TeamRegistrationDate}
                 city={league.City}
                 id={league._id}
                 showLeague={league.Status === "PENDING"}

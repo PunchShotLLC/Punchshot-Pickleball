@@ -286,8 +286,7 @@ export const LeagueComp = (props) => {
                     style={{ borderRadius: "50%" }}
                   />
                   <Typography sx={styles.modalData}>
-                    Team Registration Date:{" "}
-                    {new Date(props.registrationDate).toLocaleDateString()}
+                    Team Registration Date: {new Date(props.registrationDate).toLocaleDateString()}
                   </Typography>
                 </Box>
                 <Box sx={{ ...styles.data, ...styles.modalData }}>
@@ -316,24 +315,26 @@ export const LeagueComp = (props) => {
           {/* View Team and More Info Button */}
           <Box sx={styles.row}>
             <Typography sx={styles.name}>{props.name}</Typography>
-            <ThemeProvider theme={buttonTheme}>
-              <Button
-                onClick={openDisclaimerModal}
-                variant="contained"
-                color="primary"
-                sx={styles.button}
-              >
-                View Teams
-              </Button>
-              <Button
-                onClick={openInfoModal}
-                variant="contained"
-                color="primary"
-                sx={styles.button}
-              >
-                More Info
-              </Button>
-            </ThemeProvider>
+            <Box sx={styles.buttonRow}>
+              <ThemeProvider theme={buttonTheme}>
+                <Button
+                  onClick={openDisclaimerModal}
+                  variant="contained"
+                  color="primary"
+                  sx={styles.button}
+                >
+                  View Teams
+                </Button>
+                <Button
+                  onClick={openInfoModal}
+                  variant="contained"
+                  color="primary"
+                  sx={styles.button}
+                >
+                  More Info
+                </Button>
+              </ThemeProvider>
+            </Box>
           </Box>
 
           {/* <Box sx={styles.row}>
@@ -401,13 +402,14 @@ export const LeagueComp = (props) => {
 
 const styles = {
   name: {
-    fontSize: "calc(1.5em + 1vw)",
+    fontSize: "calc(1.5em + 0.5vw)",
+    fontWeight: "bold",
+    fontFamily: "'Futura', sans-serif",
   },
   side: {
     display: "flex",
     flexDirection: "column",
-    justifyContent: "space-between",
-    height: "10vh",
+    height: "8vh",
     marginBottom: LeagueComp.isSmallScreen ? "2%" : "1%",
     marginLeft: LeagueComp.isSmallScreen ? "1%" : "2%",
   },
@@ -425,10 +427,8 @@ const styles = {
     backgroundColor: "#F5F5F5",
     height: "15vh",
     cursor: "pointer",
-    display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
     borderRadius: "20px",
     marginTop: "2em",
     marginBottom: LeagueComp.isSmallScreen ? "2%" : "3%",
@@ -436,7 +436,8 @@ const styles = {
   row: {
     display: "flex",
     flexDirection: "row",
-    alignItems: "center",
+    marginTop: "auto",
+    justifyContent: "space-between"
   },
   column: {
     display: "flex",
@@ -457,7 +458,7 @@ const styles = {
   button: {
     borderRadius: "calc(1.5em + 1vw)",
     marginLeft: "2em",
-    width: "20%",
+    marginRight: "2em",
   },
   modal: {
     position: "absolute",
