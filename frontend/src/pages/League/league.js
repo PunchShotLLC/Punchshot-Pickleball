@@ -55,6 +55,7 @@ export const League = () => {
         leagueName ? leagueName : ""
       }`;
       const response = await axios.get(url);
+      console.log(response.data);
       setLeagues(response.data);
     } catch (error) {
       console.error("Error fetching leagues:", error);
@@ -88,7 +89,7 @@ export const League = () => {
         flexDirection: "column",
         padding: "2em",
         overflowY: "auto",
-        alignItems: "center"
+        alignItems: "center",
       }}
     >
       <CreateLeague
@@ -161,10 +162,12 @@ export const League = () => {
                 key={league._id} // Assuming each league has a unique ID
                 logo={require("../../assets/images/ATL1.png")} // Make sure this path is correct
                 name={league.LeagueName}
-                numberOfTeams={league.NumTeams}
                 teamsSignedUp={league.Teams.length}
                 startDate={league.StartDate}
-                city={league.City}
+                endDate={league.EndDate}
+                registrationDate={league.TeamRegistrationDate}
+                skillLevel={league.SkillLevel}
+                division={league.Division}
                 id={league._id}
                 showLeague={league.Status === "PENDING"}
                 onClick={() =>

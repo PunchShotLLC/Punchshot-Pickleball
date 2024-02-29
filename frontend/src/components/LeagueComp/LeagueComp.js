@@ -300,6 +300,16 @@ export const LeagueComp = (props) => {
                   <Typography sx={styles.modalData}>
                     Start Date: {new Date(props.startDate).toLocaleDateString()}
                   </Typography>
+                  <Typography sx={styles.modalData}>
+                    End Date: {new Date(props.endDate).toLocaleDateString()}
+                  </Typography>
+                  <Typography sx={styles.modalData}>
+                    Skill Level:{" "}
+                    {new Date(props.skillLevel).toLocaleDateString()}
+                  </Typography>
+                  <Typography sx={styles.modalData}>
+                    Skill Level: {new Date(props.division).toLocaleDateString()}
+                  </Typography>
                 </Box>
                 <Button
                   onClick={closeInfoModal}

@@ -127,11 +127,14 @@ export const CreateLeague = ({ show, onClose }) => {
     // Put the parameters in the request body
     const body = {
       LeagueName: leagueName,
+      LeagueOwner: "ADMIN_PUNCHSHOT",
+      LeagueOwnerEmail: "vigneshsreedhar2002@gmail.com",
       StartDate: startDate,
       EndDate: endDate,
       TeamRegistrationDate: registrationDate,
       Division: leagueDivision,
       SkillLevel: leagueSkillLevel,
+      Status: "PENDING",
       Latitude: leagueCenterCoords.lat,
       Longitude: leagueCenterCoords.lng,
       Radius: leagueRadiusMeter,
