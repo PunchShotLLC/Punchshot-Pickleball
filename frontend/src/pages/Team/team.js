@@ -145,6 +145,32 @@ export const TeamSelect = (props) => {
     updateLeague(leagueInfo);
   };
 
+  /**
+   * Drops a team from the league
+   * @param {int} teamIndex index of the team in the teamState.Teams array
+   */
+  const dropTeamFromLeague = async (teamIndex) => {
+
+    const apiUrl = `http://localhost:8000/leagues/deleteTeam/${teamState['_id']}/${teamState.Teams[teamIndex]["_id"]}`;
+    const requestOptions = {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    fetch(apiUrl, requestOptions)
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(responseData);
+        setTeamState(responseData);
+        alert("League Updated");
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+
   const removePlayerFromTeam = async (teamIndex) => {
     if (!user) {
       console.log("not signed in");
@@ -459,10 +485,15 @@ export const TeamSelect = (props) => {
                   <TeamSelectButton
                     onClick={() => {
                       addPlayerToPotentialList(index);
+                      console.log("Addplayertopotentiallist")
                     }}
                     onClickRemoveUser={() => {
                       console.log("Remove User Is Running");
                       removePlayerFromTeam(index);
+                    }}
+                    onClickDropTeam={() => {
+                      console.log("Drop team is running");
+                      dropTeamFromLeague(index)
                     }}
                     name={teamState.Teams[index].TeamName}
                     captain={teamState.Teams[index].TeamCaptain}
