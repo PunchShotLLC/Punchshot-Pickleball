@@ -69,6 +69,18 @@ const leagueSchema = new Schema({
     enum: ["Men", "Women", "Mixed"],
     required: true,
   },
+  Latitude: {
+    type: String,
+    required: true,
+  },
+  Longitude: {
+    type: String,
+    required: true,
+  },
+  Radius: {
+    type: Number,
+    required: true,
+  },
   Matches: [Object],
 });
 

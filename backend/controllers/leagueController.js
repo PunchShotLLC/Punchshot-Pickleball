@@ -18,6 +18,9 @@ export const createLeague = async (req, res, body) => {
     Division,
     SkillLevel,
     Status,
+    Latitude,
+    Longitude,
+    Radius,
   } = req.body;
 
   if (!LeagueName) {
@@ -55,6 +58,21 @@ export const createLeague = async (req, res, body) => {
       error: "Division is required!",
     });
   }
+  if (!Latitude) {
+    return res.json({
+      error: "Latitude is required!",
+    });
+  }
+  if (!Longitude) {
+    return res.json({
+      error: "Longitude is required!",
+    });
+  }
+  if (!Radius) {
+    return res.json({
+      error: "Radius is required!",
+    });
+  }
 
   const existLeagueName = await League.findOne({ LeagueName });
   if (existLeagueName) {
@@ -81,6 +99,9 @@ export const createLeague = async (req, res, body) => {
       Division,
       SkillLevel,
       Status,
+      Latitude,
+      Longitude,
+      Radius,
     }).save();
 
     return res.json({ message: "League was successfully created!" });
