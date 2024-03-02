@@ -52,130 +52,6 @@ export const LeagueComp = (props) => {
       }
     ).catch((err) => console.log(err));
   };
-
-  //   const StyledTitle = styled("header")({
-  //     display: "flex",
-  //     alignItems: "center",
-  //     textAlign: "center",
-  //     alignSelf: "center",
-
-  //     fontWeight: "700",
-  //     fontSize: "calc(2em + 1vw)",
-  //     lineHeigth: "4.8125em",
-  // })
-
-  //   if (props.showLeague) {
-  //     return (
-  //       <Box sx={styles.main}>
-  //         <Box onClick={props.onClick} sx={styles.side}>
-  //           <Typography sx={styles.name}>{props.name}</Typography>
-  //           {/* <StyledTitle> {props.name} </StyledTitle> */}
-  //           <Box sx={styles.row}>
-  //             <Box sx={styles.data}>
-  //               <img
-  //                 src={require("../../assets/images/Team.png")}
-  //                 alt="team"
-  //                 height={"50%"}
-  //                 width={"30%"}
-  //                 style={{ border: "2px solid black", borderRadius: "50%" }}
-  //               />
-  //               <Typography sx={styles.info}>
-  //                 {props.teamsSignedUp}/{props.numberOfTeams} Teams
-  //               </Typography>
-  //             </Box>
-  //             <Box sx={styles.data}>
-  //               <img
-  //                 alt="clock"
-  //                 src={require("../../assets/images/Clock.png")}
-  //                 height={"50%"}
-  //                 width={"10%"}
-  //                 style={{ borderRadius: "50%" }}
-  //               />
-  //               <Typography sx={styles.info}>
-  //                 {new Date(props.startDate).toLocaleDateString()}
-  //               </Typography>
-  //             </Box>
-  //             <Box sx={styles.data}>
-  //               <img
-  //                 alt="location"
-  //                 src={require("../../assets/images/location.png")}
-  //                 height={"50%"}
-  //                 width={"10%"}
-  //                 style={{ borderRadius: "50%" }}
-  //               />
-  //               <Typography sx={styles.info}>{props.city}</Typography>
-  //             </Box>
-  //             {props.allowStart ? (
-  //               <Box sx={styles.data}>
-  //                 <Button onClick={startLeague}>START</Button>
-  //               </Box>
-  //             ) : null}
-  //             {isBeforeToday(props.startDate) ? (
-  //               <Box sx={styles.data}>
-  //                 <Typography sx={styles.info}>
-  //                   Note: The start date of this league has passed.
-  //                 </Typography>
-  //               </Box>
-  //             ) : null}
-  //             {props.teamsSignedUp < props.numberOfTeams ? (
-  //               <Box sx={styles.data}>
-  //                 <Typography sx={styles.info}>
-  //                   Note: League is not at capacity
-  //                 </Typography>
-  //               </Box>
-  //             ) : null}
-  //           </Box>
-
-  //           {/* Render the starting stuff if the user is 'test'
-  //           Render the date warning message if the date is passed the starting date of the league */}
-  //         </Box>
-  //       </Box>
-  //     );
-  //   } else {
-  //     return null;
-  //   }
-  // };
-
-  // const styles = {
-  //   name: {
-  //     fontSize: "calc(1.5em + 1vw)",
-  //   },
-  //   side: {
-  //     display: "flex",
-  //     flexDirection: "column",
-  //     justifyContent: "space-between",
-  //     height: "10vh",
-  //     marginBottom: "2%",
-  //     marginLeft: "1%",
-  //   },
-  //   data: {
-  //     display: "flex",
-  //     flexDirection: "row",
-  //     alignItems: "center",
-  //     width: "16.67%",
-  //   },
-  //   main: {
-  //     backgroundColor: "#F5F5F5",
-  //     borderRadius: "10px",
-  //     height: "16vh",
-  //     cursor: "pointer",
-  //     display: "flex",
-  //     flexDirection: "row",
-  //     alignItems: "center",
-  //     borderRadius: "20px",
-  //     marginBottom: "3%",
-  //   },
-  //   row: {
-  //     display: "flex",
-  //     flexDirection: "row",
-  //   },
-  //   info: {
-  //     color: "black",
-  //     width: "20vh",
-  //     fontSize: "1.2em",
-  //   },
-  // };
-
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -286,7 +162,8 @@ export const LeagueComp = (props) => {
                     style={{ borderRadius: "50%" }}
                   />
                   <Typography sx={styles.modalData}>
-                    Team Registration Date: {new Date(props.registrationDate).toLocaleDateString()}
+                    Team Registration Date:{" "}
+                    {new Date(props.registrationDate).toLocaleDateString()}
                   </Typography>
                 </Box>
                 <Box sx={{ ...styles.data, ...styles.modalData }}>
@@ -303,11 +180,10 @@ export const LeagueComp = (props) => {
                     End Date: {new Date(props.endDate).toLocaleDateString()}
                   </Typography>
                   <Typography sx={styles.modalData}>
-                    Skill Level:{" "}
-                    {new Date(props.skillLevel).toLocaleDateString()}
+                    Skill Level: {props.skillLevel}
                   </Typography>
                   <Typography sx={styles.modalData}>
-                    Skill Level: {new Date(props.division).toLocaleDateString()}
+                    Division: {props.division}
                   </Typography>
                 </Box>
                 <Button
@@ -447,7 +323,7 @@ const styles = {
     display: "flex",
     flexDirection: "row",
     marginTop: "auto",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   column: {
     display: "flex",

@@ -2,70 +2,77 @@ import * as React from "react";
 import "./teamSelectButton.css";
 import { Modal } from "@mui/material";
 import { Button, IconButton } from "@mui/material";
-import CheckIcon from "@mui/icons-material/Check"
-import CloseIcon from '@mui/icons-material/Close';
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
 import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { useState, useEffect } from "react";
 export const TeamSelectButton = (props) => {
+  console.log(props);
 
-  console.log(props)
-
-  let isPotentialMember = props.leagueInfo.Teams[props.teamIndex].PotentialTeamMembers.some((name) => name === props.username)
-  let inTeam = (props.members.some((obj) => obj === props.username) || props.username === props.captain)
+  let isPotentialMember = props.leagueInfo.Teams[
+    props.teamIndex
+  ].PotentialTeamMembers.some((name) => name === props.username);
+  let inTeam =
+    props.members.some((obj) => obj === props.username) ||
+    props.username === props.captain;
   const addPlayerToTeam = async (teamIndex, username) => {
-
     // Add the player to the team's player list
     let playerList = props.leagueInfo.Teams[teamIndex].TeamMembers;
-    let teamMember = props.leagueInfo.Teams.some((team) => team.TeamMembers.some(name => name === username));
+    let teamMember = props.leagueInfo.Teams.some((team) =>
+      team.TeamMembers.some((name) => name === username)
+    );
 
     if (teamMember) {
-      alert("Already in team")
+      alert("Already in team");
       return;
     }
 
     if (playerList.length >= 5) {
-      alert("Team is full")
+      alert("Team is full");
       return;
     }
 
     playerList.push(username);
 
     // Remove the player from the potential player list
-    let potentialPlayerList = props.leagueInfo.Teams[teamIndex].PotentialTeamMembers;
-    potentialPlayerList = potentialPlayerList.filter(e => e !== username)
-    props.leagueInfo.Teams[teamIndex].PotentialTeamMembers = potentialPlayerList
+    let potentialPlayerList =
+      props.leagueInfo.Teams[teamIndex].PotentialTeamMembers;
+    potentialPlayerList = potentialPlayerList.filter((e) => e !== username);
+    props.leagueInfo.Teams[teamIndex].PotentialTeamMembers =
+      potentialPlayerList;
     // Make the PATCH request to update the leagues
-    props.updateLeague(props.leagueInfo)
+    props.updateLeague(props.leagueInfo);
   };
   const removePlayerToTeam = async (teamIndex, username) => {
-
     // Remove the player from the potential player list
-    let potentialPlayerList = props.leagueInfo.Teams[teamIndex].PotentialTeamMembers;
-    potentialPlayerList = potentialPlayerList.filter(e => e !== username)
-    props.leagueInfo.Teams[teamIndex].PotentialTeamMembers = potentialPlayerList
+    let potentialPlayerList =
+      props.leagueInfo.Teams[teamIndex].PotentialTeamMembers;
+    potentialPlayerList = potentialPlayerList.filter((e) => e !== username);
+    props.leagueInfo.Teams[teamIndex].PotentialTeamMembers =
+      potentialPlayerList;
 
     // Make the PATCH request to update the leagues
-    props.updateLeague(props.leagueInfo)
+    props.updateLeague(props.leagueInfo);
   };
 
   const changeCaptain = async (teamIndex, username) => {
-    let oldCaptain = props.leagueInfo.Teams[teamIndex].TeamCaptain
+    let oldCaptain = props.leagueInfo.Teams[teamIndex].TeamCaptain;
     props.leagueInfo.Teams[teamIndex].TeamCaptain = username;
 
     // This function must also make the former captain a member of the team
-    props.leagueInfo.Teams[teamIndex].TeamMembers.push(oldCaptain)
-    props.updateLeague(props.leagueInfo)
-  }
+    props.leagueInfo.Teams[teamIndex].TeamMembers.push(oldCaptain);
+    props.updateLeague(props.leagueInfo);
+  };
 
   // There are nulls in the potential members list for some reason
   // This filters the nulls out
-  let potentials = []
+  let potentials = [];
   for (let i = 0; i < props.potentialMembers.length; i++) {
     if (props.potentialMembers[i] !== null) {
-      potentials.push(props.potentialMembers[i])
+      potentials.push(props.potentialMembers[i]);
     }
   }
 
@@ -82,8 +89,8 @@ export const TeamSelectButton = (props) => {
     },
   });
 
-  const [memberModalOpen, setMemberModalOpen] = useState(false)
-  const [memberRequestModalOpen, setMemberRequestModalOpen] = useState(false)
+  const [memberModalOpen, setMemberModalOpen] = useState(false);
+  const [memberRequestModalOpen, setMemberRequestModalOpen] = useState(false);
   return (
     <>
       <Box sx={styles.row}>
@@ -108,38 +115,40 @@ export const TeamSelectButton = (props) => {
             color="primary"
             sx={styles.button}
           >
-            Member Info
+            View Info
           </Button>
-          {
-            props.showPotentialMembers ? <Button
+          {props.showPotentialMembers ? (
+            <Button
               onClick={() => setMemberRequestModalOpen(true)}
               variant="contained"
               color="primary"
               sx={styles.button}
             >
               Member Requests
-            </Button> : null
-          }
+            </Button>
+          ) : null}
 
           <Button
             onClick={() => {
               if (props.showPotentialMembers) {
-                props.onClickDropTeam()
+                props.onClickDropTeam();
               } else if (inTeam) {
-                props.onClickRemoveUser()
+                props.onClickRemoveUser();
               } else {
-                props.onClick()
+                props.onClick();
               }
             }}
             variant="contained"
             color="primary"
             sx={styles.button}
           >
-            {
-              props.showPotentialMembers ? "Drop Team" :
-                inTeam ? "Leave Team" :
-                  isPotentialMember ? "Request Pending" : "Request to Join"
-            }
+            {props.showPotentialMembers
+              ? "Drop Team"
+              : inTeam
+              ? "Leave Team"
+              : isPotentialMember
+              ? "Request Pending"
+              : "Request to Join"}
           </Button>
         </ThemeProvider>
         <Modal open={memberModalOpen}>
@@ -148,32 +157,30 @@ export const TeamSelectButton = (props) => {
               <Typography sx={styles.modalData}>
                 Captain: {props.captain}
               </Typography>
-              <Typography sx={styles.modalData}>
-                Members:
-              </Typography>
-              {
-                props.members.map((item, index) => {
-                  return (
-                    <Box sx={{ ...styles.data, ...styles.modalData }}>
-                      <Typography sx={styles.modalData}>
-                        {index + 1}: {item}
-                      </Typography>
-                      {
-                        props.showPotentialMembers ? <ThemeProvider theme={buttonTheme}>
-                          <Button
-                            onClick={() => changeCaptain(props.teamIndex, props.members[index])}
-                            variant="contained"
-                            color="primary"
-                            sx={{ ...styles.button, width: "auto" }}
-                          >
-                            Make Captain
-                          </Button>
-                        </ThemeProvider> : null
-                      }
-                    </Box>
-                  )
-                })
-              }
+              <Typography sx={styles.modalData}>Members:</Typography>
+              {props.members.map((item, index) => {
+                return (
+                  <Box sx={{ ...styles.data, ...styles.modalData }}>
+                    <Typography sx={styles.modalData}>
+                      {index + 1}: {item}
+                    </Typography>
+                    {props.showPotentialMembers ? (
+                      <ThemeProvider theme={buttonTheme}>
+                        <Button
+                          onClick={() =>
+                            changeCaptain(props.teamIndex, props.members[index])
+                          }
+                          variant="contained"
+                          color="primary"
+                          sx={{ ...styles.button, width: "auto" }}
+                        >
+                          Make Captain
+                        </Button>
+                      </ThemeProvider>
+                    ) : null}
+                  </Box>
+                );
+              })}
               <Button
                 onClick={() => setMemberModalOpen(false)}
                 variant="contained"
@@ -188,16 +195,30 @@ export const TeamSelectButton = (props) => {
         <Modal open={memberRequestModalOpen}>
           <Box sx={styles.modal}>
             <Box sx={styles.column}>
-              <Typography sx={styles.modalData}>
-                Potential Members:
-              </Typography>
+              <Typography sx={styles.modalData}>Potential Members:</Typography>
               {potentials.map((item, index) => (
-                <div className='pending-team-container' >
-                  <IconButton onClick={() => addPlayerToTeam(props.teamIndex, props.potentialMembers[index])}>
+                <div className="pending-team-container">
+                  <IconButton
+                    onClick={() =>
+                      addPlayerToTeam(
+                        props.teamIndex,
+                        props.potentialMembers[index]
+                      )
+                    }
+                  >
                     <CheckIcon sx={{ color: "green" }} />
                   </IconButton>
-                  <p className="potential-team-member">{props.potentialMembers[index]}</p>
-                  <IconButton onClick={() => removePlayerToTeam(props.teamIndex, props.potentialMembers[index])}>
+                  <p className="potential-team-member">
+                    {props.potentialMembers[index]}
+                  </p>
+                  <IconButton
+                    onClick={() =>
+                      removePlayerToTeam(
+                        props.teamIndex,
+                        props.potentialMembers[index]
+                      )
+                    }
+                  >
                     <CloseIcon sx={{ color: "red" }} />
                   </IconButton>
                 </div>
@@ -265,7 +286,7 @@ const styles = {
   },
   subName: {
     fontSize: "1.5em",
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
   data: {
     display: "flex",
