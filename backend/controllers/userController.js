@@ -5,6 +5,13 @@ import jwt from "jsonwebtoken";
 import createSecretToken from "../util/secretToken.js";
 import dotenv from "dotenv";
 dotenv.config();
+import Aws from 'aws-sdk';
+
+
+const s3 = new Aws.S3({
+  accessKeyId:process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey:process.env.AWS_ACCESS_KEY_SECRET
+})
 
 const hashPassword = (password) => {
   return new Promise((resolve, reject) => {
@@ -62,8 +69,14 @@ export const loginUser = async (req, res) => {
   }
 };
 
+// upload new profile pic to S3 bucket
+// export const uploadPic = async (req, res) => {
+  
+// }
+
 // create new user
 export const createUser = async (req, res) => {
+
   const {
     Email,
     Username,
@@ -141,6 +154,8 @@ export const createUser = async (req, res) => {
     });
   }
   const hashedPassword = await hashPassword(Password);
+
+
   try {
     const user = await new User({
       Email,
@@ -149,6 +164,7 @@ export const createUser = async (req, res) => {
       Name,
       Sex,
       ZipCode,
+      ProfilePhoto: "",
       SkillLevel,
     }).save();
 
@@ -165,6 +181,57 @@ export const createUser = async (req, res) => {
     console.log(error);
   }
 };
+
+//Uploads a new profile picture for the User
+export const uploadFile = async (req, res) => {
+  const { Username } = req.body
+  const user = await User.findOne({ Username });
+
+  if (!user) {
+    return res.json({
+      error: "No user found",
+    });
+  }
+
+  let newLocation = ""
+  if (req.file) {
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: `${Username}-${Date.now()}`,
+      Body: req.file.buffer,
+      ACL:"public-read-write",
+      ContentType:"image/jpeg"
+    }
+
+    const upload = await s3.upload(params, (error, data) => {
+      if (error) {
+        res.status(500).send({"err":error})
+      }
+    }).promise()
+
+    newLocation = upload["Location"]
+  }
+
+
+
+  if (user.ProfilePhoto != "") {
+    const key = user.ProfilePhoto.slice(45)
+
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: key
+    }
+
+    const object = await s3.deleteObject(params, (error, data) => {
+      if (error){
+        res.status(500).send({"err":error})
+      }
+      console.log("success")
+    }).promise()
+  }
+
+  const updateRes = await User.updateOne({ Username }, { ProfilePhoto: newLocation });
+}
 
 export const verifyUser = async (req, res) => {
   const token = req.cookies.token;

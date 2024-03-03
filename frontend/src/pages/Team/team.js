@@ -12,11 +12,13 @@ import "@fontsource/inter/400.css";
 import "@fontsource/inter/700.css";
 import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/InputBase";
-import { FormControl } from "@mui/material";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { FormControl, Container } from "@mui/material";
+import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { useCookies } from "react-cookie";
 import axios from "axios";
 import { TeamSelectButton } from "./teamSelectButton";
+import { setDefaults, fromAddress } from "react-geocode";
 
 const StyledInput = styled(TextField)({
   borderRadius: "1em",
@@ -53,6 +55,13 @@ export const TeamSelect = (props) => {
   const [homeCourtAddress, setHomeCourtAddress] = useState(null);
   const [homeCourtMessage, setHomeCourtMessage] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+
+  // TODO: ENTER API KEY
+  setDefaults({
+    key: "",
+    language: "en", // Default language for responses.
+    region: "es", // Default region for responses.
+  });
 
   const updateLeague = async (update) => {
     const apiUrl = `http://localhost:8000/leagues/updateLeague/${location.state["_id"]}`;
@@ -92,6 +101,32 @@ export const TeamSelect = (props) => {
     // alerts if home court address is blank
     if (!homeCourtAddress || homeCourtAddress.trim() === "") {
       alert("Please enter a home court address.");
+      return;
+    }
+
+    const { lat: homeLat, lng: homeLong } = await fromAddress(homeCourtAddress)
+      .then(({ results }) => {
+        return results[0].geometry.location;
+      })
+      .catch(console.error);
+    const { Latitude: centerLat, Longitude: centerLong, Radius: radius } = location.state
+    const apiUrl = `http://localhost:8000/leagues/checkAddress?homeLat=${homeLat}&homeLong=${homeLong}&centerLat=${centerLat}&centerLong=${centerLong}&radius=${radius}`;
+    const requestOptions = {
+      method: "GET",
+    };
+
+    const { inRadius } = await fetch(apiUrl, requestOptions)
+      .then((response) => response.json())
+      .then((responseData) => {
+        return responseData
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+
+    //check if homeAdress within league radius
+    if (!inRadius) {
+      alert("This team home court adress is too far from the league address");
       return;
     }
 
@@ -144,6 +179,32 @@ export const TeamSelect = (props) => {
     updateLeague(leagueInfo);
   };
 
+  /**
+   * Drops a team from the league
+   * @param {int} teamIndex index of the team in the teamState.Teams array
+   */
+  const dropTeamFromLeague = async (teamIndex) => {
+
+    const apiUrl = `http://localhost:8000/leagues/deleteTeam/${teamState['_id']}/${teamState.Teams[teamIndex]["_id"]}`;
+    const requestOptions = {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    fetch(apiUrl, requestOptions)
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(responseData);
+        setTeamState(responseData);
+        alert("League Updated");
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+
   const removePlayerFromTeam = async (teamIndex) => {
     if (!user) {
       console.log("not signed in");
@@ -153,33 +214,18 @@ export const TeamSelect = (props) => {
     let PlayerList = teamState.Teams[teamIndex].TeamMembers;
     console.log(PlayerList);
 
-    let teamCaptain = teamState.Teams[teamIndex].TeamCaptain;
     var leagueInfo = teamState;
 
-    // If the captain is leaving the team,
-    // If there are no more players in the team, delete the team
-    // Otherwise the next person on the list becomes the captain
-    if (teamCaptain === user.Username) {
-      if (PlayerList.length === 0) {
-        leagueInfo.Teams.splice(teamIndex, 1);
-        alert("Dropping team");
-      } else {
-        leagueInfo.Teams[teamIndex].TeamCaptain = PlayerList[0];
-        leagueInfo.Teams[teamIndex].TeamMembers.splice(0, 1);
-        alert("Assigning new captain");
-      }
-    } else {
-      //find user in memberlist and remove from memberlist
-      console.log("in filter");
-      let userIndex = PlayerList.indexOf(user.Username);
-      if (userIndex === -1) {
-        alert("User already not in team");
-        return;
-      }
-      leagueInfo.Teams[teamIndex].TeamMembers.splice(userIndex, 1);
-      alert("Leaving team");
+    //find user in memberlist and remove from memberlist
+    let userIndex = PlayerList.indexOf(user.Username);
+    if (userIndex === -1) {
+      alert("User already not in team");
+      return;
     }
+    leagueInfo.Teams[teamIndex].TeamMembers.splice(userIndex, 1);
+    alert("Leaving team");
 
+    // Update the league with the new league object
     updateLeague(leagueInfo);
     location.state = leagueInfo;
   };
@@ -320,19 +366,13 @@ export const TeamSelect = (props) => {
     top: "calc(100% + 25px)",
     left: 0,
   });
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
-    <Box sx={{ width: "80vw", height: "77.69vh", display: "flex" }}>
-      <Box
-        sx={{
-          position: "relative",
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        {showTeamCreationForm ? null : (
+    <>
+      {showTeamCreationForm ? null : (
+        <Box sx={{ width: "100vw", display: "flex", justifyContent: "center" }}>
           <Button
             onClick={() => setShowTeamCreationForm(true)}
             variant="contained"
@@ -342,7 +382,7 @@ export const TeamSelect = (props) => {
               margin: "0 auto",
               borderRadius: "calc(0.1em + 0.5vw)",
               width: "20%",
-              right: "0px",
+              right: "0",
               pl: "calc(1.5vw)",
               pr: "calc(1.8vw)",
               marginTop: "1em",
@@ -350,158 +390,198 @@ export const TeamSelect = (props) => {
           >
             Create Team
           </Button>
-        )}
+        </Box>
 
-        {showTeamCreationForm ? (
-          <Typography
-            className="bodyText"
-            sx={{
-              display: "absolute",
-              fontSize: "calc(0.1em + 1vw)",
-              align: "left",
-              marginLeft: "10vw",
-              marginBottom: "8em",
-            }}
-          >
-            <FormControl
-              sx={{ height: "7vw", marginLeft: "1.5vw", position: "relative" }}
+      )}
+      <Box sx={{ width: "80vw", height: "77.69vh", display: "flex" }}>
+        <Box
+          sx={{
+            position: "relative",
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          {showTeamCreationForm ? (
+            <Typography
+              className="bodyText"
+              sx={{
+                display: "absolute",
+                fontSize: "calc(0.1em + 1vw)",
+                align: "left",
+                marginLeft: "10vw",
+                marginBottom: "8em",
+              }}
             >
-              <StyledLabel htmlFor="leagueName">
-                Team Name<span style={{ color: "red" }}>*</span>
-              </StyledLabel>
-              <StyledInput
-                onChange={(event) => setTeamName(event.target.value)}
-                id="leagueName"
-                placeholder="Team1"
-                required
-              />
-              <StyledLabel htmlFor="homeCourtAddress">
-                Home Court Address<span style={{ color: "red" }}>*</span>
-              </StyledLabel>
-              <StyledInput
-                value={homeCourtAddress}
-                onChange={handleHomeCourtAddressChange}
-                id="homeCourtAddress"
-                placeholder="123 Main St"
-                required
-              />
-              {suggestions.length > 0 && (
-                <SuggestionsList>
-                  {suggestions.map((suggestion, index) => (
-                    <SuggestionItem
-                      key={index}
-                      onClick={() => handleSuggestionClick(suggestion)}
-                    >
-                      {suggestion.description}
-                    </SuggestionItem>
-                  ))}
-                </SuggestionsList>
-              )}
-              {/* Disclaimer text */}
-              <Typography
-                sx={{
-                  display: "block",
-                  fontSize: "calc(0.5em + 0.5vw)",
-                  color: "gray",
-                  marginTop: "0.25em",
-                  marginBottom: "0.5em",
-                }}
+              <FormControl
+                sx={{ height: "7vw", marginLeft: "1.5vw", position: "relative" }}
               >
-                * Ensuring court availability is your team’s responsibility.
-              </Typography>
-              <Typography
-                sx={{
-                  height: "20px",
-                  fontSize: "calc(0.5em + 0.5vw)",
-                  color: "primary",
-                  marginTop: "0.5em",
-                  marginBottom: "0.5em",
-                  visibility: homeCourtMessage ? "visible" : "hidden",
-                }}
-              >
-                {homeCourtMessage}
-              </Typography>
-
-              <Box>
-                <Button
-                  onClick={() => setShowTeamCreationForm(false)}
-                  variant="contained"
-                  color="grey"
-                  sx={{
-                    position: "relative",
-                    borderRadius: "calc(0.1em + 0.5vw)",
-                    width: "50%",
-                    pl: "calc(1.5vw)",
-                    pr: "calc(1.8vw)",
-                    marginTop: "1em",
-                  }}
-                >
-                  Cancel
-                </Button>
-
-                <Button
-                  onClick={addTeamToLeague}
-                  variant="contained"
-                  color="primary"
-                  sx={{
-                    position: "relative",
-                    borderRadius: "calc(0.1em + 0.5vw)",
-                    width: "50%",
-                    right: "0px",
-                    pl: "calc(1.5vw)",
-                    pr: "calc(1.8vw)",
-                    marginTop: "1em",
-                  }}
-                >
-                  Create Team
-                </Button>
-              </Box>
-            </FormControl>
-          </Typography>
-        ) : null}
-
-        <Box sx={{ position: "relative", left: "3svw", overflow: "scroll" }}>
-          {/* Dynamically renders the teams within the league */}
-          {teamState.Teams !== null
-            ? teamState.Teams.map((team, index) => (
-                <TeamSelectButton
-                  onClick={() => {
-                    addPlayerToPotentialList(index);
-                  }}
-                  onClickRemoveUser={() => {
-                    console.log("Remove User Is Running");
-                    removePlayerFromTeam(index);
-                  }}
-                  name={teamState.Teams[index].TeamName}
-                  captain={teamState.Teams[index].TeamCaptain}
-                  members={teamState.Teams[index].TeamMembers}
-                  home={teamState.Teams[index].HomeCourtAddress}
-                  potentialMembers={teamState.Teams[index].PotentialTeamMembers}
-                  showPotentialMembers={
-                    user && user.Username === teamState.Teams[index].TeamCaptain
-                  }
-                  username={user && user.Username}
-                  leagueInfo={teamState}
-                  teamIndex={index}
-                  updateLeague={updateLeague}
+                <StyledLabel htmlFor="leagueName">
+                  Team Name<span style={{ color: "red" }}>*</span>
+                </StyledLabel>
+                <StyledInput
+                  onChange={(event) => setTeamName(event.target.value)}
+                  id="leagueName"
+                  placeholder="Team1"
+                  required
                 />
-              ))
-            : null}
+                <StyledLabel htmlFor="homeCourtAddress">
+                  Home Court Address<span style={{ color: "red" }}>*</span>
+                </StyledLabel>
+                <StyledInput
+                  value={homeCourtAddress}
+                  onChange={handleHomeCourtAddressChange}
+                  id="homeCourtAddress"
+                  placeholder="123 Main St"
+                  required
+                />
+                {suggestions.length > 0 && (
+                  <SuggestionsList>
+                    {suggestions.map((suggestion, index) => (
+                      <SuggestionItem
+                        key={index}
+                        onClick={() => handleSuggestionClick(suggestion)}
+                      >
+                        {suggestion.description}
+                      </SuggestionItem>
+                    ))}
+                  </SuggestionsList>
+                )}
+                {/* Disclaimer text */}
+                <Typography
+                  sx={{
+                    display: "block",
+                    fontSize: "calc(0.5em + 0.5vw)",
+                    color: "gray",
+                    marginTop: "0.25em",
+                    marginBottom: "0.5em",
+                  }}
+                >
+                  * Ensuring court availability is your team’s responsibility.
+                </Typography>
+                <Typography
+                  sx={{
+                    height: "20px",
+                    fontSize: "calc(0.5em + 0.5vw)",
+                    color: "primary",
+                    marginTop: "0.5em",
+                    marginBottom: "0.5em",
+                    visibility: homeCourtMessage ? "visible" : "hidden",
+                  }}
+                >
+                  {homeCourtMessage}
+                </Typography>
 
-          <Box sx={{ width: "45vw", height: "4vh", display: "flex" }}></Box>
-          <Box
-            sx={{
-              position: "absolute",
-              top: "102%",
-              left: "9.5%",
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              flexDirection: "row",
-            }}
-          ></Box>
+                <Box>
+                  <Button
+                    onClick={() => setShowTeamCreationForm(false)}
+                    variant="contained"
+                    color="grey"
+                    sx={{
+                      position: "relative",
+                      borderRadius: "calc(0.1em + 0.5vw)",
+                      width: "50%",
+                      pl: "calc(1.5vw)",
+                      pr: "calc(1.8vw)",
+                      marginTop: "1em",
+                    }}
+                  >
+                    Cancel
+                  </Button>
+
+                  <Button
+                    onClick={addTeamToLeague}
+                    variant="contained"
+                    color="primary"
+                    sx={{
+                      position: "relative",
+                      borderRadius: "calc(0.1em + 0.5vw)",
+                      width: "50%",
+                      right: "0px",
+                      pl: "calc(1.5vw)",
+                      pr: "calc(1.8vw)",
+                      marginTop: "1em",
+                    }}
+                  >
+                    Create Team
+                  </Button>
+                </Box>
+              </FormControl>
+            </Typography>
+          ) : null}
+
+          <Box sx={styles.main}>
+            <Box sx={styles.side}>
+              {/* Dynamically renders the teams within the league */}
+              {teamState.Teams !== null
+                ? teamState.Teams.map((team, index) => (
+                  <TeamSelectButton
+                    onClick={() => {
+                      addPlayerToPotentialList(index);
+                      console.log("Addplayertopotentiallist")
+                    }}
+                    onClickRemoveUser={() => {
+                      console.log("Remove User Is Running");
+                      removePlayerFromTeam(index);
+                    }}
+                    onClickDropTeam={() => {
+                      console.log("Drop team is running");
+                      dropTeamFromLeague(index)
+                    }}
+                    name={teamState.Teams[index].TeamName}
+                    captain={teamState.Teams[index].TeamCaptain}
+                    members={teamState.Teams[index].TeamMembers}
+                    home={teamState.Teams[index].HomeCourtAddress}
+                    potentialMembers={teamState.Teams[index].PotentialTeamMembers}
+                    showPotentialMembers={
+                      user && user.Username === teamState.Teams[index].TeamCaptain
+                    }
+                    username={user && user.Username}
+                    leagueInfo={teamState}
+                    teamIndex={index}
+                    updateLeague={updateLeague}
+                  />
+                ))
+                : null}
+
+              <Box sx={{ width: "45vw", height: "4vh", display: "flex" }}></Box>
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: "102%",
+                  left: "9.5%",
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "row",
+                }}
+              ></Box>
+            </Box>
+          </Box>
         </Box>
       </Box>
-    </Box>
+    </>
   );
+};
+const styles = {
+  side: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    height: "10vh",
+    marginBottom: TeamSelect.isSmallScreen ? "2%" : "1%",
+    marginLeft: TeamSelect.isSmallScreen ? "1%" : "2%",
+  },
+  main: {
+    backgroundColor: "#F5F5F5",
+    borderRadius: "10px",
+    height: "16vh",
+    cursor: "pointer",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: "20px",
+    marginBottom: TeamSelect.isSmallScreen ? "2%" : "3%",
+  },
 };

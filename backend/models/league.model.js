@@ -16,22 +16,6 @@ const leagueSchema = new Schema({
     type: String,
     required: true,
   },
-  NumTeams: {
-    type: Number,
-    required: true,
-  },
-  ZipCodes: [
-    {
-      type: String,
-      required: true,
-      minLength: 5,
-      maxLength: 5,
-    },
-  ],
-  City: {
-    type: String,
-    required: true,
-  },
   Teams: [
     {
       TeamName: {
@@ -63,6 +47,14 @@ const leagueSchema = new Schema({
     type: Date,
     required: true,
   },
+  EndDate: {
+    type: Date,
+    required: true,
+  },
+  TeamRegistrationDate: {
+    type: Date,
+    required: true,
+  },
   Status: {
     type: String,
     enum: ["PENDING", "ONGOING", "COMPLETED"],
@@ -75,6 +67,18 @@ const leagueSchema = new Schema({
   Division: {
     type: String,
     enum: ["Men", "Women", "Mixed"],
+    required: true,
+  },
+  Latitude: {
+    type: String,
+    required: true,
+  },
+  Longitude: {
+    type: String,
+    required: true,
+  },
+  Radius: {
+    type: Number,
     required: true,
   },
   Matches: [Object],
