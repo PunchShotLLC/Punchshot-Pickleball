@@ -12,25 +12,28 @@ import "@fontsource/inter/400.css";
 import "@fontsource/inter/700.css";
 import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/InputBase";
-import { FormControl, Container } from "@mui/material";
+import { FormControl, Container, IconButton } from "@mui/material";
 import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useCookies } from "react-cookie";
 import axios from "axios";
 import { TeamSelectButton } from "./teamSelectButton";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const StyledInput = styled(TextField)({
-  borderRadius: "1em",
-  border: "3px solid #000000",
+  borderRadius: "3px",
+  background: "white",
   fontSize: "calc(0.8vw + 0.1em)",
   width: "30vw",
   paddingLeft: "1vw",
+  margin: "1px"
 });
 
 const StyledLabel = styled("label")({
   paddingLeft: "1vw",
   marginBottom: "0.5vh",
 });
+
 
 // define a styled component for the suggestions list items
 const SuggestionItem = styled("li")({
@@ -42,7 +45,7 @@ const SuggestionItem = styled("li")({
     backgroundColor: "#f0f0f0",
   },
 });
-
+let leagueName = "";
 export const TeamSelect = (props) => {
   // Grab the cookies
   const { loading, user } = useContext(UserContext);
@@ -53,6 +56,7 @@ export const TeamSelect = (props) => {
   const [teamName, setTeamName] = useState(null);
   const [homeCourtAddress, setHomeCourtAddress] = useState(null);
   const [homeCourtMessage, setHomeCourtMessage] = useState("");
+  const [ searchedTeamName, setSearchedTeamName ] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
   const updateLeague = async (update) => {
@@ -334,31 +338,57 @@ export const TeamSelect = (props) => {
   });
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const test = 5;
+
+  const getLeagueName = async () => {
+    try {
+      leagueName = location.state.LeagueName;
+      console.log(leagueName);
+    } catch (error) {
+      console.error('Error fetching league data:', error);
+    }
+  }
+  getLeagueName();
 
   return (
     <>
-      {showTeamCreationForm ? null : (
-        <Box sx={{ width: "100vw", display: "flex", justifyContent: "center" }}>
-          <Button
-            onClick={() => setShowTeamCreationForm(true)}
-            variant="contained"
-            color="primary"
+      <Box sx={{ width: "50vw", display: "flex", alignItems: "center",flexDirection: "column", paddingLeft: "25%", margin: "1em"}}>
+        <Typography
+            className="titleText"
             sx={{
-              position: "relative",
-              margin: "0 auto",
-              borderRadius: "calc(0.1em + 0.5vw)",
-              width: "20%",
-              right: "0",
-              pl: "calc(1.5vw)",
-              pr: "calc(1.8vw)",
-              marginTop: "1em",
+              fontSize: "calc(1em + 1.5vw)",
+              fontWeight: "bold",
             }}
           >
-            Create Team
-          </Button>
+          {leagueName}
+        </Typography>
+        <Box sx={{ width: "80%", display: "flex", alignItems: "center", border: "1px solid #ccc", background: "linear-gradient(90.41deg, #9146D8 0%, #D5FD51 99.85%)", borderRadius: "3px", position: "relative"}}>
+          {showTeamCreationForm ? null : (
+                <IconButton
+                  onClick={() => setShowTeamCreationForm(true)}
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                  height:"75%", position: "absolute", margin:"93%", zIndex: "1", color: 'black'
+                  }}
+                >
+                  <AddCircleOutlineIcon/>
+                </IconButton>
+            )}
+          <StyledInput
+            onChange={(e) => {
+              setSearchedTeamName(e.target.value);
+            }}
+            placeholder= "Search a Team"
+            sx={{
+              width: "calc(120% - 90px)", // Adjust width considering button width
+              paddingLeft: "1em",
+              paddingRight: "1em",
+              marginLeft:"%"
+            }}
+          />
         </Box>
-
-      )}
+      </Box>
       <Box sx={{ width: "80vw", height: "77.69vh", display: "flex" }}>
         <Box
           sx={{
@@ -481,7 +511,12 @@ export const TeamSelect = (props) => {
             <Box sx={styles.side}>
               {/* Dynamically renders the teams within the league */}
               {teamState.Teams !== null
-                ? teamState.Teams.map((team, index) => (
+                ? teamState.Teams.filter((team) => {
+                  if (team.TeamName.toLowerCase().includes(searchedTeamName.toLowerCase())) {
+                    return team;
+                  }
+                  return null;
+                }).map((team, index) => (
                   <TeamSelectButton
                     onClick={() => {
                       addPlayerToPotentialList(index);
