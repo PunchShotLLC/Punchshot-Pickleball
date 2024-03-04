@@ -11,6 +11,15 @@ import Typography from "@mui/material/Typography";
 import { useState, useEffect } from "react";
 export const TeamSelectButton = (props) => {
   console.log(props);
+  
+  
+
+  //Number of members logic
+  const currentMembers = props.members.length + (props.captain ? 1 : 0);
+  const maxMembers = 10;
+  const isFull = currentMembers >= maxMembers;
+  const memberStatus = isFull ? `10/10 FULL` : `${currentMembers}/10 OPEN`;
+  const memberStatusColor = isFull ? "red" : "green";
 
   let isPotentialMember = props.leagueInfo.Teams[
     props.teamIndex
@@ -81,7 +90,7 @@ export const TeamSelectButton = (props) => {
   const buttonTheme = createTheme({
     palette: {
       primary: {
-        main: "#9146D8",
+        main: isPotentialMember ? "#AD99CB" : "#9146D8", // Change color based on isPotentialMember
       },
       secondary: {
         main: "#D9D9D9",
@@ -91,20 +100,91 @@ export const TeamSelectButton = (props) => {
 
   const [memberModalOpen, setMemberModalOpen] = useState(false);
   const [memberRequestModalOpen, setMemberRequestModalOpen] = useState(false);
+
+  const requestJoinColor = isPotentialMember ? "#AD99CB" : "#9146D8"; // New hex color for "Request Sent"
+  const leaveDropColor = "#D76055"; 
   return (
     <>
-      <Box sx={styles.row}>
-        <Typography sx={styles.name}>{props.name}</Typography>
-        <Box sx={{ ...styles.data, width: "auto", margin: "1em" }}>
-          <Typography sx={{ ...styles.info, fontWeight: "bold" }}>
-            Captain: {props.captain}
-          </Typography>
-        </Box>
-        <Box sx={{ ...styles.data, width: "auto", margin: "1em" }}>
-          <Typography sx={styles.notes}>
-            Home Court Address: {props.home}
-          </Typography>
-        </Box>
+      <Box sx={{ position: "relative" }}>
+        <Typography
+          sx={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            color: memberStatusColor,
+            fontWeight: "bold",
+            background: isFull ? "#F8D7DA" : "#D4EDDA", // light red for FULL, light green for OPEN
+            borderRadius: "4px",
+            padding: "2px 8px",
+          }}
+        >
+          {memberStatus}
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          // Assume you want to adjust the width to fit content within the parent box
+          // and allow text to wrap if needed
+          width: '100%', // Take the full width of the parent container
+          p: 2, // Add padding inside the box for spacing
+        }}
+      >
+        <Typography
+          variant="subtitle1"
+          sx={{
+            fontWeight: 'bold',
+            fontSize: '1rem', // Start with a base font size
+            // Use responsive font sizes for different breakpoints
+            [theme.breakpoints.up('sm')]: {
+              fontSize: '1.25rem', // Slightly larger font size on sm screens and up
+            },
+            [theme.breakpoints.up('md')]: {
+              fontSize: '1.5rem', // Even larger font size on md screens and up
+            },
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {props.name}
+        </Typography>
+        <Typography
+          variant="body2"
+          sx={{
+            // Same responsive adjustments as above
+            fontSize: '0.875rem',
+            [theme.breakpoints.up('sm')]: {
+              fontSize: '1rem',
+            },
+            [theme.breakpoints.up('md')]: {
+              fontSize: '1.125rem',
+            },
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          <strong>Captain:</strong> {props.captain}
+        </Typography>
+        <Typography
+          variant="body2"
+          sx={{
+            // Same responsive adjustments as above
+            fontSize: '0.875rem',
+            [theme.breakpoints.up('sm')]: {
+              fontSize: '0.875rem',
+            },
+            [theme.breakpoints.up('md')]: {
+              fontSize: '1rem',
+            },
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          <strong>Home Court Address: </strong>
+          {props.home}
+        </Typography>
       </Box>
 
       <Box sx={styles.row}>
@@ -115,7 +195,7 @@ export const TeamSelectButton = (props) => {
             color="primary"
             sx={styles.button}
           >
-            View Info
+            VIEW INFO
           </Button>
           {props.showPotentialMembers ? (
             <Button
@@ -124,7 +204,7 @@ export const TeamSelectButton = (props) => {
               color="primary"
               sx={styles.button}
             >
-              Member Requests
+              MEMBER REQUESTS
             </Button>
           ) : null}
 
@@ -139,17 +219,11 @@ export const TeamSelectButton = (props) => {
               }
             }}
             variant="contained"
-            color="primary"
-            sx={styles.button}
-          >
-            {props.showPotentialMembers
-              ? "Drop Team"
-              : inTeam
-              ? "Leave Team"
-              : isPotentialMember
-              ? "Request Pending"
-              : "Request to Join"}
-          </Button>
+          sx={{ ...styles.button, backgroundColor: inTeam || props.showPotentialMembers ? leaveDropColor : requestJoinColor, '&:hover': { backgroundColor: inTeam || props.showPotentialMembers ? leaveDropColor : requestJoinColor } }}
+        >
+          {props.showPotentialMembers ? "DROP TEAM" : inTeam ? "LEAVE TEAM" : isPotentialMember ? "REQUEST PENDING" : "REQUEST TO JOIN"}
+        </Button>
+
         </ThemeProvider>
         <Modal open={memberModalOpen}>
           <Box sx={styles.modal}>
@@ -234,48 +308,6 @@ export const TeamSelectButton = (props) => {
             </Box>
           </Box>
         </Modal>
-        {/* <p className="team-select-text">Members: </p>
-        {props.members.map((item, index) => (
-          <div className='team-username-container'>
-            <p>{props.members[index]}</p>
-          </div>
-        ))} */}
-        {/* <p className="team-select-text">Home Court Address: {props.home} </p> */}
-        {/* {props.showPotentialMembers === true ?
-          <>
-            <p className="team-select-text">Potential Members (Click on a user to allow them into your team): </p>
-            {potentials.map((item, index) => (
-              <div className='pending-team-container' >
-                <IconButton onClick={() => addPlayerToTeam(props.teamIndex, props.potentialMembers[index])}>
-                  <CheckIcon sx={{ color: "green" }} />
-                </IconButton>
-                <p className="potential-team-member">{props.potentialMembers[index]}</p>
-                <IconButton onClick={() => removePlayerToTeam(props.teamIndex, props.potentialMembers[index])}>
-                  <CloseIcon sx={{ color: "red" }} />
-                </IconButton>
-              </div>
-            ))}
-          </> :
-          null
-        }
-        {isPotentialMember ?
-          <>
-            {
-              <div className='team-username-container' onClick={() => removePlayerToTeam(props.teamIndex, props.username)}>
-                <p>Cancel Request</p>
-              </div>
-            }
-          </> :
-          null
-        }
-        <br></br>
-        {
-          isPotentialMember ?
-            null :
-            inTeam ?
-              <Button onClick={props.onClickRemoveUser}> Leave Team </Button> :
-              <Button onClick={props.onClick}>Request to Join</Button>
-        } */}
       </Box>
     </>
   );
@@ -320,9 +352,14 @@ const styles = {
     fontSize: "0.75em",
   },
   button: {
-    borderRadius: "calc(1.5em + 1vw)",
-    marginLeft: "2em",
-    width: "20%",
+    borderRadius: '10px', // Rounded corners
+    marginLeft: '2em',
+    width: 'auto', // Auto width to accommodate text
+    padding: '10px 20px', // Padding inside the button to increase width
+    fontSize: '0.875rem', // Adjust font size as needed
+    lineHeight: 1.25, // Adjust line height to ensure text fits on one line
+    textTransform: 'none', // If you don't want the text to be all uppercase
+    // Add more padding on small screens if needed
   },
   modal: {
     position: "absolute",
