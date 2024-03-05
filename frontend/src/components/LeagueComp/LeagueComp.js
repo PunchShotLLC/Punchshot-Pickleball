@@ -86,8 +86,6 @@ export const LeagueComp = (props) => {
 
   const openInfoModal = () => {
     setModalInfoOpen(true);
-    //setLeagueCenterCoords({ lat: parseFloat(props.latitude), lng: parseFloat(props.longitude) });
-    //setLeagueRadiusMeter(parseFloat(props.radius) * 1609.344)
   };
 
   const closeInfoModal = () => {
