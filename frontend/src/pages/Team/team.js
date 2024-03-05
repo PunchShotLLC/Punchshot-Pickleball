@@ -176,6 +176,7 @@ export const TeamSelect = (props) => {
     // Make a patch request to the leagues API with the updated league object
     updateLeague(leagueInfo);
     setHomeCourtAddress("");
+    setSuggestions([]);
   };
 
   /**
@@ -527,6 +528,7 @@ export const TeamSelect = (props) => {
               onClick={() => {
                 setShowTeamCreationForm(false);
                 setHomeCourtAddress("");
+                setSuggestions([]);
               }}
               variant="contained"
               color="grey"
