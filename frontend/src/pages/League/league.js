@@ -168,6 +168,9 @@ export const League = () => {
                 registrationDate={league.TeamRegistrationDate}
                 skillLevel={league.SkillLevel}
                 division={league.Division}
+                latitude={league.Latitude}
+                longitude={league.Longitude}
+                radius={league.Radius}
                 id={league._id}
                 showLeague={league.Status === "PENDING"}
                 onClick={() =>

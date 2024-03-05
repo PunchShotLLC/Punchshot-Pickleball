@@ -7,6 +7,7 @@ import { Button } from "@mui/material";
 import { useState, useEffect } from "react";
 import { Modal } from "@mui/material";
 import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
+import MapWithCircle from "./MapWithCircle";
 
 export const LeagueComp = (props) => {
   function isBeforeToday(dateStr) {
@@ -68,6 +69,8 @@ export const LeagueComp = (props) => {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [modalInfoOpen, setModalInfoOpen] = useState(false);
+  const leagueCenterCoords = { lat: parseFloat(props.latitude), lng: parseFloat(props.longitude) }
+  const leagueRadiusMeter = props.radius
 
   const openDisclaimerModal = () => {
     setModalOpen(true);
@@ -83,6 +86,8 @@ export const LeagueComp = (props) => {
 
   const openInfoModal = () => {
     setModalInfoOpen(true);
+    //setLeagueCenterCoords({ lat: parseFloat(props.latitude), lng: parseFloat(props.longitude) });
+    //setLeagueRadiusMeter(parseFloat(props.radius) * 1609.344)
   };
 
   const closeInfoModal = () => {
@@ -166,7 +171,13 @@ export const LeagueComp = (props) => {
                     {new Date(props.registrationDate).toLocaleDateString()}
                   </Typography>
                 </Box>
-                <Box sx={{ ...styles.data, ...styles.modalData }}>
+                <MapWithCircle
+                  center={leagueCenterCoords}
+                  radius={leagueRadiusMeter}
+                  width="400px"
+                  height="350px"
+                />
+                {/*<Box sx={{ ...styles.data, ...styles.modalData }}>
                   <img
                     alt="clock"
                     src={require("../../assets/images/Clock.png")}
@@ -185,7 +196,7 @@ export const LeagueComp = (props) => {
                   <Typography sx={styles.modalData}>
                     Division: {props.division}
                   </Typography>
-                </Box>
+                </Box>*/}
                 <Button
                   onClick={closeInfoModal}
                   variant="contained"

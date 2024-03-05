@@ -275,6 +275,8 @@ export const CreateLeague = ({ show, onClose }) => {
             <MapWithCircle
               center={leagueCenterCoords}
               radius={leagueRadiusMeter}
+              width="600px"
+              height="300px"
             />
           </Box>
           <Button variant="contained" color="primary" onClick={createLeague}>
