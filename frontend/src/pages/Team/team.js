@@ -18,7 +18,12 @@ import InputBase from "@mui/material/InputBase";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { FormControl, Container, IconButton } from "@mui/material";
+import {
+  FormControl,
+  Container,
+  IconButton,
+  ListItemButton,
+} from "@mui/material";
 import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useCookies } from "react-cookie";
@@ -84,7 +89,7 @@ export const TeamSelect = (props) => {
     // gap: "16px",
     width: "calc(100% - 64px)",
     maxWidth: "600px",
-    // height: `calc(${(suggestions.length > 0)? "100% - 64px" : "50% - 64px"})`,
+    height: `calc(${suggestions.length > 0 ? "100% - 64px" : "60% - 64px"})`,
   });
 
   const updateLeague = async (update) => {
@@ -111,6 +116,13 @@ export const TeamSelect = (props) => {
   };
   // State to determine whether to show the team creation form
   const [showTeamCreationForm, setShowTeamCreationForm] = useState(false);
+
+  const handleModalClick = () => {
+    setHomeCourtAddress("");
+    setSuggestions([]);
+    setShowTeamCreationForm(false);
+  };
+
   // Adds the team to the league
   const addTeamToLeague = async () => {
     // Make a copy of the league, add the new team
@@ -175,8 +187,7 @@ export const TeamSelect = (props) => {
 
     // Make a patch request to the leagues API with the updated league object
     updateLeague(leagueInfo);
-    setHomeCourtAddress("");
-    setSuggestions([]);
+    handleModalClick();
   };
 
   /**
@@ -444,27 +455,23 @@ export const TeamSelect = (props) => {
         </Box>
       </Box>
 
-      <StyledModal
-        open={showTeamCreationForm}
-        onClose={() => {
-          setShowTeamCreationForm(false);
-          setHomeCourtAddress("");
-          setSuggestions([]);
-        }}
-      >
-        <StyledForm
+      <StyledModal open={showTeamCreationForm} onClose={handleModalClick}>
+        <Box
           sx={{
-            height: `calc(${
-              suggestions.length > 0 ? "100% - 64px" : "50% - 64px"
-            })`,
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 500,
+            bgcolor: "background.paper",
+            borderRadius: "16px",
+            p: 4,
           }}
         >
-          <Typography variant="h5" marginTop={2}>
-            Create New Team
-          </Typography>
+          <Typography variant="h5">Create New Team</Typography>
           <Box
             marginTop={3}
-            width={"60%"}
+            width={"100%"}
             display={"flex"}
             flexDirection={"column"}
             gap={3}
@@ -478,11 +485,11 @@ export const TeamSelect = (props) => {
             />
             <TextField
               fullWidth
+              multiline
               required
               label="Home Court Address"
               variant="outlined"
               value={homeCourtAddress}
-              inputRef={textFieldRef}
               onChange={(event) => handleHomeCourtAddressChange(event)}
             ></TextField>
           </Box>
@@ -490,13 +497,12 @@ export const TeamSelect = (props) => {
           {suggestions.length > 0 && (
             <List>
               {suggestions.map((suggestion, index) => (
-                <ListItem
-                  key={index}
+                <ListItemButton
                   onClick={() => handleSuggestionClick(suggestion)}
                   divider
                 >
                   <ListItemText primary={suggestion.description} />
-                </ListItem>
+                </ListItemButton>
               ))}
             </List>
           )}
@@ -506,7 +512,6 @@ export const TeamSelect = (props) => {
               display: "block",
               fontSize: "calc(0.5em + 0.5vw)",
               color: "gray",
-              // marginBottom: "0.5em",
             }}
           >
             * Ensuring court availability is your team’s responsibility.
@@ -515,7 +520,7 @@ export const TeamSelect = (props) => {
           <Typography
             sx={{
               fontSize: "calc(0.5em + 0.5vw)",
-              color: "primary",
+              color: "red",
               marginBottom: "0.5em",
               visibility: homeCourtMessage ? "visible" : "hidden",
             }}
@@ -523,16 +528,13 @@ export const TeamSelect = (props) => {
             {homeCourtMessage}
           </Typography>
 
-          <Box display={"flex"} flexDirection={"row"} width={"60%"}>
-            <Button
-              onClick={() => {
-                setShowTeamCreationForm(false);
-                setHomeCourtAddress("");
-                setSuggestions([]);
-              }}
-              variant="contained"
-              color="grey"
-            >
+          <Box
+            display={"flex"}
+            flexDirection={"row"}
+            width={"100%"}
+            marginBottom={1}
+          >
+            <Button onClick={handleModalClick} variant="contained" color="grey">
               Cancel
             </Button>
 
@@ -545,7 +547,7 @@ export const TeamSelect = (props) => {
               Create Team
             </Button>
           </Box>
-        </StyledForm>
+        </Box>
       </StyledModal>
 
       <Box sx={{ width: "80vw", height: "77.69vh", display: "flex" }}>
