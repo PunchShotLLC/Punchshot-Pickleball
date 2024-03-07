@@ -69,8 +69,11 @@ export const LeagueComp = (props) => {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [modalInfoOpen, setModalInfoOpen] = useState(false);
-  const leagueCenterCoords = { lat: parseFloat(props.latitude), lng: parseFloat(props.longitude) }
-  const leagueRadiusMeter = props.radius
+  const leagueCenterCoords = {
+    lat: parseFloat(props.latitude),
+    lng: parseFloat(props.longitude),
+  };
+  const leagueRadiusMeter = props.radius;
 
   const openDisclaimerModal = () => {
     setModalOpen(true);
@@ -220,11 +223,12 @@ export const LeagueComp = (props) => {
               <Typography sx={styles.name}>{props.name}</Typography>
               <Typography sx={styles.basicInfo}>
                 <Typography sx={{ fontWeight: "bold" }}>Date:</Typography>&nbsp;
-                {new Date(props.startDate).toLocaleDateString()}-
-                {new Date(props.endDate).toLocaleDateString()}
+                {new Date(props.startDate).toLocaleDateString()} - {new Date(props.endDate).toLocaleDateString()}
               </Typography>
               <Typography sx={styles.basicInfo}>
-                <Typography sx={{ fontWeight: "bold" }}>SkillLevel:</Typography>
+                <Typography sx={{ fontWeight: "bold" }}>
+                  Skill Level:
+                </Typography>
                 &nbsp;
                 {props.skillLevel}
               </Typography>
@@ -271,62 +275,6 @@ export const LeagueComp = (props) => {
               </Box>
             </Box>
           </Box>
-
-          {/* <Box sx={styles.row}>
-            <Box sx={styles.data}>
-              <img
-                src={require("../../assets/images/Team.png")}
-                alt="team"
-                height={isSmallScreen ? "40%" : "50%"}
-                width={isSmallScreen ? "10%" : "15%"}
-                style={{ border: "2px solid black", borderRadius: "50%" }}
-              />
-              <Typography sx={styles.info}>
-                {props.teamsSignedUp}/{props.numberOfTeams} Teams
-              </Typography>
-            </Box>
-            <Box sx={styles.data}>
-              <img
-                alt="clock"
-                src={require("../../assets/images/Clock.png")}
-                height={isSmallScreen ? "40%" : "50%"}
-                width="15%"
-                style={{ borderRadius: "50%" }}
-              />
-              <Typography sx={styles.info}>
-                {new Date(props.startDate).toLocaleDateString()}
-              </Typography>
-            </Box>
-            <Box sx={styles.data}>
-              <img
-                alt="location"
-                src={require("../../assets/images/location.png")}
-                height={isSmallScreen ? "40%" : "50%"}
-                width="15%"
-                style={{ borderRadius: "50%" }}
-              />
-              <Typography sx={styles.info}>{props.city}</Typography>
-            </Box>
-            {props.allowStart && (
-              <Box sx={styles.data}>
-                <Button onClick={startLeague}>START</Button>
-              </Box>
-            )}
-            {isBeforeToday(props.startDate) && (
-              <Box sx={styles.data}>
-                <Typography sx={styles.notes}>
-                  Note: The start date of this league has passed.
-                </Typography>
-              </Box>
-            )}
-            {props.teamsSignedUp < props.numberOfTeams && (
-              <Box sx={styles.data}>
-                <Typography sx={styles.notes}>
-                  Note: League is not at capacity
-                </Typography>
-              </Box>
-            )}
-          </Box> */}
         </Box>
       </Box>
     );
