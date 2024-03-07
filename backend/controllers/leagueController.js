@@ -420,8 +420,7 @@ const matchCronJob = async (date) => {
             sendEmail(
               team.teamCaptainEmail,
               "You have a match tommorow",
-              `It is the day before your match against ${
-                team.TeamName === match.Team1 ? match.Team2 : match.Team1
+              `It is the day before your match against ${team.TeamName === match.Team1 ? match.Team2 : match.Team1
               } starts. Make sure to let your team now. Good luck and have fun!`
             );
           });
@@ -432,8 +431,7 @@ const matchCronJob = async (date) => {
             sendEmail(
               team.teamCaptainEmail,
               "Enter your scores for your match",
-              `You played a match last Saturday against ${
-                team.TeamName === match.Team1 ? match.Team2 : match.Team1
+              `You played a match last Saturday against ${team.TeamName === match.Team1 ? match.Team2 : match.Team1
               }. Make sure to enter your score by this Thursday or the match will be declared a tie.`
             );
           });
@@ -444,8 +442,7 @@ const matchCronJob = async (date) => {
             sendEmail(
               team.teamCaptainEmail,
               "Match scores not entered",
-              `You played a match last Saturday against ${
-                team.TeamName === match.Team1 ? match.Team2 : match.Team1
+              `You played a match last Saturday against ${team.TeamName === match.Team1 ? match.Team2 : match.Team1
               } and neither of you have entered a score. The match has been declared a tie. Make sure to enter your score next time.`
             );
           });
@@ -457,7 +454,7 @@ const matchCronJob = async (date) => {
       });
       if (
         league.Matches.length() ==
-          (league.Teams.length() * (league.Teams.length() - 1)) / 2 &&
+        (league.Teams.length() * (league.Teams.length() - 1)) / 2 &&
         league.Matches.every((match) => match.WinnerTeam)
       ) {
         let teamScores = {};
@@ -545,6 +542,34 @@ const sendLeagueStartEmails = async () => {
     }
   }
 };
+
+export const checkAddressWithinRadius = async (req, res) => {
+  const apiKey = process.env.GOOGLE;
+  const {
+    homeLat,
+    homeLong,
+    centerLat,
+    centerLong,
+    radius
+  } = req.query
+
+  const url = `https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${centerLat}%2C${centerLong}&origins=${homeLat}%2C${homeLong}&units=imperial&key=${apiKey}`;
+  console.log(url)
+  try {
+    const requestOptions = {
+      method: "GET",
+    };
+    await fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        result.inRadius = radius >= result.rows[0].elements[0].distance.value
+        res.status(200).json(result);
+      });
+  } catch (error) {
+    console.error("Error fetching address information:", error);
+    res.status(400).json(error);
+  }
+}
 
 /**
  * Deletes a team from a league based on league id and team id

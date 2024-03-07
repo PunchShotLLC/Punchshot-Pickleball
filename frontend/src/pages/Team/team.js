@@ -29,6 +29,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useCookies } from "react-cookie";
 import axios from "axios";
 import { TeamSelectButton } from "./teamSelectButton";
+import { setDefaults, fromAddress } from "react-geocode";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 const StyledModal = styled(Modal)({
@@ -92,6 +93,13 @@ export const TeamSelect = (props) => {
     height: `calc(${suggestions.length > 0 ? "100% - 64px" : "60% - 64px"})`,
   });
 
+  // TODO: ENTER API KEY
+  setDefaults({
+    key: "",
+    language: "en", // Default language for responses.
+    region: "es", // Default region for responses.
+  });
+
   const updateLeague = async (update) => {
     const apiUrl = `http://localhost:8000/leagues/updateLeague/${location.state["_id"]}`;
 
@@ -137,6 +145,32 @@ export const TeamSelect = (props) => {
     // alerts if home court address is blank
     if (!homeCourtAddress || homeCourtAddress.trim() === "") {
       alert("Please enter a home court address.");
+      return;
+    }
+
+    const { lat: homeLat, lng: homeLong } = await fromAddress(homeCourtAddress)
+      .then(({ results }) => {
+        return results[0].geometry.location;
+      })
+      .catch(console.error);
+    const { Latitude: centerLat, Longitude: centerLong, Radius: radius } = location.state
+    const apiUrl = `http://localhost:8000/leagues/checkAddress?homeLat=${homeLat}&homeLong=${homeLong}&centerLat=${centerLat}&centerLong=${centerLong}&radius=${radius}`;
+    const requestOptions = {
+      method: "GET",
+    };
+
+    const { inRadius } = await fetch(apiUrl, requestOptions)
+      .then((response) => response.json())
+      .then((responseData) => {
+        return responseData
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+
+    //check if homeAdress within league radius
+    if (!inRadius) {
+      alert("This team home court adress is too far from the league address");
       return;
     }
 
