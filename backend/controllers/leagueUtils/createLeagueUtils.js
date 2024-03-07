@@ -12,7 +12,7 @@ export function checkLeagueParams(leagueObject) {
     }
     let cond2 = isDateWeekFromToday(leagueObject.TeamRegistrationDate)
     if (!cond2) {
-        return "Team reigstration date must be at least a week from today's date"
+        return "Team registration date must be at least a week from today's date"
     }
     let cond3 = areDatesOnSameWeekday(leagueObject.StartDate, leagueObject.EndDate)
     if (!cond3) {

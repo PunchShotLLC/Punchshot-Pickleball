@@ -153,7 +153,11 @@ export const TeamSelect = (props) => {
         return results[0].geometry.location;
       })
       .catch(console.error);
-    const { Latitude: centerLat, Longitude: centerLong, Radius: radius } = location.state
+    const {
+      Latitude: centerLat,
+      Longitude: centerLong,
+      Radius: radius,
+    } = location.state;
     const apiUrl = `http://localhost:8000/leagues/checkAddress?homeLat=${homeLat}&homeLong=${homeLong}&centerLat=${centerLat}&centerLong=${centerLong}&radius=${radius}`;
     const requestOptions = {
       method: "GET",
@@ -162,7 +166,7 @@ export const TeamSelect = (props) => {
     const { inRadius } = await fetch(apiUrl, requestOptions)
       .then((response) => response.json())
       .then((responseData) => {
-        return responseData
+        return responseData;
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -170,7 +174,7 @@ export const TeamSelect = (props) => {
 
     //check if homeAdress within league radius
     if (!inRadius) {
-      alert("This team home court adress is too far from the league address");
+      alert("This team home court address is too far from the league address");
       return;
     }
 
@@ -584,99 +588,70 @@ export const TeamSelect = (props) => {
         </Box>
       </StyledModal>
 
-      <Box sx={{ width: "80vw", height: "77.69vh", display: "flex" }}>
-        <Box
-          sx={{
-            position: "relative",
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <Box sx={styles.main}>
-            <Box sx={styles.side}>
-              {/* Dynamically renders the teams within the league */}
-              {teamState.Teams !== null
-                ? teamState.Teams.filter((team) => {
-                    if (
-                      team.TeamName.toLowerCase().includes(
-                        searchedTeamName.toLowerCase()
-                      )
-                    ) {
-                      return team;
-                    }
-                    return null;
-                  }).map((team, index) => (
-                    <TeamSelectButton
-                      onClick={() => {
-                        addPlayerToPotentialList(index);
-                        console.log("Addplayertopotentiallist");
-                      }}
-                      onClickRemoveUser={() => {
-                        console.log("Remove User Is Running");
-                        removePlayerFromTeam(index);
-                      }}
-                      onClickDropTeam={() => {
-                        console.log("Drop team is running");
-                        dropTeamFromLeague(index);
-                      }}
-                      name={teamState.Teams[index].TeamName}
-                      captain={teamState.Teams[index].TeamCaptain}
-                      members={teamState.Teams[index].TeamMembers}
-                      home={teamState.Teams[index].HomeCourtAddress}
-                      potentialMembers={
-                        teamState.Teams[index].PotentialTeamMembers
-                      }
-                      showPotentialMembers={
-                        user &&
-                        user.Username === teamState.Teams[index].TeamCaptain
-                      }
-                      username={user && user.Username}
-                      leagueInfo={teamState}
-                      teamIndex={index}
-                      updateLeague={updateLeague}
-                    />
-                  ))
-                : null}
-
-              <Box sx={{ width: "45vw", height: "4vh", display: "flex" }}></Box>
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: "102%",
-                  left: "9.5%",
-                  width: "100%",
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "row",
-                }}
-              ></Box>
-            </Box>
-          </Box>
-        </Box>
+      <Box sx={styles.side}>
+        {/* Dynamically renders the teams within the league */}
+        {teamState.Teams !== null
+          ? teamState.Teams.filter((team) => {
+              if (
+                team.TeamName.toLowerCase().includes(
+                  searchedTeamName.toLowerCase()
+                )
+              ) {
+                return team;
+              }
+              return null;
+            }).map((team, index) => (
+              <Box sx={styles.teamCardContainer} key={index}>
+                <TeamSelectButton
+                  onClick={() => {
+                    addPlayerToPotentialList(index);
+                    console.log("Addplayertopotentiallist");
+                  }}
+                  onClickRemoveUser={() => {
+                    console.log("Remove User Is Running");
+                    removePlayerFromTeam(index);
+                  }}
+                  onClickDropTeam={() => {
+                    console.log("Drop team is running");
+                    dropTeamFromLeague(index);
+                  }}
+                  name={teamState.Teams[index].TeamName}
+                  captain={teamState.Teams[index].TeamCaptain}
+                  members={teamState.Teams[index].TeamMembers}
+                  home={teamState.Teams[index].HomeCourtAddress}
+                  potentialMembers={teamState.Teams[index].PotentialTeamMembers}
+                  showPotentialMembers={
+                    user && user.Username === teamState.Teams[index].TeamCaptain
+                  }
+                  username={user && user.Username}
+                  leagueInfo={teamState}
+                  teamIndex={index}
+                  updateLeague={updateLeague}
+                />
+              </Box>
+            ))
+          : null}
       </Box>
     </>
   );
 };
+
 const styles = {
   side: {
     display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    height: "10vh",
-    marginBottom: TeamSelect.isSmallScreen ? "2%" : "1%",
-    marginLeft: TeamSelect.isSmallScreen ? "1%" : "2%",
-  },
-  main: {
-    backgroundColor: "#F5F5F5",
-    borderRadius: "10px",
-    height: "16vh",
-    cursor: "pointer",
-    display: "flex",
     flexDirection: "row",
-    alignItems: "center",
-    borderRadius: "20px",
-    marginBottom: TeamSelect.isSmallScreen ? "2%" : "3%",
+    flexWrap: "wrap",
+    justifyContent: "center", // This centers the flex items
+    gap: "16px", // Adjust the gap as needed for spacing between items
+    padding: "0 16px", // Padding on the sides of the container
+    maxWidth: "100%", // Ensures the container does not exceed the width of its parent
+  },
+  teamCardContainer: {
+    backgroundColor: "#F5F5F5", // Background color of each card
+    borderRadius: "20px", // Border radius for rounded corners
+    width: "calc(50% - 32px)", // Calculates the width of each item to take up half the container width minus the gap
+    marginBottom: "16px", // Margin at the bottom of each card
+    padding: "20px", // Padding inside each card
+    boxSizing: "border-box", // Ensures padding and border are included in the width and height
   },
 };
