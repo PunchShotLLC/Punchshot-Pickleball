@@ -7,6 +7,8 @@ import sgMail from "@sendgrid/mail";
 import dotenv from "dotenv";
 dotenv.config();
 
+import { checkLeagueParams } from "./leagueUtils/createLeagueUtils.js";
+
 export const createLeague = async (req, res, body) => {
   const {
     LeagueName,
@@ -85,6 +87,30 @@ export const createLeague = async (req, res, body) => {
   if (!existUsername) {
     return res.json({
       error: "League owner does not exist!",
+    });
+  }
+
+  const leagueObject = {
+    LeagueName,
+    LeagueOwner,
+    LeagueOwnerEmail,
+    StartDate,
+    EndDate,
+    TeamRegistrationDate,
+    Division,
+    SkillLevel,
+    Status,
+    Latitude,
+    Longitude,
+    Radius,
+
+  }
+
+  const checkLeagueParamsResult = checkLeagueParams(leagueObject)
+  console.log(checkLeagueParamsResult)
+  if (checkLeagueParamsResult !== "Checks completed") {
+    return res.json({
+      error: checkLeagueParamsResult,
     });
   }
 

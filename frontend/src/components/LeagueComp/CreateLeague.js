@@ -97,6 +97,9 @@ export const CreateLeague = ({ show, onClose }) => {
   };
 
   const createLeague = async () => {
+
+    console.log("I GOT HERE")
+
     // Ensure registration date is at least a week before the league start date
     const weekInMilliseconds = 7 * 24 * 60 * 60 * 1000; // One week
     if (new Date(startDate) - new Date(registrationDate) < weekInMilliseconds) {
@@ -140,12 +143,16 @@ export const CreateLeague = ({ show, onClose }) => {
       Radius: leagueRadiusMeter,
     };
 
-    console.log(body);
+    console.log("RESP TEST")
 
     const resp = await axios.post(
       "http://localhost:8000/leagues/createLeague",
       body
     );
+
+    console.log("RESP")
+    console.log(resp)
+    console.log("END RESP")
 
     if (resp.data.error) {
       alert(resp.data.error);
