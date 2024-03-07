@@ -2,38 +2,58 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { useLocation } from "react-router-dom";
 import * as React from "react";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { UserContext } from "../../components/UserContext/usercontext";
 import Typography from "@mui/material/Typography";
+import Dialog from "@mui/material/Dialog";
+import Modal from "@mui/material/Modal";
 import "../League/league.css";
 import "@fontsource/inter";
 import "@fontsource/inter/200.css";
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/700.css";
 import { styled } from "@mui/material/styles";
-import TextField from "@mui/material/InputBase";
-import { FormControl, Container, IconButton } from "@mui/material";
+import TextField from "@mui/material/TextField";
+import InputBase from "@mui/material/InputBase";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import {
+  FormControl,
+  Container,
+  IconButton,
+  ListItemButton,
+} from "@mui/material";
 import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useCookies } from "react-cookie";
 import axios from "axios";
 import { TeamSelectButton } from "./teamSelectButton";
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
-const StyledInput = styled(TextField)({
-  borderRadius: "3px",
+const StyledModal = styled(Modal)({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  // overflowY: "auto",
+  // margin: "32px",
+});
+
+const StyledInput = styled(InputBase)({
+  borderRadius: "5px",
   background: "white",
   fontSize: "calc(0.8vw + 0.1em)",
-  width: "30vw",
-  paddingLeft: "1vw",
-  margin: "1px"
+  width: "100%",
+  paddingLeft: "10px",
+  paddingRight: "10px",
+  paddingTop: "5px",
+  paddingBottom: "5px",
 });
 
 const StyledLabel = styled("label")({
   paddingLeft: "1vw",
   marginBottom: "0.5vh",
 });
-
 
 // define a styled component for the suggestions list items
 const SuggestionItem = styled("li")({
@@ -56,8 +76,21 @@ export const TeamSelect = (props) => {
   const [teamName, setTeamName] = useState(null);
   const [homeCourtAddress, setHomeCourtAddress] = useState(null);
   const [homeCourtMessage, setHomeCourtMessage] = useState("");
-  const [ searchedTeamName, setSearchedTeamName ] = useState("");
+  const [searchedTeamName, setSearchedTeamName] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const textFieldRef = useRef(null);
+
+  const StyledForm = styled("form")({
+    backgroundColor: "white",
+    borderRadius: "16px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    // gap: "16px",
+    width: "calc(100% - 64px)",
+    maxWidth: "600px",
+    height: `calc(${suggestions.length > 0 ? "100% - 64px" : "60% - 64px"})`,
+  });
 
   const updateLeague = async (update) => {
     const apiUrl = `http://localhost:8000/leagues/updateLeague/${location.state["_id"]}`;
@@ -83,6 +116,13 @@ export const TeamSelect = (props) => {
   };
   // State to determine whether to show the team creation form
   const [showTeamCreationForm, setShowTeamCreationForm] = useState(false);
+
+  const handleModalClick = () => {
+    setHomeCourtAddress("");
+    setSuggestions([]);
+    setShowTeamCreationForm(false);
+  };
+
   // Adds the team to the league
   const addTeamToLeague = async () => {
     // Make a copy of the league, add the new team
@@ -147,6 +187,7 @@ export const TeamSelect = (props) => {
 
     // Make a patch request to the leagues API with the updated league object
     updateLeague(leagueInfo);
+    handleModalClick();
   };
 
   /**
@@ -154,8 +195,7 @@ export const TeamSelect = (props) => {
    * @param {int} teamIndex index of the team in the teamState.Teams array
    */
   const dropTeamFromLeague = async (teamIndex) => {
-
-    const apiUrl = `http://localhost:8000/leagues/deleteTeam/${teamState['_id']}/${teamState.Teams[teamIndex]["_id"]}`;
+    const apiUrl = `http://localhost:8000/leagues/deleteTeam/${teamState["_id"]}/${teamState.Teams[teamIndex]["_id"]}`;
     const requestOptions = {
       method: "DELETE",
       headers: {
@@ -173,7 +213,7 @@ export const TeamSelect = (props) => {
       .catch((error) => {
         console.error("Error:", error);
       });
-  }
+  };
 
   const removePlayerFromTeam = async (teamIndex) => {
     if (!user) {
@@ -194,7 +234,7 @@ export const TeamSelect = (props) => {
     }
     leagueInfo.Teams[teamIndex].TeamMembers.splice(userIndex, 1);
     alert("Leaving team");
-  
+
     // Update the league with the new league object
     updateLeague(leagueInfo);
     location.state = leagueInfo;
@@ -345,50 +385,171 @@ export const TeamSelect = (props) => {
       leagueName = location.state.LeagueName;
       console.log(leagueName);
     } catch (error) {
-      console.error('Error fetching league data:', error);
+      console.error("Error fetching league data:", error);
     }
-  }
+  };
   getLeagueName();
+
+  // prevent loss foucs on textfield after the Box height is resized
+  useEffect(() => {
+    if (textFieldRef.current) {
+      textFieldRef.current.focus();
+    }
+  });
 
   return (
     <>
-      <Box sx={{ width: "50vw", display: "flex", alignItems: "center",flexDirection: "column", paddingLeft: "25%", margin: "1em"}}>
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
+          marginY: "1em",
+        }}
+      >
         <Typography
-            className="titleText"
-            sx={{
-              fontSize: "calc(1em + 1.5vw)",
-              fontWeight: "bold",
-            }}
-          >
+          className="titleText"
+          sx={{
+            fontSize: "calc(1em + 1.5vw)",
+            fontWeight: "bold",
+          }}
+        >
           {leagueName}
         </Typography>
-        <Box sx={{ width: "80%", display: "flex", alignItems: "center", border: "1px solid #ccc", background: "linear-gradient(90.41deg, #9146D8 0%, #D5FD51 99.85%)", borderRadius: "3px", position: "relative"}}>
-          {showTeamCreationForm ? null : (
-                <IconButton
-                  onClick={() => setShowTeamCreationForm(true)}
-                  variant="contained"
-                  color="primary"
-                  sx={{
-                  height:"75%", position: "absolute", margin:"93%", zIndex: "1", color: 'black'
-                  }}
-                >
-                  <AddCircleOutlineIcon/>
-                </IconButton>
-            )}
+        <Box
+          sx={{
+            width: "50%",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            background: "linear-gradient(90.41deg, #9146D8 0%, #D5FD51 99.85%)",
+            borderRadius: "5px",
+            padding: "1px",
+            position: "relative",
+          }}
+        >
           <StyledInput
             onChange={(e) => {
               setSearchedTeamName(e.target.value);
             }}
-            placeholder= "Search a Team"
-            sx={{
-              width: "calc(120% - 90px)", // Adjust width considering button width
-              paddingLeft: "1em",
-              paddingRight: "1em",
-              marginLeft:"%"
-            }}
+            placeholder="Search a Team"
           />
+          {showTeamCreationForm ? null : (
+            <IconButton
+              onClick={() => setShowTeamCreationForm(true)}
+              variant="contained"
+              color="primary"
+              sx={{
+                height: "75%",
+                position: "absolute",
+                margin: "93%",
+                zIndex: "1",
+                color: "black",
+              }}
+            >
+              <AddCircleOutlineIcon />
+            </IconButton>
+          )}
         </Box>
       </Box>
+
+      <StyledModal open={showTeamCreationForm} onClose={handleModalClick}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 500,
+            bgcolor: "background.paper",
+            borderRadius: "16px",
+            p: 4,
+          }}
+        >
+          <Typography variant="h5">Create New Team</Typography>
+          <Box
+            marginTop={3}
+            width={"100%"}
+            display={"flex"}
+            flexDirection={"column"}
+            gap={3}
+          >
+            <TextField
+              fullWidth
+              required
+              label="Team Name"
+              variant="outlined"
+              onChange={(event) => setTeamName(event.target.value)}
+            />
+            <TextField
+              fullWidth
+              multiline
+              required
+              label="Home Court Address"
+              variant="outlined"
+              value={homeCourtAddress}
+              onChange={(event) => handleHomeCourtAddressChange(event)}
+            ></TextField>
+          </Box>
+
+          {suggestions.length > 0 && (
+            <List>
+              {suggestions.map((suggestion, index) => (
+                <ListItemButton
+                  onClick={() => handleSuggestionClick(suggestion)}
+                  divider
+                >
+                  <ListItemText primary={suggestion.description} />
+                </ListItemButton>
+              ))}
+            </List>
+          )}
+
+          <Typography
+            sx={{
+              display: "block",
+              fontSize: "calc(0.5em + 0.5vw)",
+              color: "gray",
+            }}
+          >
+            * Ensuring court availability is your team’s responsibility.
+          </Typography>
+
+          <Typography
+            sx={{
+              fontSize: "calc(0.5em + 0.5vw)",
+              color: "red",
+              marginBottom: "0.5em",
+              visibility: homeCourtMessage ? "visible" : "hidden",
+            }}
+          >
+            {homeCourtMessage}
+          </Typography>
+
+          <Box
+            display={"flex"}
+            flexDirection={"row"}
+            width={"100%"}
+            marginBottom={1}
+          >
+            <Button onClick={handleModalClick} variant="contained" color="grey">
+              Cancel
+            </Button>
+
+            <Button
+              onClick={addTeamToLeague}
+              variant="contained"
+              color="primary"
+              sx={{ marginLeft: "auto" }}
+            >
+              Create Team
+            </Button>
+          </Box>
+        </Box>
+      </StyledModal>
+
       <Box sx={{ width: "80vw", height: "77.69vh", display: "flex" }}>
         <Box
           sx={{
@@ -399,151 +560,50 @@ export const TeamSelect = (props) => {
             flexDirection: "column",
           }}
         >
-          {showTeamCreationForm ? (
-            <Typography
-              className="bodyText"
-              sx={{
-                display: "absolute",
-                fontSize: "calc(0.1em + 1vw)",
-                align: "left",
-                marginLeft: "10vw",
-                marginBottom: "8em",
-              }}
-            >
-              <FormControl
-                sx={{ height: "7vw", marginLeft: "1.5vw", position: "relative" }}
-              >
-                <StyledLabel htmlFor="leagueName">
-                  Team Name<span style={{ color: "red" }}>*</span>
-                </StyledLabel>
-                <StyledInput
-                  onChange={(event) => setTeamName(event.target.value)}
-                  id="leagueName"
-                  placeholder="Team1"
-                  required
-                />
-                <StyledLabel htmlFor="homeCourtAddress">
-                  Home Court Address<span style={{ color: "red" }}>*</span>
-                </StyledLabel>
-                <StyledInput
-                  value={homeCourtAddress}
-                  onChange={handleHomeCourtAddressChange}
-                  id="homeCourtAddress"
-                  placeholder="123 Main St"
-                  required
-                />
-                {suggestions.length > 0 && (
-                  <SuggestionsList>
-                    {suggestions.map((suggestion, index) => (
-                      <SuggestionItem
-                        key={index}
-                        onClick={() => handleSuggestionClick(suggestion)}
-                      >
-                        {suggestion.description}
-                      </SuggestionItem>
-                    ))}
-                  </SuggestionsList>
-                )}
-                {/* Disclaimer text */}
-                <Typography
-                  sx={{
-                    display: "block",
-                    fontSize: "calc(0.5em + 0.5vw)",
-                    color: "gray",
-                    marginTop: "0.25em",
-                    marginBottom: "0.5em",
-                  }}
-                >
-                  * Ensuring court availability is your team’s responsibility.
-                </Typography>
-                <Typography
-                  sx={{
-                    height: "20px",
-                    fontSize: "calc(0.5em + 0.5vw)",
-                    color: "primary",
-                    marginTop: "0.5em",
-                    marginBottom: "0.5em",
-                    visibility: homeCourtMessage ? "visible" : "hidden",
-                  }}
-                >
-                  {homeCourtMessage}
-                </Typography>
-
-                <Box>
-                  <Button
-                    onClick={() => setShowTeamCreationForm(false)}
-                    variant="contained"
-                    color="grey"
-                    sx={{
-                      position: "relative",
-                      borderRadius: "calc(0.1em + 0.5vw)",
-                      width: "50%",
-                      pl: "calc(1.5vw)",
-                      pr: "calc(1.8vw)",
-                      marginTop: "1em",
-                    }}
-                  >
-                    Cancel
-                  </Button>
-
-                  <Button
-                    onClick={addTeamToLeague}
-                    variant="contained"
-                    color="primary"
-                    sx={{
-                      position: "relative",
-                      borderRadius: "calc(0.1em + 0.5vw)",
-                      width: "50%",
-                      right: "0px",
-                      pl: "calc(1.5vw)",
-                      pr: "calc(1.8vw)",
-                      marginTop: "1em",
-                    }}
-                  >
-                    Create Team
-                  </Button>
-                </Box>
-              </FormControl>
-            </Typography>
-          ) : null}
-
           <Box sx={styles.main}>
             <Box sx={styles.side}>
               {/* Dynamically renders the teams within the league */}
               {teamState.Teams !== null
                 ? teamState.Teams.filter((team) => {
-                  if (team.TeamName.toLowerCase().includes(searchedTeamName.toLowerCase())) {
-                    return team;
-                  }
-                  return null;
-                }).map((team, index) => (
-                  <TeamSelectButton
-                    onClick={() => {
-                      addPlayerToPotentialList(index);
-                      console.log("Addplayertopotentiallist")
-                    }}
-                    onClickRemoveUser={() => {
-                      console.log("Remove User Is Running");
-                      removePlayerFromTeam(index);
-                    }}
-                    onClickDropTeam={() => {
-                      console.log("Drop team is running");
-                      dropTeamFromLeague(index)
-                    }}
-                    name={teamState.Teams[index].TeamName}
-                    captain={teamState.Teams[index].TeamCaptain}
-                    members={teamState.Teams[index].TeamMembers}
-                    home={teamState.Teams[index].HomeCourtAddress}
-                    potentialMembers={teamState.Teams[index].PotentialTeamMembers}
-                    showPotentialMembers={
-                      user && user.Username === teamState.Teams[index].TeamCaptain
+                    if (
+                      team.TeamName.toLowerCase().includes(
+                        searchedTeamName.toLowerCase()
+                      )
+                    ) {
+                      return team;
                     }
-                    username={user && user.Username}
-                    leagueInfo={teamState}
-                    teamIndex={index}
-                    updateLeague={updateLeague}
-                  />
-                ))
+                    return null;
+                  }).map((team, index) => (
+                    <TeamSelectButton
+                      onClick={() => {
+                        addPlayerToPotentialList(index);
+                        console.log("Addplayertopotentiallist");
+                      }}
+                      onClickRemoveUser={() => {
+                        console.log("Remove User Is Running");
+                        removePlayerFromTeam(index);
+                      }}
+                      onClickDropTeam={() => {
+                        console.log("Drop team is running");
+                        dropTeamFromLeague(index);
+                      }}
+                      name={teamState.Teams[index].TeamName}
+                      captain={teamState.Teams[index].TeamCaptain}
+                      members={teamState.Teams[index].TeamMembers}
+                      home={teamState.Teams[index].HomeCourtAddress}
+                      potentialMembers={
+                        teamState.Teams[index].PotentialTeamMembers
+                      }
+                      showPotentialMembers={
+                        user &&
+                        user.Username === teamState.Teams[index].TeamCaptain
+                      }
+                      username={user && user.Username}
+                      leagueInfo={teamState}
+                      teamIndex={index}
+                      updateLeague={updateLeague}
+                    />
+                  ))
                 : null}
 
               <Box sx={{ width: "45vw", height: "4vh", display: "flex" }}></Box>
