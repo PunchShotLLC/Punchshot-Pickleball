@@ -2,11 +2,12 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import * as React from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { borderRadius } from "@mui/system";
+import { borderRadius, fontWeight } from "@mui/system";
 import { Button } from "@mui/material";
 import { useState, useEffect } from "react";
 import { Modal } from "@mui/material";
 import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
+import MapWithCircle from "./MapWithCircle";
 
 export const LeagueComp = (props) => {
   function isBeforeToday(dateStr) {
@@ -68,6 +69,8 @@ export const LeagueComp = (props) => {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [modalInfoOpen, setModalInfoOpen] = useState(false);
+  const leagueCenterCoords = { lat: parseFloat(props.latitude), lng: parseFloat(props.longitude) }
+  const leagueRadiusMeter = props.radius
 
   const openDisclaimerModal = () => {
     setModalOpen(true);
@@ -89,10 +92,12 @@ export const LeagueComp = (props) => {
     setModalInfoOpen(false);
   };
 
+  const statusColor = props.showLeague ? "green" : "red";
+
   if (props.showLeague) {
     return (
       <Box sx={styles.main}>
-        <Box sx={styles.side}>
+        <Box sx={(styles.side, { padding: "1%" })}>
           {/* Disclaimer Modal */}
           <Modal open={modalOpen}>
             <Box sx={styles.modal}>
@@ -108,7 +113,7 @@ export const LeagueComp = (props) => {
                     onClick={closeDisclaimerModal}
                     sx={{
                       ...styles.button,
-                      width: "30%",
+                      width: "auto",
                       transition: "background-color 0.3s",
                       "&:hover": {
                         backgroundColor: buttonTheme.palette.primary.main,
@@ -123,7 +128,7 @@ export const LeagueComp = (props) => {
                     onClick={handleUnderstand}
                     sx={{
                       ...styles.button,
-                      width: "50%",
+                      width: "auto",
                       transition: "background-color 0.3s",
                       "&:hover": {
                         backgroundColor: buttonTheme.palette.primary.main,
@@ -142,7 +147,7 @@ export const LeagueComp = (props) => {
           {/* League Info Modal*/}
           <Modal open={modalInfoOpen}>
             <Box sx={styles.modal}>
-              <Box sx={styles.column}>
+              <Box sx={{ ...styles.column, alignItems: "center" }}>
                 <Box sx={{ ...styles.data, ...styles.modalData }}>
                   <img
                     src={require("../../assets/images/Team.png")}
@@ -166,7 +171,13 @@ export const LeagueComp = (props) => {
                     {new Date(props.registrationDate).toLocaleDateString()}
                   </Typography>
                 </Box>
-                <Box sx={{ ...styles.data, ...styles.modalData }}>
+                <MapWithCircle
+                  center={leagueCenterCoords}
+                  radius={leagueRadiusMeter}
+                  width="400px"
+                  height="350px"
+                />
+                {/*<Box sx={{ ...styles.data, ...styles.modalData }}>
                   <img
                     alt="clock"
                     src={require("../../assets/images/Clock.png")}
@@ -185,11 +196,11 @@ export const LeagueComp = (props) => {
                   <Typography sx={styles.modalData}>
                     Division: {props.division}
                   </Typography>
-                </Box>
+                </Box>*/}
                 <Button
                   onClick={closeInfoModal}
                   variant="contained"
-                  sx={{ ...styles.button }}
+                  sx={{ ...styles.button, width: "25%", marginTop: "1%" }}
                   color="secondary"
                 >
                   Back
@@ -198,28 +209,66 @@ export const LeagueComp = (props) => {
             </Box>
           </Modal>
 
-          {/* View Team and More Info Button */}
-          <Box sx={styles.row}>
-            <Typography sx={styles.name}>{props.name}</Typography>
-            <Box sx={styles.buttonRow}>
-              <ThemeProvider theme={buttonTheme}>
-                <Button
-                  onClick={openDisclaimerModal}
-                  variant="contained"
-                  color="primary"
-                  sx={styles.button}
-                >
-                  View Teams
-                </Button>
-                <Button
-                  onClick={openInfoModal}
-                  variant="contained"
-                  color="primary"
-                  sx={styles.button}
-                >
-                  More Info
-                </Button>
-              </ThemeProvider>
+          {/* Basic Info Display, View Team and More Info Button */}
+          <Box
+            sx={{
+              ...styles.row,
+              justifyContent: "space-between",
+            }}
+          >
+            <Box sx={{ ...styles.column, margin: "1em" }}>
+              <Typography sx={styles.name}>{props.name}</Typography>
+              <Typography sx={styles.basicInfo}>
+                <Typography sx={{ fontWeight: "bold" }}>Date:</Typography>&nbsp;
+                {new Date(props.startDate).toLocaleDateString()}-
+                {new Date(props.endDate).toLocaleDateString()}
+              </Typography>
+              <Typography sx={styles.basicInfo}>
+                <Typography sx={{ fontWeight: "bold" }}>SkillLevel:</Typography>
+                &nbsp;
+                {props.skillLevel}
+              </Typography>
+              <Typography sx={styles.basicInfo}>
+                <Typography sx={{ fontWeight: "bold" }}>Division:</Typography>
+                &nbsp;
+                {props.division}
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                ...styles.column,
+                alignItems: "flex-end",
+                margin: "1em",
+              }}
+            >
+              <Typography
+                style={{
+                  ...styles.basicInfo,
+                  color: statusColor,
+                }}
+              >
+                {props.showLeague ? "Registration Open" : "Registration Closed"}
+              </Typography>
+              <Box sx={styles.buttonRow}>
+                <ThemeProvider theme={buttonTheme}>
+                  <Button
+                    onClick={openDisclaimerModal}
+                    variant="contained"
+                    color="primary"
+                    sx={styles.button}
+                  >
+                    View Teams
+                  </Button>
+                  <Button
+                    onClick={openInfoModal}
+                    variant="contained"
+                    color="primary"
+                    sx={styles.button}
+                  >
+                    More Info
+                  </Button>
+                </ThemeProvider>
+              </Box>
             </Box>
           </Box>
 
@@ -292,10 +341,13 @@ const styles = {
     fontWeight: "bold",
     fontFamily: "'Futura', sans-serif",
   },
-  side: {
+  basicInfo: {
+    fontSize: "calc(0.5em + 0.5vw)",
+    fontFamily: "'Futura', sans-serif",
     display: "flex",
-    flexDirection: "column",
-    height: "8vh",
+    alignItems: "center",
+  },
+  side: {
     marginBottom: LeagueComp.isSmallScreen ? "2%" : "1%",
     marginLeft: LeagueComp.isSmallScreen ? "1%" : "2%",
   },
@@ -311,7 +363,7 @@ const styles = {
   },
   main: {
     backgroundColor: "#F5F5F5",
-    height: "15vh",
+    height: "auto",
     cursor: "pointer",
     flexDirection: "row",
     alignItems: "center",
@@ -328,8 +380,10 @@ const styles = {
   column: {
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
-    gap: "2vh",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    gap: "1vh",
+    width: "100%",
   },
   info: {
     color: "black",
@@ -343,8 +397,8 @@ const styles = {
   },
   button: {
     borderRadius: "calc(1.5em + 1vw)",
-    marginLeft: "2em",
-    marginRight: "2em",
+    marginLeft: "1em",
+    width: "50%",
   },
   modal: {
     position: "absolute",
@@ -361,5 +415,11 @@ const styles = {
     borderRadius: "10px",
     padding: "4vh",
     gap: "2vh",
+  },
+  buttonRow: {
+    display: "flex",
+    width: "100%",
+    justifyContent: "flex-end",
+    gap: "1em",
   },
 };
