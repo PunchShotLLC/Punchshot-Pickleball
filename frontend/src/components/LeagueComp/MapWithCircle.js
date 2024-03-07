@@ -9,7 +9,7 @@ import { useMemo } from "react";
 // TODO: ENTER API KEY
 const GOOGLE_MAPS_API_KEY = "";
 
-const MapWithCircle = ({ center, radius }) => {
+const MapWithCircle = ({ center, radius, width, height }) => {
   // Load in the API key
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: GOOGLE_MAPS_API_KEY,
@@ -18,8 +18,8 @@ const MapWithCircle = ({ center, radius }) => {
   if (radius === 0) radius = 0.000001;
 
   const mapContainerStyle = {
-    width: "600px",
-    height: "300px",
+    width: width,
+    height: height,
   };
 
   return (
