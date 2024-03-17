@@ -75,7 +75,7 @@ export const TeamSelect = (props) => {
   // For the input for a new team
   const [teamState, setTeamState] = useState(location.state);
   const [teamName, setTeamName] = useState(null);
-  const [homeCourtAddress, setHomeCourtAddress] = useState(null);
+  const [homeCourtAddress, setHomeCourtAddress] = useState("");
   const [homeCourtMessage, setHomeCourtMessage] = useState("");
   const [searchedTeamName, setSearchedTeamName] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -591,45 +591,44 @@ export const TeamSelect = (props) => {
       <Box sx={styles.side}>
         {/* Dynamically renders the teams within the league */}
         {teamState.Teams !== null
-          ? teamState.Teams.filter((team) => {
-              if (
+          ? teamState.Teams.map(
+              (team, index) =>
                 team.TeamName.toLowerCase().includes(
                   searchedTeamName.toLowerCase()
+                ) && (
+                  <Box sx={styles.teamCardContainer} key={index}>
+                    <TeamSelectButton
+                      onClick={() => {
+                        addPlayerToPotentialList(index);
+                        console.log("Addplayertopotentiallist");
+                      }}
+                      onClickRemoveUser={() => {
+                        console.log("Remove User Is Running");
+                        removePlayerFromTeam(index);
+                      }}
+                      onClickDropTeam={() => {
+                        console.log("Drop team is running");
+                        dropTeamFromLeague(index);
+                      }}
+                      name={teamState.Teams[index].TeamName}
+                      captain={teamState.Teams[index].TeamCaptain}
+                      members={teamState.Teams[index].TeamMembers}
+                      home={teamState.Teams[index].HomeCourtAddress}
+                      potentialMembers={
+                        teamState.Teams[index].PotentialTeamMembers
+                      }
+                      showPotentialMembers={
+                        user &&
+                        user.Username === teamState.Teams[index].TeamCaptain
+                      }
+                      username={user && user.Username}
+                      leagueInfo={teamState}
+                      teamIndex={index}
+                      updateLeague={updateLeague}
+                    />
+                  </Box>
                 )
-              ) {
-                return team;
-              }
-              return null;
-            }).map((team, index) => (
-              <Box sx={styles.teamCardContainer} key={index}>
-                <TeamSelectButton
-                  onClick={() => {
-                    addPlayerToPotentialList(index);
-                    console.log("Addplayertopotentiallist");
-                  }}
-                  onClickRemoveUser={() => {
-                    console.log("Remove User Is Running");
-                    removePlayerFromTeam(index);
-                  }}
-                  onClickDropTeam={() => {
-                    console.log("Drop team is running");
-                    dropTeamFromLeague(index);
-                  }}
-                  name={teamState.Teams[index].TeamName}
-                  captain={teamState.Teams[index].TeamCaptain}
-                  members={teamState.Teams[index].TeamMembers}
-                  home={teamState.Teams[index].HomeCourtAddress}
-                  potentialMembers={teamState.Teams[index].PotentialTeamMembers}
-                  showPotentialMembers={
-                    user && user.Username === teamState.Teams[index].TeamCaptain
-                  }
-                  username={user && user.Username}
-                  leagueInfo={teamState}
-                  teamIndex={index}
-                  updateLeague={updateLeague}
-                />
-              </Box>
-            ))
+            )
           : null}
       </Box>
     </>
