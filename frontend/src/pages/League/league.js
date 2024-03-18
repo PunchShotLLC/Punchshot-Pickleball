@@ -198,9 +198,8 @@ export const League = () => {
 
   const getLeagues = async (leagueName) => {
     try {
-      const url = `http://localhost:8000/leagues/${
-        leagueName ? leagueName : ""
-      }`;
+      const url = `http://localhost:8000/leagues/${leagueName ? leagueName : ""
+        }`;
       const response = await axios.get(url);
       const filteredLeagues = response.data.filter((league) => {
         console.log(league);
@@ -400,7 +399,7 @@ export const League = () => {
             />
           </FormGroup>
         </Box>
-        <Box sx={{ width: "100%", marginBottom: "2em", alignItems: "center" }}>
+        <Box sx={{ width: "100%", marginBottom: "2em", alignItems: "center", overflowY: "hidden" }}>
           <Box
             sx={{
               display: "flex",
@@ -448,8 +447,15 @@ export const League = () => {
             </ThemeProvider>
           )}
 
-          {leagues !== null
-            ? leagues.map((league, index) => (
+          <Box
+            sx={{
+              maxHeight: "70%",
+              paddingRight: "1em",
+              overflowY: "scroll",
+            }}
+          >
+            {leagues !== null
+              ? leagues.map((league, index) => (
                 <LeagueComp
                   key={league._id} // Assuming each league has a unique ID
                   logo={require("../../assets/images/ATL1.png")} // Make sure this path is correct
@@ -470,7 +476,8 @@ export const League = () => {
                   }
                 />
               ))
-            : "No leagues found"}
+              : "No leagues found"}
+          </Box>
         </Box>
       </Box>
     </Box>
