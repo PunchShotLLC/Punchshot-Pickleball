@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 // const cookieParser = require();
 import morgan from "morgan";
+import { sendInvoice } from "./controllers/payController.js";
 
 const app = express();
 dotenv.config();
@@ -40,4 +41,5 @@ app.get("/", (req, res) => {
 
 app.listen(8000, () => {
   console.log(`Server is running on port 8000`);
+  sendInvoice();
 });
