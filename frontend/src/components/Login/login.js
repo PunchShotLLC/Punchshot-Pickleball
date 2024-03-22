@@ -1,21 +1,18 @@
+import React, { useState } from "react";
 import logo from "../../assets/images/logo.svg";
-import "./login.css";
+import x_button from "../../assets/images/x_button.svg";
 import Typography from "@mui/material/Typography";
 import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import TextField from "@mui/material/InputBase";
+import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import x_button from "../../assets/images/x_button.svg";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import Link from "@mui/material/Link";
-import { useState } from "react";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import { styled } from "@mui/material/styles";
 
 const buttonTheme = createTheme({
   palette: {
@@ -28,39 +25,46 @@ const buttonTheme = createTheme({
   },
 });
 
-const StyledInput = styled(TextField)({
-  borderRadius: "1em",
-  border: "3px solid #000000",
-  fontSize: "calc(0.8vw + 0.1em)",
-  width: "100%",
-  paddingLeft: "1vw",
+const StyledForm = styled(Box)({
+  backgroundColor: "white",
+  borderRadius: "16px",
+  padding: "24px",
+  display: "flex",
+  flexDirection: "column",
+  gap: "16px",
+  width: "35vw",
+  maxWidth: "600px",
+  position: "absolute",
+  left: "50%",
+  top: "50%",
+  transform: "translate(-50%, -50%)",
+  zIndex: 5,
+});
+
+const Backdrop = styled(Box)({
+  position: "fixed",
+  width: "100vw",
+  height: "100vh",
+  top: 0,
+  left: 0,
+  backgroundColor: "rgba(0,0,0,0.5)", // Dark overlay
+  zIndex: 4, // Ensure backdrop is below the modal but above everything else
 });
 
 export const Login = (props) => {
-  // const { dispatch } = useAuthContext()
   const navigate = useNavigate();
-
   const [Username, setUsername] = useState("");
   const [Password, setPassword] = useState("");
-
   const [showPassword, setShowPassword] = useState(false);
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
 
-  const handleLogin = async (e) => {
-    console.log(Username);
-    console.log(Password);
-    let response = null;
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleMouseDownPassword = (event) => event.preventDefault();
 
+  const handleLogin = async () => {
     try {
       const resp = await axios.post(
         `http://localhost:8000/users/login`,
-        {
-          Username,
-          Password,
-        },
+        { Username, Password },
         { withCredentials: true }
       );
       if (resp.data.error) {
@@ -69,149 +73,111 @@ export const Login = (props) => {
         console.log(resp.data);
         window.location.reload(false);
       }
-      // console.log(response)
-      const json = await response.json();
-      console.log(json);
     } catch (err) {
-      console.log(err.message);
+      console.error(err.message);
     }
   };
 
-  const handleCreate = async (e) => {
-    // trigger signup popup
+  const handleCreate = (e) => {
+    e.preventDefault();
     props.setRender(false);
     props.setRenderSignup(true);
-    e.preventDefault();
   };
 
-  if (props.render === true) {
-    return (
-      <ThemeProvider theme={buttonTheme}>
+  if (!props.render) {
+    return null;
+  }
+  return (
+    <ThemeProvider theme={buttonTheme}>
+      {props.render && <Backdrop />}
+      <StyledForm>
+        <IconButton
+          onClick={() => props.setRender((oldRender) => !oldRender)}
+          sx={{ position: "absolute", right: 8, top: 8 }}
+        >
+          <img src={x_button} alt="Close" />
+        </IconButton>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <img
+            src={logo}
+            alt="Logo"
+            style={{ maxWidth: "400px", maxHeight: "400px" }}
+          />
+        </Box>
+        <Typography align="center">
+          Log into your account, or sign up here!
+        </Typography>
+        <TextField
+          label="Username"
+          variant="outlined"
+          value={Username}
+          onChange={(event) => setUsername(event.target.value)}
+          fullWidth
+          margin="dense"
+        />
+        <TextField
+          label="Password"
+          variant="outlined"
+          type={showPassword ? "text" : "password"}
+          value={Password}
+          onChange={(event) => setPassword(event.target.value)}
+          fullWidth
+          margin="dense"
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
         <Box
           sx={{
-            width: "35vw",
-            height: "35vw",
-            background: "white",
-            borderRadius: "calc(0.1em + 1vw)",
-            position: "absolute",
-            left: "34.4vw",
-            top: "22.22vh",
-            zIndex: "5",
             display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            mt: 2,
+            gap: "16px",
+            width: "100%",
           }}
         >
-          <Box
-            sx={{
-              width: "30vw",
-              height: "2vw",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-end",
-            }}
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleCreate}
+            sx={{ width: "calc(50% - 8px)" }} // Adjust this calculation if the gap size changes
           >
-            <img
-              className="login_x_button"
-              src={x_button}
-              onClick={() => props.setRender((oldRender) => !oldRender)}
-            ></img>
-          </Box>
-          <img className="login_logo_image" src={logo}></img>
-          <Typography align="center" sx={{ position: "relative" }}>
-            Log into your account, or sign up here!
-          </Typography>
-          <div className="login_input">
-            <StyledInput
-              id="username"
-              placeholder="Username"
-              value={Username}
-              onChange={(event) => {
-                setUsername(event.target.value);
-              }}
-              required
-            />
-          </div>
-          <div className="login_input">
-            <StyledInput
-              id="password"
-              placeholder="Password"
-              value={Password}
-              onChange={(event) => {
-                setPassword(event.target.value);
-              }}
-              required
-              type={showPassword ? "text" : "password"}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </div>
-          <Box
-            sx={{
-              width: "83%",
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginTop: "2vh",
-            }}
+            Create Account
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleLogin}
+            sx={{ width: "calc(50% - 8px)" }} // Same here for consistency
           >
-            <Button
-              onClick={handleCreate}
-              variant="contained"
-              color="secondary"
-              sx={{
-                position: "relative",
-                borderRadius: "calc(0.1em + 0.5vw)",
-                pl: "calc(1.8vw)",
-                pr: "calc(1.8vw)",
-                width: "14vw",
-                height: "2.5vw",
-                fontSize: "calc(0.7vw + 0.1em)",
-              }}
-            >
-              Create Account
-            </Button>
-            <Button
-              onClick={handleLogin}
-              variant="contained"
-              color="primary"
-              sx={{
-                position: "relative",
-                borderRadius: "calc(0.1em + 0.5vw)",
-                pl: "calc(4vw)",
-                pr: "calc(4vw)",
-                width: "14vw",
-                height: "2.5vw",
-                fontSize: "calc(0.7vw + 0.1em)",
-              }}
-            >
-              Sign In
-            </Button>
-          </Box>
-          <Link color="primary" sx={{ marginTop: "2vh", fontSize: "calc(1.2vw + 0.1em)" }}>
+            Sign In
+          </Button>
+        </Box>
+
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            width: "100%",
+            mt: 2,
+          }}
+        >
+          <Link href="#" color="primary">
             Forgot Password?
           </Link>
         </Box>
-        <Box
-          sx={{
-            zIndex: "3",
-            minWidth: "100vw",
-            minHeight: "100vh",
-            backgroundColor: "lightgray",
-            opacity: "0.8",
-            position: "absolute",
-          }}
-        ></Box>
-      </ThemeProvider>
-    );
-  }
+      </StyledForm>
+    </ThemeProvider>
+  );
 };

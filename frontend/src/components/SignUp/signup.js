@@ -3,7 +3,7 @@ import IconButton from "@mui/material/IconButton";
 import logo from "../../assets/images/logo.svg";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/InputBase";
+import TextField from "@mui/material/TextField";
 import x_button from "../../assets/images/x_button.svg";
 import Link from "@mui/material/Link";
 import Button from "@mui/material/Button";
@@ -17,28 +17,44 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import defaultImage from "../../pages/Profile/default.png";
 import axios from "axios";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import SelectInput from "@mui/material/Select/SelectInput";
 
-const StyledInput = styled(TextField)({
-  borderRadius: "1em",
-  border: "3px solid #000000",
-  fontSize: "calc(0.8vw + 0.1em)",
-  width: "30vw",
-  paddingLeft: "1vw",
+const buttonTheme = createTheme({
+  palette: {
+    primary: {
+      main: "#9146D8",
+    },
+    secondary: {
+      main: "#D9D9D9",
+    },
+  },
 });
 
-const StyledSelect = styled(Select)({
-  borderRadius: "1em",
-  border: "3px solid #000000",
-  fontSize: "calc(0.8vw + 0.1em)",
-  height: "5h",
-  width: "30vw",
-  paddingLeft: "1vw",
-  bottom: "1em",
+const StyledForm = styled(Box)({
+  backgroundColor: "white",
+  borderRadius: "16px",
+  padding: "24px",
+  display: "flex",
+  flexDirection: "column",
+  gap: "16px",
+  width: "35vw",
+  maxWidth: "600px",
+  position: "absolute",
+  left: "50%",
+  top: "50%",
+  transform: "translate(-50%, -50%)",
+  zIndex: 5,
 });
 
-const StyledLabel = styled("label")({
-  paddingLeft: "1vw",
-  marginBottom: "0.5vh",
+const Backdrop = styled(Box)({
+  position: "fixed",
+  width: "100vw",
+  height: "100vh",
+  top: 0,
+  left: 0,
+  backgroundColor: "rgba(0,0,0,0.5)", // Dark overlay
+  zIndex: 4, // Ensure backdrop is below the modal but above everything else
 });
 
 export const SignUp = (props) => {
@@ -109,7 +125,19 @@ export const SignUp = (props) => {
     setSex(event.target.value);
   };
 
+  const Backdrop = styled(Box)({
+    position: "fixed",
+    width: "100vw",
+    height: "100vh",
+    top: 0,
+    left: 0,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    zIndex: 4,
+  });
+
   return (
+    <>
+      {props.render && <Backdrop />}
     <Box
       style={{
         width: "100vw",
@@ -122,7 +150,7 @@ export const SignUp = (props) => {
     >
       <form
         style={{
-          width: "80vw",
+          width: "45vw",
           height: "70vh",
           background: "white",
           borderRadius: "calc(0.1em + 1vw)",
@@ -144,32 +172,31 @@ export const SignUp = (props) => {
         <img height="20%" width="auto" src={logo}></img>
         <Box
           sx={{
-            width: "65vw",
+            width: "35vw",
             display: "flex",
             justifyContent: "space-between",
             marginTop: "2vh",
           }}
         >
-          <FormControl sx={{ width: "30vw" }}>
-            <StyledLabel htmlFor="email">
-              Email<span style={{ color: "red" }}>*</span>
-            </StyledLabel>
-            <StyledInput
+
+      <FormControl sx={{ width: "15vw" }}>
+            <TextField
               id="email"
+              label="Email"
               placeholder="email@example.com"
               value={email}
               onChange={(event) => {
                 setEmail(event.target.value);
               }}
               required
+              
             />
           </FormControl>
-          <FormControl sx={{ width: "30vw" }}>
-            <StyledLabel htmlFor="name">
-              Name<span style={{ color: "red" }}>*</span>
-            </StyledLabel>
-            <StyledInput
+
+          <FormControl sx={{ width: "15vw" }}>
+            <TextField
               id="name"
+              label="Name"
               placeholder="John Doe"
               value={name}
               onChange={(event) => {
@@ -181,18 +208,16 @@ export const SignUp = (props) => {
         </Box>
         <Box
           sx={{
-            width: "65vw",
+            width: "35vw",
             display: "flex",
             justifyContent: "space-between",
             marginTop: "2vh",
           }}
         >
-          <FormControl sx={{ width: "30vw" }}>
-            <StyledLabel htmlFor="username">
-              Username<span style={{ color: "red" }}>*</span>
-            </StyledLabel>
-            <StyledInput
+          <FormControl sx={{ width: "15vw" }}>
+            <TextField
               id="username"
+              label="Username"
               placeholder="JohnDoe"
               value={username}
               onChange={(event) => {
@@ -201,82 +226,66 @@ export const SignUp = (props) => {
               required
             />
           </FormControl>
-          {/* <FormControl sx={{ width: "30vw" }}>
-            <StyledLabel htmlFor="sex">
-              Sex<span style={{ color: "red" }}>*</span>
-            </StyledLabel>
-            <StyledInput
-              id="sex"
-              placeholder="Male/Female"
-              value={sex}
-              onChange={(event) => {
-                setSex(event.target.value);
-              }}
-              required
-            />
-          </FormControl> */}
-          <FormControl sx={{ width: "30vw" }}>
-            <StyledLabel htmlFor="sex">
-              Sex<span style={{ color: "red" }}>*</span>
-            </StyledLabel>
-            <StyledSelect
-              variant="standard"
-              disableUnderline
+
+          <FormControl variant="outlined" sx={{ width: "15vw" }}>
+            <InputLabel htmlFor="sex" shrink>
+              Sex
+            </InputLabel>
+            <Select
+              labelId="sex-select-label"
               id="sex"
               value={sex}
               onChange={handleSexChange}
-              placeholder="Male, Female"
-              required
+              label="Sex" // Important for spacing the outline correctly.
+              displayEmpty
+              inputProps={{ "aria-label": "Without label" }}
+              variant="outlined"
             >
-              <MenuItem key="Male" value="Male">
-                Male
+              <MenuItem disabled value="">
+                Please select a gender
               </MenuItem>
-              <MenuItem key="Female" value="Female">
-                Female
-              </MenuItem>
-            </StyledSelect>
+              <MenuItem value="Male">Male</MenuItem>
+              <MenuItem value="Female">Female</MenuItem>
+            </Select>
           </FormControl>
         </Box>
         <Box
           sx={{
-            width: "65vw",
+            width: "35vw",
             display: "flex",
             justifyContent: "space-between",
             marginTop: "2vh",
           }}
         >
-          <FormControl sx={{ width: "30vw" }}>
-            <StyledLabel htmlFor="password">
-              Password<span style={{ color: "red" }}>*</span>
-            </StyledLabel>
-            <StyledInput
+          <FormControl sx={{ width: "15vw" }}>
+            <TextField
               id="password"
+              label="Password"
               placeholder="********"
               value={password}
-              onChange={(event) => {
-                setPassword(event.target.value);
-              }}
+              onChange={(event) => setPassword(event.target.value)}
               required
               type={showPassword ? "text" : "password"}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              variant="outlined"
             />
           </FormControl>
-          <FormControl sx={{ width: "30vw" }}>
-            <StyledLabel htmlFor="zipcode">
-              Zip Code<span style={{ color: "red" }}>*</span>
-            </StyledLabel>
-            <StyledInput
+          <FormControl sx={{ width: "15vw" }}>
+            <TextField
               id="zipcode"
+              label="Zipcode"
               value={zipCode}
               onChange={(event) => {
                 setZipCode(event.target.value);
@@ -288,18 +297,16 @@ export const SignUp = (props) => {
         </Box>
         <Box
           sx={{
-            width: "65vw",
+            width: "35vw",
             display: "flex",
             justifyContent: "space-between",
             marginTop: "2vh",
           }}
         >
-          <FormControl sx={{ width: "30vw" }}>
-            <StyledLabel htmlFor="confirmpassword">
-              Confirm Password<span style={{ color: "red" }}>*</span>
-            </StyledLabel>
-            <StyledInput
-              id="confirmpassword"
+          <FormControl sx={{ width: "15vw" }}>
+            <TextField
+              id="confirmPassword"
+              label="Confirm Password"
               placeholder="********"
               value={confirmPassword}
               onChange={(event) => {
@@ -307,32 +314,40 @@ export const SignUp = (props) => {
               }}
               required
               type={showConfirmPassword ? "text" : "password"}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickConfirmPassword}
-                    onMouseDown={handleMouseDownPassword}
-                  >
-                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickConfirmPassword}
+                      onMouseDown={handleMouseDownPassword}
+                    >
+                      {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              variant="outlined"
             />
           </FormControl>
-          <FormControl sx={{ width: "30vw" }}>
-            <StyledLabel htmlFor="skillevel">
-              Skill Level<span style={{ color: "red" }}>*</span>
-            </StyledLabel>
-            <StyledSelect
-              variant="standard"
-              disableUnderline
+
+          <FormControl variant="outlined" sx={{ width: "15vw" }}>
+            <InputLabel htmlFor="Skill Level" shrink>
+              Skill Level
+            </InputLabel>
+            <Select
+              labelId="skill-select-label"
               id="skilllevel"
               value={skillLevel}
               onChange={handleSkillChange}
-              placeholder="Novice, Intermediate, Advanced"
-              required
+              label="Skill Level" // Important for spacing the outline correctly.
+              displayEmpty
+              inputProps={{ "aria-label": "Without label" }}
+              variant="outlined"
             >
+              <MenuItem disabled value="">
+                Please select a skill level
+              </MenuItem>
               <MenuItem key="Novice" value="Novice">
                 Novice
               </MenuItem>
@@ -342,15 +357,10 @@ export const SignUp = (props) => {
               <MenuItem key="Advanced" value="Advanced">
                 Advanced
               </MenuItem>
-            </StyledSelect>
+            </Select>
           </FormControl>
         </Box>
-        {/* <Box sx={{width:"65vw", display:"flex", justifyContent:"space-between", marginTop:"2vh"}} >
-                    <FormControl sx={{width:"30vw"}}>
-                        <StyledLabel htmlFor="bio">Bio</StyledLabel>
-                        <StyledInput multiline rows={4} sx={{width: "65vw"}} id="bio" placeholder="John Doe is an avid pickleball athlete, competing in open tournaments in the greater Atlanta area since 2013. His favorite place to play is in his hometown, Portland. He’s looking forward to competing against you!  " />
-                    </FormControl>
-                </Box> */}
+
         <Box sx={{ display: "flex", height: "10vh" }}>
           <Button
             type="submit"
@@ -366,17 +376,8 @@ export const SignUp = (props) => {
             Create Account
           </Button>
         </Box>
-        {/* <Box height="10vh" sx={{display:"flex"}}>
-                    <img src={defaultImage} width="auto" height="100%" style={{borderRadius:"50%", border:"3px solid #000000"}}/>
-                    <Box sx={{display:"flex", flexDirection:"column", justifyContent:"flex-end", marginLeft:"1vw"}}>
-                        <StyledLabel htmlFor="file">Profile Photo</StyledLabel>
-                        <Button component="label" variant="contained" sx={{height:"50%", backgroundColor:"black", borderRadius: '1em'}}>
-                            Select Photo
-                            <input type="file" accept="image/*" hidden id="file" />
-                        </Button>
-                    </Box>
-                </Box> */}
       </form>
     </Box>
+    </>
   );
 };
