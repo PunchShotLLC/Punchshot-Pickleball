@@ -31,6 +31,7 @@ import axios from "axios";
 import { TeamSelectButton } from "./teamSelectButton";
 import { setDefaults, fromAddress } from "react-geocode";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { display } from "@mui/system";
 
 const StyledModal = styled(Modal)({
   display: "flex",
@@ -436,7 +437,7 @@ export const TeamSelect = (props) => {
   });
 
   return (
-    <>
+    <Box display={"flex"} flexDirection={"column"}>
       <Box
         sx={{
           width: "100%",
@@ -631,15 +632,14 @@ export const TeamSelect = (props) => {
             )
           : null}
       </Box>
-    </>
+    </Box>
   );
 };
 
 const styles = {
   side: {
     display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
+    flexDirection: "column",
     justifyContent: "center", // This centers the flex items
     gap: "16px", // Adjust the gap as needed for spacing between items
     padding: "0 16px", // Padding on the sides of the container
@@ -648,7 +648,7 @@ const styles = {
   teamCardContainer: {
     backgroundColor: "#F5F5F5", // Background color of each card
     borderRadius: "20px", // Border radius for rounded corners
-    width: "calc(50% - 32px)", // Calculates the width of each item to take up half the container width minus the gap
+    width: "100%", // Calculates the width of each item to take up half the container width minus the gap
     marginBottom: "16px", // Margin at the bottom of each card
     padding: "20px", // Padding inside each card
     boxSizing: "border-box", // Ensures padding and border are included in the width and height
