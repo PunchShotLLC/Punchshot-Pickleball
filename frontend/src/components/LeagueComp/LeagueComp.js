@@ -105,7 +105,7 @@ export const LeagueComp = (props) => {
           <Modal open={modalOpen}>
             <Box sx={styles.modal}>
               <Typography>
-                If you wish the join the league, make sure to have at least 4
+                If you wish the join the league, make sure to have at least 2
                 members in your team before the team registration date. Each
                 member will then be charged $10.00 to be paid before the start
                 date.

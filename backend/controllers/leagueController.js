@@ -425,6 +425,7 @@ export const testroute = async (req, res) => {
 import cron from "node-cron";
 cron.schedule("0 0 * * *", () => {
   sendLeagueStartEmails();
+  sendTeamRegistrationDateNoticeEmails();
 });
 cron.schedule("0 8 * * *", (date) => {
   matchCronJob(date);
@@ -565,6 +566,75 @@ const sendLeagueStartEmails = async () => {
       console.log(
         `It is not the day before ${allLeagues[i]["LeagueName"]} starts`
       );
+    }
+  }
+};
+
+const sendTeamRegistrationDateNoticeEmails = async () => {
+  // Get all of the leagues
+  const allLeagues = await League.find({}).sort({ createdAt: -1 });
+
+  for (let i = 0; i < allLeagues.length; i++) {
+    // check if the current date = allLeagues[i]'s starting date
+    let registrationDate = allLeagues[i]["TeamRegistrationDate"];
+    let teams = allLeagues[i]["Teams"];
+
+    // If day before the team registration date for allLeagues[i], send email to all captains of existing teams
+    if (isDayBeforeCurrentDate(registrationDate)) {
+      console.log(
+        `It is the day before ${allLeagues[i]["LeagueName"]} team registration date, sending email to all team captains`
+      );
+      
+      for (let j = 0; j < teams.length; j++) {
+        sendEmail(
+          teams[j]["CaptainEmail"],
+          "Team Registration Date Tomorrow",
+          `It is the day before the team registration date for the ${allLeagues[i]["LeagueName"]}. Remember to finalize teams by tomorrow.`
+        );
+      }
+
+    } else {
+      console.log(
+        `It is not the day before ${allLeagues[i]["LeagueName"]} team registration date`
+      );
+    }
+
+    // If day of team registration date for allLeagues[i], drop all teams with fewer than 2 members and send email to captains
+    let currentDate = new Date();
+    currentDate = currentDate.toString();
+    registrationDate = registrationDate.toString();
+
+    if (currentDate.substring(0, 15) === registrationDate.substring(0, 15)) {
+      for (let team of teams) {
+
+        let teamMembers = team["TeamMembers"]
+        if (teamMembers.length < 2) {
+          sendEmail(
+            team["CaptainEmail"],
+            "Your Team Has Been Disbanded",
+            `Your team, ${teams[j]["TeamName"]}, did not meet the minimum qualifications for the ${allLeagues[i]["LeagueName"]} (less than 2 team members).`
+          );
+
+          const req = {
+            params: {
+              leagueId: allLeagues[i]._id,
+              teamId: team._id
+            }
+          };
+          const res = {
+            status: function(status) {
+              return {
+                json: function(obj) {
+                  console.log(`Team deleted: ${team._id} from League: ${allLeagues[i]._id}`);
+                }
+              };
+            }
+          };
+
+          await deleteTeam(req, res).catch(error => console.error(`Error deleting team`));
+        }
+      }
+    
     }
   }
 };
