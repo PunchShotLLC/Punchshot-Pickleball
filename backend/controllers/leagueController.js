@@ -483,6 +483,7 @@ export const testroute = async (req, res) => {
 import cron from "node-cron";
 cron.schedule("0 0 * * *", () => {
   sendLeagueStartEmails();
+  sendTeamRegistrationDateNoticeEmails();
 });
 cron.schedule("0 8 * * *", (date) => {
   matchCronJob(date);
@@ -591,8 +592,8 @@ function isDayBeforeCurrentDate(targetDate) {
   // Get the current date
   let currentDate = new Date();
 
-  // Adjust the current date to be one day later
-  currentDate.setDate(currentDate.getDate() + 1);
+  // Adjust the current date to be one day before
+  currentDate.setDate(currentDate.getDate() - 1);
 
   // convert to strings for comparison
   currentDate = currentDate.toString();
@@ -629,6 +630,108 @@ const sendLeagueStartEmails = async () => {
     }
   }
 };
+
+const sendTeamRegistrationDateNoticeEmails = async () => {
+  // Get all of the leagues
+  const allLeagues = await League.find({}).sort({ createdAt: -1 });
+
+  for (let i = 0; i < allLeagues.length; i++) {
+    // check if the current date = allLeagues[i]'s starting date
+    let registrationDate = allLeagues[i]["TeamRegistrationDate"];
+    let teams = allLeagues[i]["Teams"];
+
+    // If day before the team registration date for allLeagues[i], send email to all captains of existing teams
+    if (isDayBeforeCurrentDate(registrationDate)) {
+      console.log(
+        `It is the day before ${allLeagues[i]["LeagueName"]} team registration date, sending email to all team captains`
+      );
+      
+      for (let j = 0; j < teams.length; j++) {
+        let team = teams[j]
+        sendEmail(
+          team.CaptainEmail,
+          `Team Registration Deadline for ${allLeagues[i]["LeagueName"]} Tomorrow`,
+          `It is the day before the team registration date for the League: ${allLeagues[i]["LeagueName"]}. Remember to finalize your team (${teams[j]["TeamName"]}) by tomorrow.`
+        );
+      }
+
+    } else {
+      console.log(
+        `It is not the day before ${allLeagues[i]["LeagueName"]} team registration date`
+      );
+    }
+
+    let currentDate = new Date();
+    currentDate = currentDate.toString();
+    registrationDate = registrationDate.toString();
+
+    // If day of team registration date for allLeagues[i], drop all teams with fewer than 2 members and send email to captains// If day of team registration date for allLeagues[i], drop all teams with fewer than 2 members and send email to captains
+    if (currentDate.substring(0, 15) === registrationDate.substring(0, 15)) {
+      for (let team of teams) {
+
+        let teamMembers = team["TeamMembers"]
+        if (teamMembers.length < 2) {
+          sendEmail(
+            team.CaptainEmail,
+            "Your Team Has Been Disbanded",
+            `Your team, ${team["TeamName"]}, did not meet the minimum qualifications for the League: ${allLeagues[i]["LeagueName"]} (less than 2 team members).`
+          );
+
+          const req = {
+            params: {
+              leagueId: allLeagues[i]._id,
+              teamId: team._id
+            }
+          };
+          const res = {
+            status: function(status) {
+              return {
+                json: function(obj) {
+                  console.log(`Team deleted: ${team._id} from League: ${allLeagues[i]._id}`);
+                }
+              };
+            }
+          };
+
+          await deleteTeam(req, res).catch(error => console.error(`Error deleting team`));
+        }
+      }
+    
+    } else {
+      console.log(
+        `It is not the day of ${allLeagues[i]["LeagueName"]} team registration date`
+      );
+    }
+  }
+};
+
+export const checkAddressWithinRadius = async (req, res) => {
+  const apiKey = process.env.GOOGLE;
+  const {
+    homeLat,
+    homeLong,
+    centerLat,
+    centerLong,
+    radius
+  } = req.query
+
+  const url = `https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${centerLat}%2C${centerLong}&origins=${homeLat}%2C${homeLong}&units=imperial&key=${apiKey}`;
+  console.log(url)
+  try {
+    const requestOptions = {
+      method: "GET",
+    };
+    await fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        result.inRadius = radius >= result.rows[0].elements[0].distance.value
+        res.status(200).json(result);
+      });
+  } catch (error) {
+    console.error("Error fetching address information:", error);
+    res.status(400).json(error);
+  }
+}
 
 /**
  * Deletes a team from a league based on league id and team id
