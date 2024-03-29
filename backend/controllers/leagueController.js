@@ -260,6 +260,61 @@ function scheduler(teams) {
 }
 
 /**
+ * Finds the number of Saturdays between two dates, inclusive of the two dates
+ * @param {String} startDate starting date in 'YYYY-MM-DD' format
+ * @param {String} endDate ending date in 'YYYY-MM-DD' format
+ * @returns {Number} number of Saturdays between the two dates
+ */
+function numSatBetweenDates(startDate, endDate) {
+
+  // Parse start and end dates
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  
+  // Initialize count
+  let count = 0;
+  
+  // Iterate over each date between start and end dates
+  for (let date = new Date(start); date <= end; date.setDate(date.getDate() + 1)) {
+    // Check if the current date is a Saturday (day of week 6)
+    if (date.getDay() === 6) {
+      count++;
+    }
+  }
+  
+  return count;
+}
+
+function matchScheduler(teams, startDate, endDate) {
+  const numSaturdays = numSatBetweenDates(startDate, endDate)
+
+  if (teams.length % 2 !== 0) {
+    teams.push(null); // Add a dummy team if the number of teams is odd
+  }
+
+  const weeks = [];
+  let currentSaturday = getNextSaturday();
+
+  for (let weekNum = 1; weekNum < numSaturdays; weekNum++) {
+    const matchups = [];
+    for (let i = 0; i < teams.length / 2; i++) {
+      const match = [teams[i], teams[teams.length - i - 1]];
+      matchups.push(match);
+    }
+    weeks.push({ date: currentSaturday.toDateString(), matchups });
+
+    // Move to the next Saturday for the next week
+    currentSaturday.setDate(currentSaturday.getDate() + 7);
+
+    // Rotate the teams for the next week
+    teams = [teams[0]].concat([teams[teams.length - 1]], teams.slice(1, -1));
+  }
+
+  return weeks;
+
+}
+
+/**
  * function that takes a list of teams and returns an array of matches in this format:
  * @param {*} teams the list of team names (found in the object)
  * @returns array of matches in the following format
@@ -271,8 +326,9 @@ function scheduler(teams) {
       "WinnerTeam": ""
     }
  */
-function createMatchups(teams) {
-  const schedule = scheduler(teams);
+function createMatchups(teams, startDate, endDate) {
+  // const schedule = scheduler(teams);
+  const schedule = matchScheduler(teams, startDate, endDate)
 
   let matches = [];
   schedule.forEach((week, weekNum) => {
@@ -286,13 +342,15 @@ function createMatchups(teams) {
           WinnerTeam: "",
         });
       }
+
     }
+    
   });
 
   return matches;
 }
 
-// console.log(createMatchups(["Team1", "Team2", "Team3", "Team4", "Team5"]))
+// console.log(createMatchups(["Team1", "Team2", "Team3", "Team4", "Team5"], "2024-03-20T00:00:00.000+00:00", "2024-04-20T00:00:00.000+00:00"))
 
 /**
  * startLeague is responsible for:
@@ -318,7 +376,7 @@ export const startLeague = async (req, res) => {
   }
 
   // Get the matchups
-  updateObject["Matches"] = createMatchups(teamNames);
+  updateObject["Matches"] = createMatchups(teamNames, league["StartDate"], league["EndDate"]);
 
   // Change the status of the league to ongoing
   await League.findByIdAndUpdate(req.params.id, updateObject)
@@ -446,7 +504,8 @@ const matchCronJob = async (date) => {
             sendEmail(
               team.teamCaptainEmail,
               "You have a match tommorow",
-              `It is the day before your match against ${team.TeamName === match.Team1 ? match.Team2 : match.Team1
+              `It is the day before your match against ${
+                team.TeamName === match.Team1 ? match.Team2 : match.Team1
               } starts. Make sure to let your team now. Good luck and have fun!`
             );
           });
@@ -457,7 +516,8 @@ const matchCronJob = async (date) => {
             sendEmail(
               team.teamCaptainEmail,
               "Enter your scores for your match",
-              `You played a match last Saturday against ${team.TeamName === match.Team1 ? match.Team2 : match.Team1
+              `You played a match last Saturday against ${
+                team.TeamName === match.Team1 ? match.Team2 : match.Team1
               }. Make sure to enter your score by this Thursday or the match will be declared a tie.`
             );
           });
@@ -468,7 +528,8 @@ const matchCronJob = async (date) => {
             sendEmail(
               team.teamCaptainEmail,
               "Match scores not entered",
-              `You played a match last Saturday against ${team.TeamName === match.Team1 ? match.Team2 : match.Team1
+              `You played a match last Saturday against ${
+                team.TeamName === match.Team1 ? match.Team2 : match.Team1
               } and neither of you have entered a score. The match has been declared a tie. Make sure to enter your score next time.`
             );
           });
@@ -480,7 +541,7 @@ const matchCronJob = async (date) => {
       });
       if (
         league.Matches.length() ==
-        (league.Teams.length() * (league.Teams.length() - 1)) / 2 &&
+          (league.Teams.length() * (league.Teams.length() - 1)) / 2 &&
         league.Matches.every((match) => match.WinnerTeam)
       ) {
         let teamScores = {};
@@ -568,34 +629,6 @@ const sendLeagueStartEmails = async () => {
     }
   }
 };
-
-export const checkAddressWithinRadius = async (req, res) => {
-  const apiKey = process.env.GOOGLE;
-  const {
-    homeLat,
-    homeLong,
-    centerLat,
-    centerLong,
-    radius
-  } = req.query
-
-  const url = `https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${centerLat}%2C${centerLong}&origins=${homeLat}%2C${homeLong}&units=imperial&key=${apiKey}`;
-  console.log(url)
-  try {
-    const requestOptions = {
-      method: "GET",
-    };
-    await fetch(url, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        result.inRadius = radius >= result.rows[0].elements[0].distance.value
-        res.status(200).json(result);
-      });
-  } catch (error) {
-    console.error("Error fetching address information:", error);
-    res.status(400).json(error);
-  }
-}
 
 /**
  * Deletes a team from a league based on league id and team id
