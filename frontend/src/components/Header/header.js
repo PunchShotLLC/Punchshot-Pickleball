@@ -11,6 +11,7 @@ import Button from "@mui/material/Button";
 import { useContext } from "react";
 import { useCookies } from "react-cookie";
 import { UserContext } from "../UserContext/usercontext";
+import { Link } from 'react-router-dom';
 
 function homeRedirect() {
   window.location.href = "/";
@@ -45,19 +46,20 @@ const StyledTitle = styled("header")({
 
 export const Header = (props) => {
   const [cookies, removeCookie] = useCookies([]);
-  const {loading, user }= useContext(UserContext);
+  const { loading, user } = useContext(UserContext);
   const handleUser = () => {
     if (user) {
       window.location.href = "/account";
     } else {
-      console.log(props); 
+      console.log(props);
       props.setRender((oldRender) => !oldRender);
     }
   };
+
   return (
     <StyledHeader>
-      <Box sx={{display:"flex", alignItems:"Center", marginLeft:"1%"}}>
-        <img className="logo_image" src={logo} alt="logo"/>
+      <Box sx={{ display: "flex", alignItems: "Center", marginLeft: "1%" }}>
+        <img className="logo_image" src={logo} alt="logo" />
       </Box>
       <Box
         sx={{
@@ -92,7 +94,6 @@ export const Header = (props) => {
           }}
         >
           <Button
-            href="/"
             sx={{
               color: "black",
               fontSize: "calc(0.1em + 1vw)",
@@ -104,11 +105,12 @@ export const Header = (props) => {
                 backgroundColor: "transparent",
               },
             }}
+            component={Link}
+            to={"/"}
           >
             HOME
           </Button>
           <Button
-            href="/about"
             sx={{
               color: "black",
               fontSize: "calc(0.1em + 1vw)",
@@ -120,11 +122,12 @@ export const Header = (props) => {
                 backgroundColor: "transparent",
               },
             }}
+            component={Link}
+            to={"/about"}
           >
             ABOUT
           </Button>
           <Button
-            href="/what"
             sx={{
               color: "black",
               fontSize: "calc(0.1em + 1vw)",
@@ -136,11 +139,12 @@ export const Header = (props) => {
                 backgroundColor: "transparent",
               },
             }}
+            component={Link}
+            to={"/what"}
           >
             PICKLEBALL?
           </Button>
           <Button
-            href="/matches"
             sx={{
               color: "black",
               fontSize: "calc(0.1em + 1vw)",
@@ -153,11 +157,12 @@ export const Header = (props) => {
               },
             }}
             disabled={!user}
+            component={Link}
+            to={"/matches"}
           >
             MATCHES
           </Button>
           <Button
-            href="/leaderboard"
             sx={{
               color: "black",
               fontSize: "calc(0.1em + 1vw)",
@@ -170,11 +175,12 @@ export const Header = (props) => {
               },
             }}
             disabled={!user}
+            component={Link}
+            to={"/leaderboard"}
           >
             LEADERBOARD
           </Button>
           <Button
-            href="/leagues"
             sx={{
               color: "black",
               fontSize: "calc(0.1em + 1vw)",
@@ -187,6 +193,8 @@ export const Header = (props) => {
               },
             }}
             disabled={!user}
+            component={Link}
+            to={"/leagues"}
           >
             LEAGUES
           </Button>
@@ -195,11 +203,11 @@ export const Header = (props) => {
       <Box
         sx={{
           display: "flex",
-          flexDirection: "column",
+          flexDirection: "column-reverse",
           width: "fit-content",
           height: "60%",
           justifyContent: "space-between",
-          marginRight:"1%"
+          marginRight: "1%"
         }}
       >
         <Button
@@ -222,46 +230,6 @@ export const Header = (props) => {
             {user ? "PROFILE" : "LOGIN/SIGNUP"}
           </Box>
           <img className="icon_image" src={login} />
-        </Button>
-        <Button
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            width: "fit-content%",
-            justifyContent: "flex-end",
-          }}
-        >
-          <Box
-            sx={{
-              whiteSpace: "nowrap",
-              color: "black",
-              fontSize: "calc(0.1em + 1vw)",
-            }}
-          >
-            SEARCH
-          </Box>
-          <img className="icon_image" src={search} />
-        </Button>
-        <Button
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            width: "fit-content%",
-            justifyContent: "flex-end",
-          }}
-        >
-          <Box
-            sx={{
-              whiteSpace: "nowrap",
-              color: "black",
-              fontSize: "calc(0.1em + 1vw)",
-            }}
-          >
-            SHOP
-          </Box>
-          <img className="icon_image" src={shop} />
         </Button>
       </Box>
     </StyledHeader>
