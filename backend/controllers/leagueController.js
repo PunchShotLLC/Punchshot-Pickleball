@@ -427,6 +427,9 @@ cron.schedule("0 0 * * *", () => {
   sendLeagueStartEmails();
   sendTeamRegistrationDateNoticeEmails();
 });
+/*cron.schedule("50 21 * * *", () => {
+  sendTeamRegistrationDateNoticeEmailsTest();
+});*/
 cron.schedule("0 8 * * *", (date) => {
   matchCronJob(date);
 });
@@ -531,8 +534,8 @@ function isDayBeforeCurrentDate(targetDate) {
   // Get the current date
   let currentDate = new Date();
 
-  // Adjust the current date to be one day later
-  currentDate.setDate(currentDate.getDate() + 1);
+  // Adjust the current date to be one day before
+  currentDate.setDate(currentDate.getDate() - 1);
 
   // convert to strings for comparison
   currentDate = currentDate.toString();
@@ -586,10 +589,11 @@ const sendTeamRegistrationDateNoticeEmails = async () => {
       );
       
       for (let j = 0; j < teams.length; j++) {
+        let team = teams[j]
         sendEmail(
-          teams[j]["CaptainEmail"],
-          "Team Registration Date Tomorrow",
-          `It is the day before the team registration date for the ${allLeagues[i]["LeagueName"]}. Remember to finalize teams by tomorrow.`
+          team.CaptainEmail,
+          `Team Registration Deadline for ${allLeagues[i]["LeagueName"]} Tomorrow`,
+          `It is the day before the team registration date for the League: ${allLeagues[i]["LeagueName"]}. Remember to finalize your team (${teams[j]["TeamName"]}) by tomorrow.`
         );
       }
 
@@ -610,9 +614,9 @@ const sendTeamRegistrationDateNoticeEmails = async () => {
         let teamMembers = team["TeamMembers"]
         if (teamMembers.length < 2) {
           sendEmail(
-            team["CaptainEmail"],
+            team.CaptainEmail,
             "Your Team Has Been Disbanded",
-            `Your team, ${teams[j]["TeamName"]}, did not meet the minimum qualifications for the ${allLeagues[i]["LeagueName"]} (less than 2 team members).`
+            `Your team, ${teams[j]["TeamName"]}, did not meet the minimum qualifications for the League: ${allLeagues[i]["LeagueName"]} (less than 2 team members).`
           );
 
           const req = {
@@ -635,6 +639,10 @@ const sendTeamRegistrationDateNoticeEmails = async () => {
         }
       }
     
+    } else {
+      console.log(
+        `It is not the day of ${allLeagues[i]["LeagueName"]} team registration date`
+      );
     }
   }
 };
