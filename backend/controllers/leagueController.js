@@ -427,9 +427,6 @@ cron.schedule("0 0 * * *", () => {
   sendLeagueStartEmails();
   sendTeamRegistrationDateNoticeEmails();
 });
-/*cron.schedule("50 21 * * *", () => {
-  sendTeamRegistrationDateNoticeEmailsTest();
-});*/
 cron.schedule("0 8 * * *", (date) => {
   matchCronJob(date);
 });
@@ -603,11 +600,11 @@ const sendTeamRegistrationDateNoticeEmails = async () => {
       );
     }
 
-    // If day of team registration date for allLeagues[i], drop all teams with fewer than 2 members and send email to captains
     let currentDate = new Date();
     currentDate = currentDate.toString();
     registrationDate = registrationDate.toString();
 
+    // If day of team registration date for allLeagues[i], drop all teams with fewer than 2 members and send email to captains// If day of team registration date for allLeagues[i], drop all teams with fewer than 2 members and send email to captains
     if (currentDate.substring(0, 15) === registrationDate.substring(0, 15)) {
       for (let team of teams) {
 
@@ -616,7 +613,7 @@ const sendTeamRegistrationDateNoticeEmails = async () => {
           sendEmail(
             team.CaptainEmail,
             "Your Team Has Been Disbanded",
-            `Your team, ${teams[j]["TeamName"]}, did not meet the minimum qualifications for the League: ${allLeagues[i]["LeagueName"]} (less than 2 team members).`
+            `Your team, ${team["TeamName"]}, did not meet the minimum qualifications for the League: ${allLeagues[i]["LeagueName"]} (less than 2 team members).`
           );
 
           const req = {
