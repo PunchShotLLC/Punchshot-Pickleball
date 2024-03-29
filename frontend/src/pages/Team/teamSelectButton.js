@@ -3,7 +3,7 @@ import "./teamSelectButton.css";
 import { AvatarGroup, Modal } from "@mui/material";
 import { Button, IconButton } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
-import Avatar from '@mui/material/Avatar';
+import Avatar from "@mui/material/Avatar";
 import CloseIcon from "@mui/icons-material/Close";
 import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -20,7 +20,7 @@ function stringToColor(string) {
     hash = string.charCodeAt(i) + ((hash << 5) - hash);
   }
 
-  let color = '#';
+  let color = "#";
 
   for (i = 0; i < 3; i += 1) {
     const value = (hash >> (i * 8)) & 0xff;
@@ -36,13 +36,12 @@ function stringAvatar(name) {
       bgcolor: stringToColor(name),
     },
     // get the first letter of the name
-    children: `${name.split(' ')[0][0]}`,
+    children: `${name.split(" ")[0][0]}`,
   };
 }
 
 export const TeamSelectButton = (props) => {
   console.log(props);
-  
 
   //Number of members logic
   const currentMembers = props.members.length + (props.captain ? 1 : 0);
@@ -99,10 +98,13 @@ export const TeamSelectButton = (props) => {
 
   const changeCaptain = async (teamIndex, username) => {
     let oldCaptain = props.leagueInfo.Teams[teamIndex].TeamCaptain;
+    console.log(username);
     props.leagueInfo.Teams[teamIndex].TeamCaptain = username;
 
-    // This function must also make the former captain a member of the team
+    // // This function must also make the former captain a member of the team
     props.leagueInfo.Teams[teamIndex].TeamMembers.push(oldCaptain);
+    let index = props.leagueInfo.Teams[teamIndex].TeamMembers.indexOf(username);
+    props.leagueInfo.Teams[teamIndex].TeamMembers.splice(index, 1);
     props.updateLeague(props.leagueInfo);
   };
 
@@ -132,7 +134,7 @@ export const TeamSelectButton = (props) => {
   const [memberRequestModalOpen, setMemberRequestModalOpen] = useState(false);
 
   const requestJoinColor = isPotentialMember ? "#AD99CB" : "#9146D8"; // New hex color for "Request Sent"
-  const leaveDropColor = "#D76055"; 
+  const leaveDropColor = "#D76055";
   return (
     <>
       <Box sx={{ position: "relative" }}>
@@ -155,51 +157,51 @@ export const TeamSelectButton = (props) => {
         sx={{
           // Assume you want to adjust the width to fit content within the parent box
           // and allow text to wrap if needed
-          width: '100%', // Take the full width of the parent container
+          width: "100%", // Take the full width of the parent container
           p: 2, // Add padding inside the box for spacing
         }}
       >
-        <Box display={'flex'} flexDirection={'row'} gap={1}>
-        <Typography
-          variant="subtitle1"
-          sx={{
-            fontWeight: 'bold',
-            fontSize: '1rem', // Start with a base font size
-            // Use responsive font sizes for different breakpoints
-            [theme.breakpoints.up('sm')]: {
-              fontSize: '1.25rem', // Slightly larger font size on sm screens and up
-            },
-            [theme.breakpoints.up('md')]: {
-              fontSize: '1.5rem', // Even larger font size on md screens and up
-            },
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {props.name}
-        </Typography>
-        <AvatarGroup max={3} spacing={"small"}>
-          <Avatar {...stringAvatar(props.captain)}/>
-          {props.members.map((memeber) => (
-            <Avatar {...stringAvatar(memeber)}/>          
-          ))}
-        </AvatarGroup>
+        <Box display={"flex"} flexDirection={"row"} gap={1}>
+          <Typography
+            variant="subtitle1"
+            sx={{
+              fontWeight: "bold",
+              fontSize: "1rem", // Start with a base font size
+              // Use responsive font sizes for different breakpoints
+              [theme.breakpoints.up("sm")]: {
+                fontSize: "1.25rem", // Slightly larger font size on sm screens and up
+              },
+              [theme.breakpoints.up("md")]: {
+                fontSize: "1.5rem", // Even larger font size on md screens and up
+              },
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {props.name}
+          </Typography>
+          <AvatarGroup max={3} spacing={"small"}>
+            <Avatar {...stringAvatar(props.captain)} />
+            {props.members.map((memeber) => (
+              <Avatar {...stringAvatar(memeber)} />
+            ))}
+          </AvatarGroup>
         </Box>
         <Typography
           variant="body2"
           sx={{
             // Same responsive adjustments as above
-            fontSize: '0.875rem',
-            [theme.breakpoints.up('sm')]: {
-              fontSize: '1rem',
+            fontSize: "0.875rem",
+            [theme.breakpoints.up("sm")]: {
+              fontSize: "1rem",
             },
-            [theme.breakpoints.up('md')]: {
-              fontSize: '1.125rem',
+            [theme.breakpoints.up("md")]: {
+              fontSize: "1.125rem",
             },
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
           }}
         >
           <strong>Captain:</strong> {props.captain}
@@ -208,16 +210,16 @@ export const TeamSelectButton = (props) => {
           variant="body2"
           sx={{
             // Same responsive adjustments as above
-            fontSize: '0.875rem',
-            [theme.breakpoints.up('sm')]: {
-              fontSize: '0.875rem',
+            fontSize: "0.875rem",
+            [theme.breakpoints.up("sm")]: {
+              fontSize: "0.875rem",
             },
-            [theme.breakpoints.up('md')]: {
-              fontSize: '1rem',
+            [theme.breakpoints.up("md")]: {
+              fontSize: "1rem",
             },
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
           }}
         >
           <strong>Home Court Address: </strong>
@@ -257,11 +259,28 @@ export const TeamSelectButton = (props) => {
               }
             }}
             variant="contained"
-          sx={{ ...styles.button, backgroundColor: inTeam || props.showPotentialMembers ? leaveDropColor : requestJoinColor, '&:hover': { backgroundColor: inTeam || props.showPotentialMembers ? leaveDropColor : requestJoinColor } }}
-        >
-          {props.showPotentialMembers ? "DROP TEAM" : inTeam ? "LEAVE TEAM" : isPotentialMember ? "REQUEST PENDING" : "REQUEST TO JOIN"}
-        </Button>
-
+            sx={{
+              ...styles.button,
+              backgroundColor:
+                inTeam || props.showPotentialMembers
+                  ? leaveDropColor
+                  : requestJoinColor,
+              "&:hover": {
+                backgroundColor:
+                  inTeam || props.showPotentialMembers
+                    ? leaveDropColor
+                    : requestJoinColor,
+              },
+            }}
+          >
+            {props.showPotentialMembers
+              ? "DROP TEAM"
+              : inTeam
+              ? "LEAVE TEAM"
+              : isPotentialMember
+              ? "REQUEST PENDING"
+              : "REQUEST TO JOIN"}
+          </Button>
         </ThemeProvider>
         <Modal open={memberModalOpen}>
           <Box sx={styles.modal}>
@@ -390,13 +409,13 @@ const styles = {
     fontSize: "0.75em",
   },
   button: {
-    borderRadius: '10px', // Rounded corners
-    marginLeft: '2em',
-    width: 'auto', // Auto width to accommodate text
-    padding: '10px 20px', // Padding inside the button to increase width
-    fontSize: '0.875rem', // Adjust font size as needed
+    borderRadius: "10px", // Rounded corners
+    marginLeft: "2em",
+    width: "auto", // Auto width to accommodate text
+    padding: "10px 20px", // Padding inside the button to increase width
+    fontSize: "0.875rem", // Adjust font size as needed
     lineHeight: 1.25, // Adjust line height to ensure text fits on one line
-    textTransform: 'none', // If you don't want the text to be all uppercase
+    textTransform: "none", // If you don't want the text to be all uppercase
     // Add more padding on small screens if needed
   },
   modal: {
