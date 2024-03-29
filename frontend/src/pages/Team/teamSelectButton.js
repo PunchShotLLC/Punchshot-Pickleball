@@ -1,14 +1,45 @@
 import * as React from "react";
 import "./teamSelectButton.css";
-import { Modal } from "@mui/material";
+import { AvatarGroup, Modal } from "@mui/material";
 import { Button, IconButton } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
+import Avatar from '@mui/material/Avatar';
 import CloseIcon from "@mui/icons-material/Close";
 import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
+
+// generate a color based on a string
+function stringToColor(string) {
+  let hash = 0;
+  let i;
+
+  for (i = 0; i < string.length; i += 1) {
+    hash = string.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  let color = '#';
+
+  for (i = 0; i < 3; i += 1) {
+    const value = (hash >> (i * 8)) & 0xff;
+    color += `00${value.toString(16)}`.slice(-2);
+  }
+
+  return color;
+}
+
+function stringAvatar(name) {
+  return {
+    sx: {
+      bgcolor: stringToColor(name),
+    },
+    // get the first letter of the name
+    children: `${name.split(' ')[0][0]}`,
+  };
+}
+
 export const TeamSelectButton = (props) => {
   console.log(props);
   
@@ -128,6 +159,7 @@ export const TeamSelectButton = (props) => {
           p: 2, // Add padding inside the box for spacing
         }}
       >
+        <Box display={'flex'} flexDirection={'row'} gap={1}>
         <Typography
           variant="subtitle1"
           sx={{
@@ -147,6 +179,13 @@ export const TeamSelectButton = (props) => {
         >
           {props.name}
         </Typography>
+        <AvatarGroup max={3} spacing={"small"}>
+          <Avatar {...stringAvatar(props.captain)}/>
+          {props.members.map((memeber) => (
+            <Avatar {...stringAvatar(memeber)}/>          
+          ))}
+        </AvatarGroup>
+        </Box>
         <Typography
           variant="body2"
           sx={{

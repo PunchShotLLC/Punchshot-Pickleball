@@ -23,7 +23,7 @@ export const Root = () => {
           <SignUp render={renderSignupPopup} setRender={setRenderSignupPopup} />
         )}
         <Header setRender={setRenderLoginPopup} />
-        <Outlet context={setRenderLoginPopup} />x
+        <Outlet context={setRenderLoginPopup} />
       </Box>
     </UserProvider>
   );
