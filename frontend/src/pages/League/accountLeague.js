@@ -10,6 +10,7 @@ import "@fontsource/inter/700.css";
 import { LeagueComp } from "../../components/LeagueComp/LeagueCompSimplified.js";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../components/UserContext/usercontext";
+import axios from "axios";
 
 export const AccountLeague = () => {
   const { loading, user } = useContext(UserContext);
@@ -26,20 +27,29 @@ export const AccountLeague = () => {
     isSignedIn();
   }, [user, loading]);
 
+
   const setDBLeagues = async () => {
     console.log("In this!");
     const rawResponse = await fetch(
-      `http://localhost:8000/leagues/${user.ZipCode}`
+      `http://localhost:8000/leagues/`
     ).catch((err) => console.log(err));
     const content = await rawResponse.json();
-
+    console.log("content");
     console.log(content);
     setLeagues(content);
+
   };
+
+  //find the corresponding league from the leage api by looping
+  // team array
+
+
 
   useEffect(() => {
     setDBLeagues();
     let accountLeagues = [];
+    console.log("test");
+    console.log(leagues.length);
     for (let index = 0; index < leagues.length; index++) {
       for (let i = 0; i < leagues[index].Teams.length; i++) {
         const team = leagues[index].Teams[i];
@@ -51,15 +61,26 @@ export const AccountLeague = () => {
           accountLeagues.push({
             LeagueName: leagues[index].LeagueName,
             TeamName: team.TeamName,
+            StartDate: leagues[index].StartDate,
+            EndDate: leagues[index].EndDate,
+            SkillLevel: leagues[index].SkillLevel,
+            Division: leagues[index].Division,
+            Latitude: leagues[index].Latitude,
+            Longitude: leagues[index].Longitude,
+            Radius: leagues[index].Radius,
             Index: index,
           });
+          console.log("check1");
+          console.log(leagues[index].SkillLevel);
         }
       }
     }
     console.log(accountLeagues);
     setUserLeagues(accountLeagues);
-  }, [user, leagues]);
 
+    console.log("Test");
+    console.log(userLeagues);
+  }, [user, leagues]);
   const navigate = useNavigate();
 
   const navigateToLeagueInfo = (teamIndex) => {
@@ -87,8 +108,9 @@ export const AccountLeague = () => {
           marginBottom: "2%",
         }}
       >
-        YOUR LEAGUES
+        MY LEAGUES
       </Typography>
+
       <Typography
         className="bodyText"
         sx={{
@@ -104,6 +126,13 @@ export const AccountLeague = () => {
                 logo={require("../../assets/images/ATL1.png")}
                 name={userLeagues[index]["LeagueName"]}
                 teamName={userLeagues[index]["TeamName"]}
+                skillLevel={userLeagues[index]["SkillLevel"]}
+                startDate={userLeagues[index]["StartDate"]}
+                endDate={userLeagues[index]["EndDate"]}
+                division={userLeagues[index]["Division"]}
+                latitude={userLeagues[index]["Latitude"]}
+                longitude={userLeagues[index]["Longitude"]}
+                radius={userLeagues[index]["Radius"]}
                 onClick={() => {
                   navigateToLeagueInfo(userLeagues[index]["Index"]);
                 }}

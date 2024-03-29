@@ -31,6 +31,7 @@ import axios from "axios";
 import { TeamSelectButton } from "./teamSelectButton";
 import { setDefaults, fromAddress } from "react-geocode";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { display } from "@mui/system";
 
 const StyledModal = styled(Modal)({
   display: "flex",
@@ -75,7 +76,7 @@ export const TeamSelect = (props) => {
   // For the input for a new team
   const [teamState, setTeamState] = useState(location.state);
   const [teamName, setTeamName] = useState(null);
-  const [homeCourtAddress, setHomeCourtAddress] = useState(null);
+  const [homeCourtAddress, setHomeCourtAddress] = useState("");
   const [homeCourtMessage, setHomeCourtMessage] = useState("");
   const [searchedTeamName, setSearchedTeamName] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -436,7 +437,7 @@ export const TeamSelect = (props) => {
   });
 
   return (
-    <>
+    <Box display={"flex"} flexDirection={"column"}>
       <Box
         sx={{
           width: "100%",
@@ -591,48 +592,47 @@ export const TeamSelect = (props) => {
       <Box sx={styles.side}>
         {/* Dynamically renders the teams within the league */}
         {teamState.Teams !== null
-          ? teamState.Teams.filter((team) => {
-              if (
+          ? teamState.Teams.map(
+              (team, index) =>
                 team.TeamName.toLowerCase().includes(
                   searchedTeamName.toLowerCase()
+                ) && (
+                  <Box sx={styles.teamCardContainer} key={index}>
+                    <TeamSelectButton
+                      onClick={() => {
+                        addPlayerToPotentialList(index);
+                        console.log("Addplayertopotentiallist");
+                      }}
+                      onClickRemoveUser={() => {
+                        console.log("Remove User Is Running");
+                        removePlayerFromTeam(index);
+                      }}
+                      onClickDropTeam={() => {
+                        console.log("Drop team is running");
+                        dropTeamFromLeague(index);
+                      }}
+                      name={teamState.Teams[index].TeamName}
+                      captain={teamState.Teams[index].TeamCaptain}
+                      members={teamState.Teams[index].TeamMembers}
+                      home={teamState.Teams[index].HomeCourtAddress}
+                      potentialMembers={
+                        teamState.Teams[index].PotentialTeamMembers
+                      }
+                      showPotentialMembers={
+                        user &&
+                        user.Username === teamState.Teams[index].TeamCaptain
+                      }
+                      username={user && user.Username}
+                      leagueInfo={teamState}
+                      teamIndex={index}
+                      updateLeague={updateLeague}
+                    />
+                  </Box>
                 )
-              ) {
-                return team;
-              }
-              return null;
-            }).map((team, index) => (
-              <Box sx={styles.teamCardContainer} key={index}>
-                <TeamSelectButton
-                  onClick={() => {
-                    addPlayerToPotentialList(index);
-                    console.log("Addplayertopotentiallist");
-                  }}
-                  onClickRemoveUser={() => {
-                    console.log("Remove User Is Running");
-                    removePlayerFromTeam(index);
-                  }}
-                  onClickDropTeam={() => {
-                    console.log("Drop team is running");
-                    dropTeamFromLeague(index);
-                  }}
-                  name={teamState.Teams[index].TeamName}
-                  captain={teamState.Teams[index].TeamCaptain}
-                  members={teamState.Teams[index].TeamMembers}
-                  home={teamState.Teams[index].HomeCourtAddress}
-                  potentialMembers={teamState.Teams[index].PotentialTeamMembers}
-                  showPotentialMembers={
-                    user && user.Username === teamState.Teams[index].TeamCaptain
-                  }
-                  username={user && user.Username}
-                  leagueInfo={teamState}
-                  teamIndex={index}
-                  updateLeague={updateLeague}
-                />
-              </Box>
-            ))
+            )
           : null}
       </Box>
-    </>
+    </Box>
   );
 };
 
@@ -641,7 +641,7 @@ const styles = {
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "center", // This centers the flex items
+    justifyContent: "left", // This centers the flex items
     gap: "16px", // Adjust the gap as needed for spacing between items
     padding: "0 16px", // Padding on the sides of the container
     maxWidth: "100%", // Ensures the container does not exceed the width of its parent
