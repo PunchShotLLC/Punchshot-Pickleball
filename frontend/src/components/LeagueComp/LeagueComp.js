@@ -88,6 +88,9 @@ export const LeagueComp = (props) => {
   };
 
   const openInfoModal = () => {
+    if (props.private == false) {
+      console.log("this isss false");
+    }
     setModalInfoOpen(true);
   };
 
@@ -96,6 +99,13 @@ export const LeagueComp = (props) => {
   };
 
   const statusColor = props.showLeague ? "green" : "red";
+
+  const checkPrivate = () => {
+    if (props.private == true) {
+      console.log("trueeeee");
+    }
+  }
+checkPrivate();
 
   if (props.showLeague) {
     return (

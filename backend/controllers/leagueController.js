@@ -23,6 +23,7 @@ export const createLeague = async (req, res, body) => {
     Latitude,
     Longitude,
     Radius,
+    Private,
   } = req.body;
 
   if (!LeagueName) {
@@ -76,6 +77,7 @@ export const createLeague = async (req, res, body) => {
     });
   }
 
+
   const existLeagueName = await League.findOne({ LeagueName });
   if (existLeagueName) {
     return res.json({
@@ -103,7 +105,7 @@ export const createLeague = async (req, res, body) => {
     Latitude,
     Longitude,
     Radius,
-
+    Private,
   }
 
   const checkLeagueParamsResult = checkLeagueParams(leagueObject)
@@ -128,6 +130,7 @@ export const createLeague = async (req, res, body) => {
       Latitude,
       Longitude,
       Radius,
+      Private,
     }).save();
 
     return res.json({ message: "League was successfully created!" });
