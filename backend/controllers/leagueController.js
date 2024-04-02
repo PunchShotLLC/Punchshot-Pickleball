@@ -23,6 +23,8 @@ export const createLeague = async (req, res, body) => {
     Latitude,
     Longitude,
     Radius,
+    Private,
+    Day,
   } = req.body;
 
   if (!LeagueName) {
@@ -75,6 +77,12 @@ export const createLeague = async (req, res, body) => {
       error: "Radius is required!",
     });
   }
+  if (!Day) {
+    return res.json({
+      error: "Day is required!",
+    });
+  }
+
 
   const existLeagueName = await League.findOne({ LeagueName });
   if (existLeagueName) {
@@ -103,8 +111,9 @@ export const createLeague = async (req, res, body) => {
     Latitude,
     Longitude,
     Radius,
-
-  }
+    Day,
+    Private,
+  };
 
   const checkLeagueParamsResult = checkLeagueParams(leagueObject)
   console.log(checkLeagueParamsResult)
@@ -128,6 +137,8 @@ export const createLeague = async (req, res, body) => {
       Latitude,
       Longitude,
       Radius,
+      Private,
+      Day,
     }).save();
 
     return res.json({ message: "League was successfully created!" });
@@ -218,12 +229,12 @@ export const getAddressInfo = async (req, res) => {
  * helper function for createMatchups that gets the next saturday
  * @returns the next saturday
  */
-function getNextSaturday() {
+function getNextMatchDay() {
   const today = new Date();
-  const daysUntilSaturday = 6 - today.getDay(); // Calculate days until Saturday
-  const nextSaturday = new Date(today);
-  nextSaturday.setDate(today.getDate() + daysUntilSaturday);
-  return nextSaturday;
+  const daysUntilMatchDay = Day - today.getDay(); // Calculate days until Saturday
+  const nextMatchDay = new Date(today);
+  nextMatchDay.setDate(today.getDate() + daysUntilMatchDay);
+  return nextMatchDay;
 }
 
 /**
@@ -239,7 +250,7 @@ function scheduler(teams) {
   }
 
   const weeks = [];
-  let currentSaturday = getNextSaturday();
+  let currentMatchDay = getNextMatchDay();
 
   for (let weekNum = 1; weekNum < teams.length; weekNum++) {
     const matchups = [];
@@ -247,10 +258,10 @@ function scheduler(teams) {
       const match = [teams[i], teams[teams.length - i - 1]];
       matchups.push(match);
     }
-    weeks.push({ date: currentSaturday.toDateString(), matchups });
+    weeks.push({ date: currentMatchDay.toDateString(), matchups });
 
     // Move to the next Saturday for the next week
-    currentSaturday.setDate(currentSaturday.getDate() + 7);
+    currentMatchDay.setDate(currentMatchDay.getDate() + 7);
 
     // Rotate the teams for the next week
     teams = [teams[0]].concat([teams[teams.length - 1]], teams.slice(1, -1));
@@ -265,35 +276,38 @@ function scheduler(teams) {
  * @param {String} endDate ending date in 'YYYY-MM-DD' format
  * @returns {Number} number of Saturdays between the two dates
  */
-function numSatBetweenDates(startDate, endDate) {
-
+function numDaysBetweenDates(startDate, endDate) {
   // Parse start and end dates
   const start = new Date(startDate);
   const end = new Date(endDate);
-  
+
   // Initialize count
   let count = 0;
-  
+
   // Iterate over each date between start and end dates
-  for (let date = new Date(start); date <= end; date.setDate(date.getDate() + 1)) {
+  for (
+    let date = new Date(start);
+    date <= end;
+    date.setDate(date.getDate() + 1)
+  ) {
     // Check if the current date is a Saturday (day of week 6)
-    if (date.getDay() === 6) {
+    if (date.getDay() === Day) {
       count++;
     }
   }
-  
+
   return count;
 }
 
 function matchScheduler(teams, startDate, endDate) {
-  const numSaturdays = numSatBetweenDates(startDate, endDate)
+  const numDays = numDaysBetweenDates(startDate, endDate);
 
   if (teams.length % 2 !== 0) {
     teams.push(null); // Add a dummy team if the number of teams is odd
   }
 
   const weeks = [];
-  let currentSaturday = getNextSaturday();
+  let currentMatchDay = getNextMatchDay();
 
   for (let weekNum = 1; weekNum < numSaturdays; weekNum++) {
     const matchups = [];
@@ -301,17 +315,16 @@ function matchScheduler(teams, startDate, endDate) {
       const match = [teams[i], teams[teams.length - i - 1]];
       matchups.push(match);
     }
-    weeks.push({ date: currentSaturday.toDateString(), matchups });
+    weeks.push({ date: currentMatchDay.toDateString(), matchups });
 
     // Move to the next Saturday for the next week
-    currentSaturday.setDate(currentSaturday.getDate() + 7);
+    currentMatchDay.setDate(currentMatchDay.getDate() + 7);
 
     // Rotate the teams for the next week
     teams = [teams[0]].concat([teams[teams.length - 1]], teams.slice(1, -1));
   }
 
   return weeks;
-
 }
 
 /**
@@ -328,7 +341,7 @@ function matchScheduler(teams, startDate, endDate) {
  */
 function createMatchups(teams, startDate, endDate) {
   // const schedule = scheduler(teams);
-  const schedule = matchScheduler(teams, startDate, endDate)
+  const schedule = matchScheduler(teams, startDate, endDate);
 
   let matches = [];
   schedule.forEach((week, weekNum) => {
@@ -342,9 +355,7 @@ function createMatchups(teams, startDate, endDate) {
           WinnerTeam: "",
         });
       }
-
     }
-    
   });
 
   return matches;
@@ -376,7 +387,11 @@ export const startLeague = async (req, res) => {
   }
 
   // Get the matchups
-  updateObject["Matches"] = createMatchups(teamNames, league["StartDate"], league["EndDate"]);
+  updateObject["Matches"] = createMatchups(
+    teamNames,
+    league["StartDate"],
+    league["EndDate"]
+  );
 
   // Change the status of the league to ongoing
   await League.findByIdAndUpdate(req.params.id, updateObject)
@@ -665,16 +680,15 @@ const sendTeamRegistrationDateNoticeEmails = async () => {
       console.log(
         `It is the day before ${allLeagues[i]["LeagueName"]} team registration date, sending email to all team captains`
       );
-      
+
       for (let j = 0; j < teams.length; j++) {
-        let team = teams[j]
+        let team = teams[j];
         sendEmail(
           team.CaptainEmail,
           `Team Registration Deadline for ${allLeagues[i]["LeagueName"]} Tomorrow`,
           `It is the day before the team registration date for the League: ${allLeagues[i]["LeagueName"]}. Remember to finalize your team (${teams[j]["TeamName"]}) by tomorrow.`
         );
       }
-
     } else {
       console.log(
         `It is not the day before ${allLeagues[i]["LeagueName"]} team registration date`
@@ -688,8 +702,7 @@ const sendTeamRegistrationDateNoticeEmails = async () => {
     // If day of team registration date for allLeagues[i], drop all teams with fewer than 2 members and send email to captains// If day of team registration date for allLeagues[i], drop all teams with fewer than 2 members and send email to captains
     if (currentDate.substring(0, 15) === registrationDate.substring(0, 15)) {
       for (let team of teams) {
-
-        let teamMembers = team["TeamMembers"]
+        let teamMembers = team["TeamMembers"];
         if (teamMembers.length < 2) {
           sendEmail(
             team.CaptainEmail,
@@ -700,23 +713,26 @@ const sendTeamRegistrationDateNoticeEmails = async () => {
           const req = {
             params: {
               leagueId: allLeagues[i]._id,
-              teamId: team._id
-            }
+              teamId: team._id,
+            },
           };
           const res = {
-            status: function(status) {
+            status: function (status) {
               return {
-                json: function(obj) {
-                  console.log(`Team deleted: ${team._id} from League: ${allLeagues[i]._id}`);
-                }
+                json: function (obj) {
+                  console.log(
+                    `Team deleted: ${team._id} from League: ${allLeagues[i]._id}`
+                  );
+                },
               };
-            }
+            },
           };
 
-          await deleteTeam(req, res).catch(error => console.error(`Error deleting team`));
+          await deleteTeam(req, res).catch((error) =>
+            console.error(`Error deleting team`)
+          );
         }
       }
-    
     } else {
       console.log(
         `It is not the day of ${allLeagues[i]["LeagueName"]} team registration date`
@@ -727,16 +743,10 @@ const sendTeamRegistrationDateNoticeEmails = async () => {
 
 export const checkAddressWithinRadius = async (req, res) => {
   const apiKey = process.env.GOOGLE;
-  const {
-    homeLat,
-    homeLong,
-    centerLat,
-    centerLong,
-    radius
-  } = req.query
+  const { homeLat, homeLong, centerLat, centerLong, radius } = req.query;
 
   const url = `https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${centerLat}%2C${centerLong}&origins=${homeLat}%2C${homeLong}&units=imperial&key=${apiKey}`;
-  console.log(url)
+  console.log(url);
   try {
     const requestOptions = {
       method: "GET",
@@ -744,14 +754,14 @@ export const checkAddressWithinRadius = async (req, res) => {
     await fetch(url, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        result.inRadius = radius >= result.rows[0].elements[0].distance.value
+        result.inRadius = radius >= result.rows[0].elements[0].distance.value;
         res.status(200).json(result);
       });
   } catch (error) {
     console.error("Error fetching address information:", error);
     res.status(400).json(error);
   }
-}
+};
 
 /**
  * Deletes a team from a league based on league id and team id
