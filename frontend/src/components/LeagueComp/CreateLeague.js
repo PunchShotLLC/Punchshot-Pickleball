@@ -65,6 +65,7 @@ export const CreateLeague = ({ show, onClose }) => {
   const [leagueName, setLeagueName] = useState("");
   const [leagueSkillLevel, setLeagueSkillLevel] = useState("");
   const [leagueDivision, setLeagueDivision] = useState("");
+  const [day, setDay] = useState("");
   const [startDate, setStartDate] = useState("");
   const [registrationDate, setRegistrationDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -103,8 +104,7 @@ export const CreateLeague = ({ show, onClose }) => {
   };
 
   const createLeague = async () => {
-
-    console.log("I GOT HERE")
+    console.log("I GOT HERE");
 
     // Ensure registration date is at least a week before the league start date
     const weekInMilliseconds = 7 * 24 * 60 * 60 * 1000; // One week
@@ -148,18 +148,19 @@ export const CreateLeague = ({ show, onClose }) => {
       Longitude: leagueCenterCoords.lng,
       Radius: leagueRadiusMeter,
       Private: privateLeague,
+      Day: day,
     };
 
-    console.log("RESP TEST")
+    console.log("RESP TEST");
 
     const resp = await axios.post(
       "http://localhost:8000/leagues/createLeague",
       body
     );
 
-    console.log("RESP")
-    console.log(resp)
-    console.log("END RESP")
+    console.log("RESP");
+    console.log(resp);
+    console.log("END RESP");
 
     if (resp.data.error) {
       alert(resp.data.error);
@@ -252,8 +253,8 @@ export const CreateLeague = ({ show, onClose }) => {
               <MenuItem value="" disabled>
                 Division
               </MenuItem>
-              <MenuItem value="Men">Men</MenuItem>
-              <MenuItem value="Women">Women</MenuItem>
+              <MenuItem value="Male">Male</MenuItem>
+              <MenuItem value="Female">Female</MenuItem>
               <MenuItem value="Mixed">Mixed</MenuItem>
             </Select>
           </FormRow>
@@ -284,9 +285,24 @@ export const CreateLeague = ({ show, onClose }) => {
             />
           </FormRow>
           <FormRow>
-            <FormGroup>
-              <FormControlLabel onChange={handleChangePrivate} control={<Checkbox/>} label="Private" />
-            </FormGroup>
+            <FormControlLabel onChange={handleChangePrivate} control={<Checkbox/>} label="Private" />
+            <Select
+              value={day}
+              onChange={(e) => setDay(e.target.value)}
+              fullWidth
+              displayEmpty
+            >
+              <MenuItem value="" disabled>
+                Day
+              </MenuItem>
+              <MenuItem value="1">Monday</MenuItem>
+              <MenuItem value="2">Tuesday</MenuItem>
+              <MenuItem value="3">Wednesday</MenuItem>
+              <MenuItem value="4">Thursday</MenuItem>
+              <MenuItem value="5">Friday</MenuItem>
+              <MenuItem value="6">Saturday</MenuItem>
+              <MenuItem value="0">Sunday</MenuItem>
+            </Select>
           </FormRow>
           <Box
             sx={{
