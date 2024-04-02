@@ -81,6 +81,10 @@ const leagueSchema = new Schema({
     type: Number,
     required: true,
   },
+  Day: {
+    type: String,
+    required: true,
+  },
   Matches: [Object],
 });
 
