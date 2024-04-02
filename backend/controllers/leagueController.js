@@ -23,6 +23,7 @@ export const createLeague = async (req, res, body) => {
     Latitude,
     Longitude,
     Radius,
+    Private,
     Day,
   } = req.body;
 
@@ -82,6 +83,7 @@ export const createLeague = async (req, res, body) => {
     });
   }
 
+
   const existLeagueName = await League.findOne({ LeagueName });
   if (existLeagueName) {
     return res.json({
@@ -110,10 +112,11 @@ export const createLeague = async (req, res, body) => {
     Longitude,
     Radius,
     Day,
+    Private,
   };
 
-  const checkLeagueParamsResult = checkLeagueParams(leagueObject);
-  console.log(checkLeagueParamsResult);
+  const checkLeagueParamsResult = checkLeagueParams(leagueObject)
+  console.log(checkLeagueParamsResult)
   if (checkLeagueParamsResult !== "Checks completed") {
     return res.json({
       error: checkLeagueParamsResult,
@@ -134,6 +137,7 @@ export const createLeague = async (req, res, body) => {
       Latitude,
       Longitude,
       Radius,
+      Private,
       Day,
     }).save();
 

@@ -7,6 +7,10 @@ import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Modal from "@mui/material/Modal";
+import { FormControlLabel } from "@mui/material";
+import { FormGroup } from "@mui/material";
+import { Checkbox } from "@mui/material";
+
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import MapWithCircle from "./MapWithCircle";
@@ -70,6 +74,7 @@ export const CreateLeague = ({ show, onClose }) => {
   const [leagueRadiusMeter, setLeagueRadiusMeter] = useState(0);
   const [leagueCenterCoords, setLeagueCenterCoords] = useState(null);
   const [address, setAddress] = useState("");
+  const [privateLeague, setPrivateLeague] = useState(false);
 
   const [leagues, setLeagues] = useState(null);
 
@@ -78,6 +83,7 @@ export const CreateLeague = ({ show, onClose }) => {
     key: "",
     language: "en", // Default language for responses.
     region: "es", // Default region for responses.
+    
   });
 
   /**
@@ -141,6 +147,7 @@ export const CreateLeague = ({ show, onClose }) => {
       Latitude: leagueCenterCoords.lat,
       Longitude: leagueCenterCoords.lng,
       Radius: leagueRadiusMeter,
+      Private: privateLeague,
       Day: day,
     };
 
@@ -172,6 +179,11 @@ export const CreateLeague = ({ show, onClose }) => {
   if (!show) {
     return null;
   }
+
+  const handleChangePrivate = (event) => {
+    const isChecked = event.target.checked;
+    setPrivateLeague(isChecked);
+  };
 
   return (
     <ThemeProvider theme={buttonTheme}>
@@ -273,6 +285,7 @@ export const CreateLeague = ({ show, onClose }) => {
             />
           </FormRow>
           <FormRow>
+            <FormControlLabel onChange={handleChangePrivate} control={<Checkbox/>} label="Private" />
             <Select
               value={day}
               onChange={(e) => setDay(e.target.value)}

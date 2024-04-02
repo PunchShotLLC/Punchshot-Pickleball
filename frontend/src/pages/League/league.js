@@ -471,6 +471,7 @@ export const League = () => {
                   longitude={league.Longitude}
                   radius={league.Radius}
                   id={league._id}
+                  private={league.Private}
                   showLeague={league.Status === "PENDING"}
                   onClick={() =>
                     navigate("/leagueInfo", { state: leagues[index] })

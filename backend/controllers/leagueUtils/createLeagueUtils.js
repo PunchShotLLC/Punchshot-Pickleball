@@ -5,7 +5,6 @@ export function checkLeagueParams(leagueObject) {
     Make sure team registration date is at least a week from today’s date
     Make sure start date and end date are on the same day of the week
      */
-
     let cond1 = isTimeBetweenDatesOneMonth(leagueObject.StartDate, leagueObject.EndDate)
     if (!cond1) {
         return "End date must be at least a month after the start date"
@@ -17,7 +16,9 @@ export function checkLeagueParams(leagueObject) {
     let cond3 = areDatesOnSameWeekday(leagueObject.StartDate, leagueObject.EndDate)
     if (!cond3) {
         return "Start date and end date must be on the same day of the week"
-    }
+    } 
+
+
 
     return "Checks completed"
 }

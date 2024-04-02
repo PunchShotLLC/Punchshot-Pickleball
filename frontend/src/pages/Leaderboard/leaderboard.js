@@ -88,11 +88,15 @@ export const Leaderboard = () => {
           >
              <option id="none">Select League</option>
 
-            {leagues.map((league) => (
-              <option key={league._id} value={league._id}>
-                {league.LeagueName}
-              </option>
-            ))}
+             {leagues.length !== 0
+              ? leagues.map((league, index) => (
+                !league.Private && (  // Add your condition here
+                  <option id={league["LeagueName"]} key={index}> {/* Ensure you have a unique key */}
+                      {league["LeagueName"]}
+                  </option>
+                )
+                ))
+              : null}
           </select>
         </Box>
 
