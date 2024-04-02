@@ -270,10 +270,10 @@ function numSatBetweenDates(startDate, endDate) {
   // Parse start and end dates
   const start = new Date(startDate);
   const end = new Date(endDate);
-  
+
   // Initialize count
   let count = 0;
-  
+
   // Iterate over each date between start and end dates
   for (let date = new Date(start); date <= end; date.setDate(date.getDate() + 1)) {
     // Check if the current date is a Saturday (day of week 6)
@@ -281,7 +281,7 @@ function numSatBetweenDates(startDate, endDate) {
       count++;
     }
   }
-  
+
   return count;
 }
 
@@ -344,7 +344,7 @@ function createMatchups(teams, startDate, endDate) {
       }
 
     }
-    
+
   });
 
   return matches;
@@ -481,6 +481,7 @@ export const testroute = async (req, res) => {
  * Happens once per day
  */
 import cron from "node-cron";
+import { sendInvoice } from "./payController.js";
 cron.schedule("0 0 * * *", () => {
   sendLeagueStartEmails();
   sendTeamRegistrationDateNoticeEmails();
@@ -505,8 +506,7 @@ const matchCronJob = async (date) => {
             sendEmail(
               team.teamCaptainEmail,
               "You have a match tommorow",
-              `It is the day before your match against ${
-                team.TeamName === match.Team1 ? match.Team2 : match.Team1
+              `It is the day before your match against ${team.TeamName === match.Team1 ? match.Team2 : match.Team1
               } starts. Make sure to let your team now. Good luck and have fun!`
             );
           });
@@ -517,8 +517,7 @@ const matchCronJob = async (date) => {
             sendEmail(
               team.teamCaptainEmail,
               "Enter your scores for your match",
-              `You played a match last Saturday against ${
-                team.TeamName === match.Team1 ? match.Team2 : match.Team1
+              `You played a match last Saturday against ${team.TeamName === match.Team1 ? match.Team2 : match.Team1
               }. Make sure to enter your score by this Thursday or the match will be declared a tie.`
             );
           });
@@ -529,8 +528,7 @@ const matchCronJob = async (date) => {
             sendEmail(
               team.teamCaptainEmail,
               "Match scores not entered",
-              `You played a match last Saturday against ${
-                team.TeamName === match.Team1 ? match.Team2 : match.Team1
+              `You played a match last Saturday against ${team.TeamName === match.Team1 ? match.Team2 : match.Team1
               } and neither of you have entered a score. The match has been declared a tie. Make sure to enter your score next time.`
             );
           });
@@ -542,7 +540,7 @@ const matchCronJob = async (date) => {
       });
       if (
         league.Matches.length() ==
-          (league.Teams.length() * (league.Teams.length() - 1)) / 2 &&
+        (league.Teams.length() * (league.Teams.length() - 1)) / 2 &&
         league.Matches.every((match) => match.WinnerTeam)
       ) {
         let teamScores = {};
@@ -645,7 +643,7 @@ const sendTeamRegistrationDateNoticeEmails = async () => {
       console.log(
         `It is the day before ${allLeagues[i]["LeagueName"]} team registration date, sending email to all team captains`
       );
-      
+
       for (let j = 0; j < teams.length; j++) {
         let team = teams[j]
         sendEmail(
@@ -684,9 +682,9 @@ const sendTeamRegistrationDateNoticeEmails = async () => {
             }
           };
           const res = {
-            status: function(status) {
+            status: function (status) {
               return {
-                json: function(obj) {
+                json: function (obj) {
                   console.log(`Team deleted: ${team._id} from League: ${allLeagues[i]._id}`);
                 }
               };
@@ -694,9 +692,15 @@ const sendTeamRegistrationDateNoticeEmails = async () => {
           };
 
           await deleteTeam(req, res).catch(error => console.error(`Error deleting team`));
+        } else {
+          teamMembers.forEach(teamMember => {
+            User.findOne({ Username: teamMember }).then((member) => {
+              sendInvoice(member.Name, member.Email)
+            })
+          });
         }
       }
-    
+
     } else {
       console.log(
         `It is not the day of ${allLeagues[i]["LeagueName"]} team registration date`

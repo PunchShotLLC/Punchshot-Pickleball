@@ -4,7 +4,7 @@ import Stripe from "stripe";
 dotenv.config();
 const stripe = new Stripe(process.env.STRIPE_KEY);
 
-export const sendInvoice = async () => {
+export const sendInvoice = async (name, email) => {
   try {
     // const { email } = req.body;
 
@@ -18,10 +18,19 @@ export const sendInvoice = async () => {
       currency: "usd",
     });
 
-    const customer = await stripe.customers.create({
-      name: "Vignesh Sreedhar",
-      email: "vigneshsreedhar2002@gmail.com",
-    });
+    let customer = await stripe.customers.list({
+      email: email,
+      limit: 1
+    })
+    customer = customer.data.length == 0 ? await stripe.customers.create({
+      name,
+      email,
+    }) : customer.data[0]
+
+    // const customer = await stripe.customers.create({
+    //   name: "Vignesh Sreedhar",
+    //   email: "vigneshsreedhar2002@gmail.com",
+    // });
 
     const invoice = await stripe.invoices.create({
       customer: customer.id,
