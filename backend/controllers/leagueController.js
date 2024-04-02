@@ -472,6 +472,26 @@ export const sendRequestEmail = async (req, res) => {
   );
 };
 
+/*
+Sends an email to new captain and old captain that the change of captain has occured
+*/
+export const sendTeamCaptainChangeEmail = async (req, res) => {
+  console.log(`Going to send email to ${req.query.oldCaptainEmail}`);
+  console.log(`Going to send email to ${req.query.newCaptainEmail}`);
+
+  sendEmail(
+    req.query.oldCaptainEmail,
+    `Confirmed Captain Change of Team: ${req.query.team}`,
+    `${req.query.newCaptain} has been made the new captain of Team: ${req.query.team}`
+  );
+
+  sendEmail(
+    req.query.newCaptainEmail,
+    `Confirmed Captain Change of Team: ${req.query.team}`,
+    `You are now the new captain of Team: ${req.query.team}`
+  );
+};
+
 const sendEmail = async (email, subject, body) => {
   sgMail.setApiKey(process.env.SENDGRID);
   const message = {

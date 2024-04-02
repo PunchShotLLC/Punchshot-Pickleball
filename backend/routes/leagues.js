@@ -9,6 +9,7 @@ import {
   getLeague,
   deleteLeague,
   sendRequestEmail,
+  sendTeamCaptainChangeEmail,
   getAddressInfo,
   startLeague,
   getStandings,
@@ -20,6 +21,7 @@ import {
 router.route("/address").get(getAddressInfo);
 router.route("/checkAddress").get(checkAddressWithinRadius);
 router.route("/sendRequestEmail").get(sendRequestEmail);
+router.route("/sendTeamCaptainChangeEmail").get(sendTeamCaptainChangeEmail);
 router.route("/").get(getLeagues);
 router.route("/:id/standings").get(getStandings);
 router.route("/:leagueName").get(getLeague);

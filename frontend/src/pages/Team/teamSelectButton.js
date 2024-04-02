@@ -144,7 +144,38 @@ export const TeamSelectButton = (props) => {
 
   const changeCaptain = async (teamIndex, username) => {
     let oldCaptain = props.leagueInfo.Teams[teamIndex].TeamCaptain;
+    let oldCaptainEmail = props.leagueInfo.Teams[teamIndex].CaptainEmail
+    let teamName = props.leagueInfo.Teams[teamIndex].TeamName
     console.log(username);
+    let userEmail = ""
+
+    try { 
+      // Make a GET request to the getUserEmail route
+      const response = await fetch(
+        `http://localhost:8000/users/getUserEmail/${username}`
+      );
+      const emailData = await response.json();
+      userEmail = emailData.email;
+      console.log(userEmail)
+      // set captain email as new captain's email
+      props.leagueInfo.Teams[teamIndex].CaptainEmail = userEmail
+      
+    } catch (error) {
+      console.error('Error:', error);
+    }
+
+    // send new captain and old captain emails for captain change
+    const emailApiUrl = `http://localhost:8000/leagues/sendTeamCaptainChangeEmail?newCaptainEmail=${userEmail}&oldCaptainEmail=${oldCaptainEmail}&team=${teamName}&newCaptain=${username}`;
+
+    fetch(emailApiUrl)
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(responseData);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+
     props.leagueInfo.Teams[teamIndex].TeamCaptain = username;
 
     // // This function must also make the former captain a member of the team

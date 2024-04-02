@@ -26,6 +26,7 @@ import {
   updatePassword,
   joinTeam,
   uploadFile,
+  getUserEmail,
   getProfilePhoto,
 } from "../controllers/userController.js";
 
@@ -35,6 +36,7 @@ router.post("/upload", upload.single("image"), uploadFile);
 router.post("/verify", verifyUser);
 router.post("/update", updatePassword);
 router.post("/joinTeam", joinTeam);
+router.route("/getUserEmail/:username").get(getUserEmail);
 router.get("/getPhoto/:userName", getProfilePhoto);
 
 export default router;
