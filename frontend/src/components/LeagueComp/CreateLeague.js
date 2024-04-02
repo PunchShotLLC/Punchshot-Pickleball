@@ -241,8 +241,8 @@ export const CreateLeague = ({ show, onClose }) => {
               <MenuItem value="" disabled>
                 Division
               </MenuItem>
-              <MenuItem value="Men">Men</MenuItem>
-              <MenuItem value="Women">Women</MenuItem>
+              <MenuItem value="Male">Male</MenuItem>
+              <MenuItem value="Female">Female</MenuItem>
               <MenuItem value="Mixed">Mixed</MenuItem>
             </Select>
           </FormRow>
