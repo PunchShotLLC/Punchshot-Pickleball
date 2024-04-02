@@ -20,13 +20,14 @@ const filefilter = (req, file, cb) => {
   
 const upload = multer({ storage: storage, fileFilter: filefilter });
 
-import { createUser, loginUser, verifyUser, updatePassword, joinTeam, uploadFile } from "../controllers/userController.js";
+import { createUser, loginUser, verifyUser, updatePassword, getUserEmail, joinTeam, uploadFile } from "../controllers/userController.js";
 
 router.post("/login", loginUser);
 router.post("/signup", createUser);
 router.post("/upload", upload.single('image'), uploadFile)
 router.post("/verify", verifyUser);
 router.post("/update", updatePassword);
-router.post("/joinTeam", joinTeam); 
+router.post("/joinTeam", joinTeam);
+router.route("/getUserEmail/:username").get(getUserEmail);
 
 export default router;
