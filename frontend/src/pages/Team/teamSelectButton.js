@@ -59,16 +59,16 @@ export const TeamSelectButton = (props) => {
   const addPlayerToTeam = async (teamIndex, username) => {
     // Add the player to the team's player list
     let playerList = props.leagueInfo.Teams[teamIndex].TeamMembers;
-    let teamMember = props.leagueInfo.Teams.some((team) =>
+    let isTeamMember = props.leagueInfo.Teams.some((team) =>
       team.TeamMembers.some((name) => name === username)
     );
 
-    if (teamMember) {
+    if (isTeamMember) {
       alert("Already in team");
       return;
     }
 
-    if (playerList.length >= 5) {
+    if (playerList.length >= 10) {
       alert("Team is full");
       return;
     }
@@ -228,12 +228,11 @@ export const TeamSelectButton = (props) => {
       </Box>
 
       <Box sx={styles.row}>
-        <ThemeProvider theme={buttonTheme}>
           <Button
             onClick={() => setMemberModalOpen(true)}
             variant="contained"
             color="primary"
-            sx={styles.button}
+            sx={{...styles.button, backgroundColor: "#9146D8", "&:hover" : {backgroundColor: "#9146D8"}}}
           >
             VIEW INFO
           </Button>
@@ -254,7 +253,10 @@ export const TeamSelectButton = (props) => {
                 props.onClickDropTeam();
               } else if (inTeam) {
                 props.onClickRemoveUser();
-              } else {
+              } else if (isPotentialMember) {
+                removePlayerToTeam(props.teamIndex, props.username)
+              } 
+              else {
                 props.onClick();
               }
             }}
@@ -264,12 +266,14 @@ export const TeamSelectButton = (props) => {
               backgroundColor:
                 inTeam || props.showPotentialMembers
                   ? leaveDropColor
-                  : requestJoinColor,
+                  : isPotentialMember? 
+                  leaveDropColor : requestJoinColor,
               "&:hover": {
                 backgroundColor:
                   inTeam || props.showPotentialMembers
                     ? leaveDropColor
-                    : requestJoinColor,
+                    : isPotentialMember?
+                    leaveDropColor : requestJoinColor,
               },
             }}
           >
@@ -278,10 +282,9 @@ export const TeamSelectButton = (props) => {
               : inTeam
               ? "LEAVE TEAM"
               : isPotentialMember
-              ? "REQUEST PENDING"
+              ? "CANCEL REQUEST"
               : "REQUEST TO JOIN"}
-          </Button>
-        </ThemeProvider>
+          </Button>        
         <Modal open={memberModalOpen}>
           <Box sx={styles.modal}>
             <Box sx={styles.column}>
