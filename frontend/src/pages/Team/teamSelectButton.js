@@ -217,9 +217,7 @@ export const TeamSelectButton = (props) => {
             [theme.breakpoints.up("md")]: {
               fontSize: "1rem",
             },
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
+            textWrap: "pretty",
           }}
         >
           <strong>Home Court Address: </strong>
