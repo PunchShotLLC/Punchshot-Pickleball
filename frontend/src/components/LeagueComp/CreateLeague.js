@@ -7,6 +7,10 @@ import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Modal from "@mui/material/Modal";
+import { FormControlLabel } from "@mui/material";
+import { FormGroup } from "@mui/material";
+import { Checkbox } from "@mui/material";
+
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import MapWithCircle from "./MapWithCircle";
@@ -61,6 +65,7 @@ export const CreateLeague = ({ show, onClose }) => {
   const [leagueName, setLeagueName] = useState("");
   const [leagueSkillLevel, setLeagueSkillLevel] = useState("");
   const [leagueDivision, setLeagueDivision] = useState("");
+  const [day, setDay] = useState("");
   const [startDate, setStartDate] = useState("");
   const [registrationDate, setRegistrationDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -69,6 +74,7 @@ export const CreateLeague = ({ show, onClose }) => {
   const [leagueRadiusMeter, setLeagueRadiusMeter] = useState(0);
   const [leagueCenterCoords, setLeagueCenterCoords] = useState(null);
   const [address, setAddress] = useState("");
+  const [privateLeague, setPrivateLeague] = useState(false);
 
   const [leagues, setLeagues] = useState(null);
 
@@ -77,6 +83,7 @@ export const CreateLeague = ({ show, onClose }) => {
     key: "",
     language: "en", // Default language for responses.
     region: "es", // Default region for responses.
+    
   });
 
   /**
@@ -97,8 +104,7 @@ export const CreateLeague = ({ show, onClose }) => {
   };
 
   const createLeague = async () => {
-
-    console.log("I GOT HERE")
+    console.log("I GOT HERE");
 
     // Ensure registration date is at least a week before the league start date
     const weekInMilliseconds = 7 * 24 * 60 * 60 * 1000; // One week
@@ -141,18 +147,20 @@ export const CreateLeague = ({ show, onClose }) => {
       Latitude: leagueCenterCoords.lat,
       Longitude: leagueCenterCoords.lng,
       Radius: leagueRadiusMeter,
+      Private: privateLeague,
+      Day: day,
     };
 
-    console.log("RESP TEST")
+    console.log("RESP TEST");
 
     const resp = await axios.post(
       "http://localhost:8000/leagues/createLeague",
       body
     );
 
-    console.log("RESP")
-    console.log(resp)
-    console.log("END RESP")
+    console.log("RESP");
+    console.log(resp);
+    console.log("END RESP");
 
     if (resp.data.error) {
       alert(resp.data.error);
@@ -171,6 +179,11 @@ export const CreateLeague = ({ show, onClose }) => {
   if (!show) {
     return null;
   }
+
+  const handleChangePrivate = (event) => {
+    const isChecked = event.target.checked;
+    setPrivateLeague(isChecked);
+  };
 
   return (
     <ThemeProvider theme={buttonTheme}>
@@ -240,8 +253,8 @@ export const CreateLeague = ({ show, onClose }) => {
               <MenuItem value="" disabled>
                 Division
               </MenuItem>
-              <MenuItem value="Men">Men</MenuItem>
-              <MenuItem value="Women">Women</MenuItem>
+              <MenuItem value="Male">Male</MenuItem>
+              <MenuItem value="Female">Female</MenuItem>
               <MenuItem value="Mixed">Mixed</MenuItem>
             </Select>
           </FormRow>
@@ -270,6 +283,26 @@ export const CreateLeague = ({ show, onClose }) => {
               }}
               placeholder="Enter Radius"
             />
+          </FormRow>
+          <FormRow>
+            <FormControlLabel onChange={handleChangePrivate} control={<Checkbox/>} label="Private" />
+            <Select
+              value={day}
+              onChange={(e) => setDay(e.target.value)}
+              fullWidth
+              displayEmpty
+            >
+              <MenuItem value="" disabled>
+                Day
+              </MenuItem>
+              <MenuItem value="1">Monday</MenuItem>
+              <MenuItem value="2">Tuesday</MenuItem>
+              <MenuItem value="3">Wednesday</MenuItem>
+              <MenuItem value="4">Thursday</MenuItem>
+              <MenuItem value="5">Friday</MenuItem>
+              <MenuItem value="6">Saturday</MenuItem>
+              <MenuItem value="0">Sunday</MenuItem>
+            </Select>
           </FormRow>
           <Box
             sx={{

@@ -81,7 +81,16 @@ const leagueSchema = new Schema({
     type: Number,
     required: true,
   },
+  Day: {
+    type: String,
+    required: true,
+  },
   Matches: [Object],
+
+  Private: {
+    type: Boolean,
+    required: false,
+  },
 });
 
 export default mongoose.model("League", leagueSchema);

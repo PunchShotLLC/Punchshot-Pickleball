@@ -158,9 +158,11 @@ export const Matches = () => {
 
             {leagues.length !== 0
               ? leagues.map((league, index) => (
-                  <option id={league["LeagueName"]}>
-                    {league["LeagueName"]}
+                !league.Private && (  // Add your condition here
+                  <option id={league["LeagueName"]} key={index}> {/* Ensure you have a unique key */}
+                      {league["LeagueName"]}
                   </option>
+                )
                 ))
               : null}
           </select>
