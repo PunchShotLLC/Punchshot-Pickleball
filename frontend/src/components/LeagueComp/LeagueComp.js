@@ -27,15 +27,15 @@ export const LeagueComp = (props) => {
     console.log("Attempting to start league");
 
     // League must have at least three teams each with at least six players
-    if (props.teams.length < 3) {
-      console.log("There are less than three teams");
+    if (props.teamsSignedUp.length < 3) {
+      alert("There are less than three teams");
       return;
     }
 
-    // Each team must have at least 6 players
-    for (let i = 0; i < props.teams.length; i++) {
-      if (props.teams[i]["TeamMembers"].length < 6) {
-        console.log("One team has less than 6 players");
+    // Each team must have at least 2 players
+    for (let i = 0; i < props.teamsSignedUp.length; i++) {
+      if (props.teamsSignedUp[i]["TeamMembers"].length < 1) {
+        alert("At least one team has less than 2 players (including captain)");
         return;
       }
     }
@@ -104,8 +104,8 @@ export const LeagueComp = (props) => {
     if (props.private == true) {
       console.log("trueeeee");
     }
-  }
-checkPrivate();
+  };
+  checkPrivate();
 
   if (props.showLeague) {
     return (
@@ -169,7 +169,7 @@ checkPrivate();
                     style={{ border: "2px solid black", borderRadius: "50%" }}
                   />
                   <Typography sx={styles.modalData}>
-                    Number of Teams: {props.teamsSignedUp}
+                    Number of Teams: {props.teamsSignedUp.length}
                   </Typography>
                 </Box>
                 <Box sx={{ ...styles.data, ...styles.modalData }}>
@@ -233,7 +233,8 @@ checkPrivate();
               <Typography sx={styles.name}>{props.name}</Typography>
               <Typography sx={styles.basicInfo}>
                 <Typography sx={{ fontWeight: "bold" }}>Date:</Typography>&nbsp;
-                {new Date(props.startDate).toLocaleDateString()} - {new Date(props.endDate).toLocaleDateString()}
+                {new Date(props.startDate).toLocaleDateString()} -{" "}
+                {new Date(props.endDate).toLocaleDateString()}
               </Typography>
               <Typography sx={styles.basicInfo}>
                 <Typography sx={{ fontWeight: "bold" }}>
@@ -265,6 +266,16 @@ checkPrivate();
               </Typography>
               <Box sx={styles.buttonRow}>
                 <ThemeProvider theme={buttonTheme}>
+                  {props.user?.Username === "ADMIN_PUNCHSHOT" && (
+                    <Button
+                      onClick={startLeague}
+                      variant="contained"
+                      color="primary"
+                      sx={styles.button}
+                    >
+                      Start League
+                    </Button>
+                  )}
                   <Button
                     onClick={openDisclaimerModal}
                     variant="contained"

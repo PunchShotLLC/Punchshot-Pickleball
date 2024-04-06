@@ -83,7 +83,6 @@ export const createLeague = async (req, res, body) => {
     });
   }
 
-
   const existLeagueName = await League.findOne({ LeagueName });
   if (existLeagueName) {
     return res.json({
@@ -115,8 +114,8 @@ export const createLeague = async (req, res, body) => {
     Private,
   };
 
-  const checkLeagueParamsResult = checkLeagueParams(leagueObject)
-  console.log(checkLeagueParamsResult)
+  const checkLeagueParamsResult = checkLeagueParams(leagueObject);
+  console.log(checkLeagueParamsResult);
   if (checkLeagueParamsResult !== "Checks completed") {
     return res.json({
       error: checkLeagueParamsResult,
@@ -229,45 +228,12 @@ export const getAddressInfo = async (req, res) => {
  * helper function for createMatchups that gets the next saturday
  * @returns the next saturday
  */
-function getNextMatchDay() {
+function getNextMatchDay(matchDay) {
   const today = new Date();
-  const daysUntilMatchDay = Day - today.getDay(); // Calculate days until Saturday
+  const daysUntilMatchDay = matchDay - today.getDay(); // Calculate days until Saturday
   const nextMatchDay = new Date(today);
   nextMatchDay.setDate(today.getDate() + daysUntilMatchDay);
   return nextMatchDay;
-}
-
-/**
- * function written by chatgpt to generate team matchupes
- *   - ensures that floor(#teams/2) are scheduled for each week
- *   - ensures that no team plays on two matches on the same day
- * @param {*} teams
- * @returns matchups per week
- */
-function scheduler(teams) {
-  if (teams.length % 2 !== 0) {
-    teams.push(null); // Add a dummy team if the number of teams is odd
-  }
-
-  const weeks = [];
-  let currentMatchDay = getNextMatchDay();
-
-  for (let weekNum = 1; weekNum < teams.length; weekNum++) {
-    const matchups = [];
-    for (let i = 0; i < teams.length / 2; i++) {
-      const match = [teams[i], teams[teams.length - i - 1]];
-      matchups.push(match);
-    }
-    weeks.push({ date: currentMatchDay.toDateString(), matchups });
-
-    // Move to the next Saturday for the next week
-    currentMatchDay.setDate(currentMatchDay.getDate() + 7);
-
-    // Rotate the teams for the next week
-    teams = [teams[0]].concat([teams[teams.length - 1]], teams.slice(1, -1));
-  }
-
-  return weeks;
 }
 
 /**
@@ -276,7 +242,7 @@ function scheduler(teams) {
  * @param {String} endDate ending date in 'YYYY-MM-DD' format
  * @returns {Number} number of Saturdays between the two dates
  */
-function numDaysBetweenDates(startDate, endDate) {
+function numDaysBetweenDates(matchDay, startDate, endDate) {
   // Parse start and end dates
   const start = new Date(startDate);
   const end = new Date(endDate);
@@ -291,7 +257,7 @@ function numDaysBetweenDates(startDate, endDate) {
     date.setDate(date.getDate() + 1)
   ) {
     // Check if the current date is a Saturday (day of week 6)
-    if (date.getDay() === Day) {
+    if (date.getDay() === matchDay) {
       count++;
     }
   }
@@ -299,17 +265,17 @@ function numDaysBetweenDates(startDate, endDate) {
   return count;
 }
 
-function matchScheduler(teams, startDate, endDate) {
-  const numDays = numDaysBetweenDates(startDate, endDate);
+function matchScheduler(teams, matchDay, startDate, endDate) {
+  const numDays = numDaysBetweenDates(matchDay, startDate, endDate);
 
   if (teams.length % 2 !== 0) {
     teams.push(null); // Add a dummy team if the number of teams is odd
   }
 
   const weeks = [];
-  let currentMatchDay = getNextMatchDay();
+  let currentMatchDay = getNextMatchDay(matchDay);
 
-  for (let weekNum = 1; weekNum < numSaturdays; weekNum++) {
+  for (let weekNum = 1; weekNum < numDays; weekNum++) {
     const matchups = [];
     for (let i = 0; i < teams.length / 2; i++) {
       const match = [teams[i], teams[teams.length - i - 1]];
@@ -339,10 +305,10 @@ function matchScheduler(teams, startDate, endDate) {
       "WinnerTeam": ""
     }
  */
-function createMatchups(teams, startDate, endDate) {
+function createMatchups(teams, matchDay, startDate, endDate) {
   // const schedule = scheduler(teams);
-  const schedule = matchScheduler(teams, startDate, endDate);
-
+  const schedule = matchScheduler(teams, matchDay, startDate, endDate);
+  console.log(schedule);
   let matches = [];
   schedule.forEach((week, weekNum) => {
     for (let i = 0; i < week.matchups.length; i++) {
@@ -389,6 +355,7 @@ export const startLeague = async (req, res) => {
   // Get the matchups
   updateObject["Matches"] = createMatchups(
     teamNames,
+    parseInt(league["Day"]),
     league["StartDate"],
     league["EndDate"]
   );
@@ -541,7 +508,8 @@ const matchCronJob = async (date) => {
             sendEmail(
               team.teamCaptainEmail,
               "You have a match tommorow",
-              `It is the day before your match against ${team.TeamName === match.Team1 ? match.Team2 : match.Team1
+              `It is the day before your match against ${
+                team.TeamName === match.Team1 ? match.Team2 : match.Team1
               } starts. Make sure to let your team now. Good luck and have fun!`
             );
           });
@@ -552,7 +520,8 @@ const matchCronJob = async (date) => {
             sendEmail(
               team.teamCaptainEmail,
               "Enter your scores for your match",
-              `You played a match last Saturday against ${team.TeamName === match.Team1 ? match.Team2 : match.Team1
+              `You played a match last Saturday against ${
+                team.TeamName === match.Team1 ? match.Team2 : match.Team1
               }. Make sure to enter your score by this Thursday or the match will be declared a tie.`
             );
           });
@@ -563,7 +532,8 @@ const matchCronJob = async (date) => {
             sendEmail(
               team.teamCaptainEmail,
               "Match scores not entered",
-              `You played a match last Saturday against ${team.TeamName === match.Team1 ? match.Team2 : match.Team1
+              `You played a match last Saturday against ${
+                team.TeamName === match.Team1 ? match.Team2 : match.Team1
               } and neither of you have entered a score. The match has been declared a tie. Make sure to enter your score next time.`
             );
           });
@@ -575,7 +545,7 @@ const matchCronJob = async (date) => {
       });
       if (
         league.Matches.length() ==
-        (league.Teams.length() * (league.Teams.length() - 1)) / 2 &&
+          (league.Teams.length() * (league.Teams.length() - 1)) / 2 &&
         league.Matches.every((match) => match.WinnerTeam)
       ) {
         let teamScores = {};
@@ -718,20 +688,25 @@ const sendTeamRegistrationDateNoticeEmails = async () => {
             status: function (status) {
               return {
                 json: function (obj) {
-                  console.log(`Team deleted: ${team._id} from League: ${allLeagues[i]._id}`);
-                }
+                  console.log(
+                    `Team deleted: ${team._id} from League: ${allLeagues[i]._id}`
+                  );
+                },
               };
             },
           };
-          await deleteTeam(req, res).catch(error => console.error(`Error deleting team`));
+          await deleteTeam(req, res).catch((error) =>
+            console.error(`Error deleting team`)
+          );
         } else {
-          teamMembers.forEach(teamMember => {
+          teamMembers.forEach((teamMember) => {
             User.findOne({ Username: teamMember }).then((member) => {
-              sendInvoice(member.Name, member.Email)
-            })
+              sendInvoice(member.Name, member.Email);
+            });
           });
         }
       }
+    }
   }
 };
 

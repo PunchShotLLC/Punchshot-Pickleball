@@ -460,8 +460,9 @@ export const League = () => {
                 <LeagueComp
                   key={league._id} // Assuming each league has a unique ID
                   logo={require("../../assets/images/ATL1.png")} // Make sure this path is correct
+                  user={user}
                   name={league.LeagueName}
-                  teamsSignedUp={league.Teams.length}
+                  teamsSignedUp={league.Teams}
                   startDate={league.StartDate}
                   endDate={league.EndDate}
                   registrationDate={league.TeamRegistrationDate}

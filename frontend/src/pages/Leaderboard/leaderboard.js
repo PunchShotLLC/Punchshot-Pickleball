@@ -4,10 +4,10 @@ import Typography from "@mui/material/Typography";
 import LeaderboardTable from "./LeaderboardTable";
 import { alpha } from "@mui/material/styles";
 
-
 export const Leaderboard = () => {
   const [leagues, setLeagues] = useState([]);
   const [selectedLeague, setSelectedLeague] = useState("");
+  const [leaderboardLeagueId, setLeaderboardLeagueId] = useState(null);
 
   useEffect(() => {
     // Fetch ongoing leagues from the backend
@@ -21,7 +21,13 @@ export const Leaderboard = () => {
   }, []);
 
   const handleLeagueChange = (event) => {
+    console.log(event.target.value);
     setSelectedLeague(event.target.value);
+    for (let i = 0; i < leagues.length; i++) {
+      if (leagues[i]["LeagueName"] === event.target.value) {
+        setLeaderboardLeagueId(leagues[i]._id);
+      }
+    }
   };
 
   return (
@@ -62,7 +68,7 @@ export const Leaderboard = () => {
             Select a league to see the league's leaderboard.
           </Typography>
         </Box>
-        
+
         <Box
           display="flex"
           flexDirection="column"
@@ -86,16 +92,19 @@ export const Leaderboard = () => {
               fontFamily: "Arial",
             }}
           >
-             <option id="none">Select League</option>
+            <option id="none">Select League</option>
 
-             {leagues.length !== 0
-              ? leagues.map((league, index) => (
-                !league.Private && (  // Add your condition here
-                  <option id={league["LeagueName"]} key={index}> {/* Ensure you have a unique key */}
-                      {league["LeagueName"]}
-                  </option>
+            {leagues.length !== 0
+              ? leagues.map(
+                  (league, index) =>
+                    !league.Private && ( // Add your condition here
+                      <option id={league["LeagueName"]} key={index}>
+                        {" "}
+                        {/* Ensure you have a unique key */}
+                        {league["LeagueName"]}
+                      </option>
+                    )
                 )
-                ))
               : null}
           </select>
         </Box>
@@ -108,22 +117,22 @@ export const Leaderboard = () => {
         >
           <Box
             sx={{
-                width: "80%",
-                paddingLeft: "1em",
-                paddingRight: "1em",
-                borderRadius: 4,
-                backgroundColor: "#ffffff",
-                border: "3px solid #D5FD51",
-                "&:hover": {
-                  boxShadow: `${alpha("#ffffff", 0.25)} 0 0 0 0.2rem`,
-                },
-              }}
-            >
-              {selectedLeague && (
-                <Box>
-                  <LeaderboardTable selectedLeague={selectedLeague} />
-                </Box>
-              )}
+              width: "80%",
+              paddingLeft: "1em",
+              paddingRight: "1em",
+              borderRadius: 4,
+              backgroundColor: "#ffffff",
+              border: "3px solid #D5FD51",
+              "&:hover": {
+                boxShadow: `${alpha("#ffffff", 0.25)} 0 0 0 0.2rem`,
+              },
+            }}
+          >
+            {leaderboardLeagueId && (
+              <Box>
+                <LeaderboardTable selectedLeague={leaderboardLeagueId} />
+              </Box>
+            )}
           </Box>
         </Box>
       </Box>
