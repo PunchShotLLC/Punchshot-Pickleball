@@ -57,6 +57,17 @@ const StyledLabel = styled("label")({
   marginBottom: "0.5vh",
 });
 
+const buttonTheme = createTheme({
+  palette: {
+    primary: {
+      main: "#9146D8",
+    },
+    secondary: {
+      main: "#D9D9D9",
+    },
+  },
+});
+
 // define a styled component for the suggestions list items
 const SuggestionItem = styled("li")({
   padding: "10px 20px",
@@ -96,7 +107,7 @@ export const TeamSelect = (props) => {
 
   // TODO: ENTER API KEY
   setDefaults({
-    key: "AIzaSyASByHOyayF2D5qfd8Y2muEA6dfRkeK84c",
+    key: "",
     language: "en", // Default language for responses.
     region: "es", // Default region for responses.
   });
@@ -504,7 +515,7 @@ export const TeamSelect = (props) => {
             width: 500,
             bgcolor: "background.paper",
             borderRadius: "16px",
-            p: 4,
+            p: 3,           
           }}
         >
           <Typography variant="h5">Create New Team</Typography>
@@ -572,8 +583,9 @@ export const TeamSelect = (props) => {
             flexDirection={"row"}
             width={"100%"}
             marginBottom={1}
-          >
-            <Button onClick={handleModalClick} variant="contained" color="grey">
+          > 
+          <ThemeProvider theme={buttonTheme}>
+            <Button onClick={handleModalClick} variant="contained" color="secondary">
               Cancel
             </Button>
 
@@ -585,6 +597,7 @@ export const TeamSelect = (props) => {
             >
               Create Team
             </Button>
+          </ThemeProvider>
           </Box>
         </Box>
       </StyledModal>
