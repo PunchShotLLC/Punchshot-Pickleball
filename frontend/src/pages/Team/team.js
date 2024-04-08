@@ -96,7 +96,7 @@ export const TeamSelect = (props) => {
 
   // TODO: ENTER API KEY
   setDefaults({
-    key: "",
+    key: "AIzaSyASByHOyayF2D5qfd8Y2muEA6dfRkeK84c",
     language: "en", // Default language for responses.
     region: "es", // Default region for responses.
   });
