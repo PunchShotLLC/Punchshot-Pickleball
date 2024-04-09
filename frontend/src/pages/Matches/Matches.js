@@ -92,6 +92,14 @@ export const Matches = () => {
     getLeagues();
   }, []);
 
+  const updateLeague = async () => {
+    console.log("hi");
+    await getLeagues();
+    console.log(leagues);
+    setMatchesInTable({ target: { value: league } });
+    console.log(matches[0]);
+  };
+
   return (
     <Box>
       <Box
@@ -127,7 +135,7 @@ export const Matches = () => {
               paddingTop: ".5vw",
             }}
           >
-            Select a league to see the league's matches. If you are a team 
+            Select a league to see the league's matches. If you are a team
             captain, click on a match to edit or submit a score.
           </Typography>
         </Box>
@@ -157,13 +165,16 @@ export const Matches = () => {
             <option id="none">Select League</option>
 
             {leagues.length !== 0
-              ? leagues.map((league, index) => (
-                !league.Private && (  // Add your condition here
-                  <option id={league["LeagueName"]} key={index}> {/* Ensure you have a unique key */}
-                      {league["LeagueName"]}
-                  </option>
+              ? leagues.map(
+                  (league, index) =>
+                    !league.Private && ( // Add your condition here
+                      <option id={league["LeagueName"]} key={index}>
+                        {" "}
+                        {/* Ensure you have a unique key */}
+                        {league["LeagueName"]}
+                      </option>
+                    )
                 )
-                ))
               : null}
           </select>
 
@@ -183,7 +194,11 @@ export const Matches = () => {
             }}
           >
             {matches.length > 0 ? (
-              <MatchesTable matches={matches} league={league} />
+              <MatchesTable
+                matches={matches}
+                league={league}
+                updateLeague={updateLeague}
+              />
             ) : null}
           </Box>
         </Box>
