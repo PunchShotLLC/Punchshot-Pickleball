@@ -110,7 +110,7 @@ export default function ScoreEnterBox(props) {
     return true;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     if (result === null) {
       alert("Invalid Scores");
       return;
@@ -136,7 +136,6 @@ export default function ScoreEnterBox(props) {
       .then((response) => response.json())
       .then((responseData) => {
         console.log(responseData);
-        props.updateLeague();
         props.onClose();
       })
       .catch((error) => {
@@ -241,7 +240,7 @@ const styles = {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: "50%",
+    width: "40%",
     height: "50%",
     bgcolor: "background.paper",
     borderRadius: "16px",
@@ -269,6 +268,7 @@ const styles = {
   table: {
     width: "90%",
     height: "auto",
+    padding: "2%",
     border: "2px solid #A1C038",
   },
 };

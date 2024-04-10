@@ -58,7 +58,8 @@ export default function MatchesTable(props) {
     setEnterScoreActive(true);
   };
 
-  const handleModalClose = () => {
+  const handleModalClose = async () => {
+    await props.updateLeague();
     setEnterScoreActive(false);
   };
 
@@ -148,7 +149,6 @@ export default function MatchesTable(props) {
         matchIndex={selectedMatchIndex}
         league={props.league}
         onClose={handleModalClose}
-        updateLeague={props.updateLeague}
       />
     );
   }
