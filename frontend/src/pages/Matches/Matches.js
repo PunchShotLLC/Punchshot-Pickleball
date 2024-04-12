@@ -177,7 +177,7 @@ export const Matches = () => {
                       : `${40 * suggestions.length}px`, // Dynamic maxHeight adjustment
                   overflowY: "auto",
                   position: "absolute",
-                  marginTop: "10px", // Adjusted for clear separation
+                  marginTop: "100px", // Adjusted for clear separation
                   background: "white",
                   borderRadius: "5px",
                   boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
