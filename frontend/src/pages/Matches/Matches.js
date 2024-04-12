@@ -20,6 +20,7 @@ function createData(
 export const Matches = () => {
   const [matches, setMatches] = useState([]);
   const [leagues, setLeagues] = useState([]);
+  const [selectedLeague, setSelectedLeague] = useState("");
 
   // This state is for the current league selected
   // The league needs to be passed from
@@ -34,9 +35,9 @@ export const Matches = () => {
     );
     const content = await rawResponse.json();
 
-    console.log(content);
-
     setLeagues(content);
+
+    // console.log(leagues);
   };
 
   const setMatchesInTable = (event) => {
@@ -45,10 +46,11 @@ export const Matches = () => {
       return;
     }
 
-    const league = event.target.value;
+    const leagueName = event.target.value;
+    setSelectedLeague(leagueName);
 
     for (let i = 0; i < leagues.length; i++) {
-      if (leagues[i]["LeagueName"] === league) {
+      if (leagues[i]["LeagueName"] === leagueName) {
         let matchesToSet = leagues[i]["Matches"];
         console.log(matchesToSet);
 
@@ -61,11 +63,8 @@ export const Matches = () => {
 
         let matchesAfterCreateData = [];
         for (let j = 0; j < matchesToSet.length; j++) {
-          console.log("Running createData");
-          console.log("Captain of team 1:");
           let captain1 = captains[matchesToSet[j]["Team1"]];
           let captain2 = captains[matchesToSet[j]["Team2"]];
-          console.log(captain1);
           matchesAfterCreateData.push(
             createData(
               matchesToSet[j]["Date"],
@@ -79,9 +78,6 @@ export const Matches = () => {
           );
         }
 
-        console.log("matches after create data");
-        console.log(matchesAfterCreateData);
-
         setMatches(matchesAfterCreateData);
         setLeague(leagues[i]);
       }
@@ -91,6 +87,10 @@ export const Matches = () => {
   useEffect(() => {
     getLeagues();
   }, []);
+
+  useEffect(() => {
+    setMatchesInTable({ target: { value: selectedLeague } });
+  }, [leagues]);
 
   return (
     <Box>
@@ -127,7 +127,7 @@ export const Matches = () => {
               paddingTop: ".5vw",
             }}
           >
-            Select a league to see the league's matches. If you are a team 
+            Select a league to see the league's matches. If you are a team
             captain, click on a match to edit or submit a score.
           </Typography>
         </Box>
@@ -157,13 +157,16 @@ export const Matches = () => {
             <option id="none">Select League</option>
 
             {leagues.length !== 0
-              ? leagues.map((league, index) => (
-                !league.Private && (  // Add your condition here
-                  <option id={league["LeagueName"]} key={index}> {/* Ensure you have a unique key */}
-                      {league["LeagueName"]}
-                  </option>
+              ? leagues.map(
+                  (league, index) =>
+                    !league.Private && ( // Add your condition here
+                      <option id={league["LeagueName"]} key={index}>
+                        {" "}
+                        {/* Ensure you have a unique key */}
+                        {league["LeagueName"]}
+                      </option>
+                    )
                 )
-                ))
               : null}
           </select>
 
@@ -183,7 +186,11 @@ export const Matches = () => {
             }}
           >
             {matches.length > 0 ? (
-              <MatchesTable matches={matches} league={league} />
+              <MatchesTable
+                matches={matches}
+                league={league}
+                updateLeague={getLeagues}
+              />
             ) : null}
           </Box>
         </Box>
