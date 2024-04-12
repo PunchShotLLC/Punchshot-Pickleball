@@ -6,7 +6,10 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import InputBase from "@mui/material/InputBase";
 import MyLocationIcon from "@mui/icons-material/MyLocation";
+import KeyIcon from '@mui/icons-material/Key';
+import Tooltip from '@mui/material/Tooltip';
 import Divider from "@mui/material/Divider";
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material";
 import {
   FormGroup,
   FormControlLabel,
@@ -53,6 +56,7 @@ export const League = () => {
   const [checkedMale, setCheckedMale] = React.useState(true);
   const [checkedFemale, setCheckedFemale] = React.useState(true);
   const [checkedMixed, setCheckedMixed] = React.useState(true);
+  const [searchPrivate, setSearchPrivate] = React.useState(false);
 
   const navigate = useNavigate();
 
@@ -277,7 +281,7 @@ export const League = () => {
           display: "flex",
           flexDirection: "row",
           overflowY: "auto",
-          marginRight: "1em",
+          marginRight: "1em",      
         }}
       >
         <Box
@@ -286,7 +290,7 @@ export const League = () => {
             marginBottom: "2em",
             alignItems: "center",
             flexDirection: "column",
-            paddingRight: "2em",
+            paddingRight: "2em",      
           }}
         >
           <Typography
@@ -400,7 +404,7 @@ export const League = () => {
             />
           </FormGroup>
         </Box>
-        <Box sx={{ width: "100%", marginBottom: "2em", alignItems: "center", overflowY: "hidden" }}>
+        <Box sx={{ width: "100%", marginBottom: "2em", alignItems: "center", overflowY: "hidden"}}>
           <Box
             sx={{
               display: "flex",
@@ -423,6 +427,11 @@ export const League = () => {
                 paddingRight: "1em",
               }}
             />
+            <Tooltip title="Search a private league" arrow placement="top">
+              <IconButton onClick={() => setSearchPrivate(true)}>
+                <KeyIcon />
+              </IconButton>
+            </Tooltip>
             <IconButton
               onClick={fetchCurrentLocationAndLeagues}
               aria-label="current location"
@@ -430,7 +439,19 @@ export const League = () => {
               <MyLocationIcon />
             </IconButton>
           </Box>
-
+          <Dialog open={searchPrivate} onClose={() => setSearchPrivate(false)} fullWidth>
+            <Box sx={{display: "flex", flexDirection: "column", marginX: 3, marginTop: 2, marginBottom: 3}}> 
+              <Typography variant="h5" align="center">Search a Private League</Typography>
+              <TextField required variant="outlined" label="Private League Name" sx={{marginY:2}}/>
+              <TextField required variant="outlined" label="Access Code" sx={{marginBottom: 2}}/>
+              <DialogActions sx={{display: "flex",justifyContent: "space-evenly",padding: 0}}>
+                <ThemeProvider theme={buttonTheme}>
+                <Button variant="contained" color="secondary" sx={{width: "50%"}} onClick={() => setSearchPrivate(false)}>Cancel</Button>
+                <Button variant="contained" color="primary" sx={{width: "50%"}}>Search</Button>
+                </ThemeProvider>              
+              </DialogActions>
+            </Box>
+          </Dialog>
           {user?.Username === "ADMIN_PUNCHSHOT" && (
             <ThemeProvider theme={buttonTheme}>
               <Button
@@ -455,8 +476,7 @@ export const League = () => {
               overflowY: "scroll",
             }}
           >
-            {leagues !== null
-              ? leagues.map((league, index) => (
+            {leagues !== null && leagues.map((league, index) => (
                 <LeagueComp
                   key={league._id} // Assuming each league has a unique ID
                   logo={require("../../assets/images/ATL1.png")} // Make sure this path is correct
@@ -473,13 +493,12 @@ export const League = () => {
                   radius={league.Radius}
                   id={league._id}
                   private={league.Private}
-                  showLeague={league.Status === "PENDING"}
+                  showLeague={league.Status === "PENDING" && !league.Private}
                   onClick={() =>
                     navigate("/leagueInfo", { state: leagues[index] })
                   }
                 />
-              ))
-              : "No leagues found"}
+              ))}        
           </Box>
         </Box>
       </Box>
