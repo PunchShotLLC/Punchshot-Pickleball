@@ -45,7 +45,9 @@ const StyledForm = styled("form")({
   flexDirection: "column",
   gap: "16px",
   width: "calc(100% - 64px)",
-  maxWidth: "700px",
+  maxWidth: "600px",
+  height: "80vh",
+  overflowY: "auto",
 });
 
 const FormRow = styled("div")({
@@ -76,6 +78,7 @@ export const CreateLeague = ({ show, onClose }) => {
   const [leagueCenterCoords, setLeagueCenterCoords] = useState(null);
   const [address, setAddress] = useState("");
   const [privateLeague, setPrivateLeague] = useState(false);
+  const [accessCode, setAccessCode] = useState("N/A");
 
   const [leagues, setLeagues] = useState(null);
 
@@ -116,6 +119,11 @@ export const CreateLeague = ({ show, onClose }) => {
       return;
     }
 
+    if (privateLeague && accessCode.length <= 4) {
+      alert("Access Code must be longer than 4 characters!");
+      return;
+    }
+
     if (
       leagueName === null ||
       leagueName.length === 0 ||
@@ -149,6 +157,7 @@ export const CreateLeague = ({ show, onClose }) => {
       Longitude: leagueCenterCoords.lng,
       Radius: leagueRadiusMeter,
       Private: privateLeague,
+      AccessCode: accessCode,
       Day: day,
     };
 
@@ -184,6 +193,10 @@ export const CreateLeague = ({ show, onClose }) => {
   const handleChangePrivate = (event) => {
     const isChecked = event.target.checked;
     setPrivateLeague(isChecked);
+    setAccessCode("");
+    if(!isChecked) {
+      setAccessCode("N/A");
+    }
   };
 
   return (
@@ -289,6 +302,17 @@ export const CreateLeague = ({ show, onClose }) => {
           </FormRow>
           <FormRow>
             <FormControlLabel onChange={handleChangePrivate} control={<Checkbox/>} label="Private" />
+            <TextField
+              label="Access Code"
+              type="text"
+              InputLabelProps={{ shrink: true }}
+              value={accessCode}
+              onChange={(e) => setAccessCode(e.target.value)}
+              fullWidth
+              disabled={!privateLeague}
+            />
+          </FormRow>
+          <FormRow>
             <Select
               value={day}
               onChange={(e) => setDay(e.target.value)}
@@ -296,7 +320,7 @@ export const CreateLeague = ({ show, onClose }) => {
               displayEmpty
             >
               <MenuItem value="" disabled>
-                Day
+                Match Day of the Week
               </MenuItem>
               <MenuItem value="1">Monday</MenuItem>
               <MenuItem value="2">Tuesday</MenuItem>
