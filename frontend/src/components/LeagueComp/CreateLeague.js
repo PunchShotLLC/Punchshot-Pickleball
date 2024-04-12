@@ -16,6 +16,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import MapWithCircle from "./MapWithCircle";
 import axios from "axios";
 import { setDefaults, fromAddress } from "react-geocode";
+import { auto } from "@popperjs/core";
 
 const buttonTheme = createTheme({
   palette: {
@@ -32,7 +33,7 @@ const StyledModal = styled(Modal)({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  overflowY: "auto",
+  overflowY: "",
   margin: "32px",
 });
 
@@ -201,14 +202,16 @@ export const CreateLeague = ({ show, onClose }) => {
   return (
     <ThemeProvider theme={buttonTheme}>
       <StyledModal open={show} onClose={onClose}>
-        <StyledForm>
+        <Box sx={{display: "flex", flexDirection: "column", bgcolor: "white", gap: 1.5, paddingX: 2, borderRadius: 1.5}}>
+        {/* <StyledForm> */}
+          <Box sx={{display: "flex", justifyContent: "space-between", marginTop: 1}}>
+          <Typography variant="h5" >Create New League</Typography>
           <IconButton
-            onClick={onClose}
-            sx={{ position: "absolute", right: 8, top: 8 }}
+            onClick={onClose}                      
           >
             <CloseIcon />
-          </IconButton>
-          <Typography variant="h6">Create New League</Typography>
+          </IconButton>          
+          </Box>
           <FormRow>
             <TextField
               label="League Name"
@@ -343,10 +346,11 @@ export const CreateLeague = ({ show, onClose }) => {
               height="300px"
             />
           </Box>
-          <Button variant="contained" color="primary" onClick={createLeague}>
+          <Button variant="contained" color="primary" onClick={createLeague} sx={{marginBottom: 1}}>
             Create League
           </Button>
-        </StyledForm>
+        {/* </StyledForm> */}
+        </Box>
       </StyledModal>
     </ThemeProvider>
   );

@@ -8,6 +8,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
+import Button from "@mui/material/Button";
 import ScoreEnterBox from "./ScoreEnterBox";
 import { UserContext } from "../../components/UserContext/usercontext";
 
@@ -17,6 +18,7 @@ const columns = [
   { id: "team2", label: "Team 2", minWidth: 120 },
   { id: "winner", label: "Winner", minWidth: 120 },
   { id: "score", label: "Score", minWidth: 120 },
+  { id: "edit", label: "Edit", minWidth: 120 },
 ];
 
 export default function MatchesTable(props) {
@@ -56,6 +58,11 @@ export default function MatchesTable(props) {
     setEnterScoreActive(true);
   };
 
+  const handleModalClose = async () => {
+    await props.updateLeague();
+    setEnterScoreActive(false);
+  };
+
   if (!enterScoreActive) {
     return (
       <Paper elevation={0} sx={{ width: "100%", overflow: "auto" }}>
@@ -66,7 +73,7 @@ export default function MatchesTable(props) {
                 {columns.map((column) => (
                   <TableCell
                     key={column.id}
-                    align={column.align}
+                    align="center"
                     style={{
                       minWidth: column.minWidth,
                       fontFamily: "Inter",
@@ -83,19 +90,29 @@ export default function MatchesTable(props) {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   return (
-                    <TableRow
-                      onClick={() => editScore(index)}
-                      hover
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={row.code}
-                    >
+                    <TableRow role="checkbox" tabIndex={-1} key={index}>
                       {columns.map((column) => {
+                        if (column.id === "edit") {
+                          return (
+                            <TableCell key={column.id} align="center">
+                              <Button
+                                variant="contained"
+                                style={{
+                                  background: "#A1C038",
+                                }}
+                                hover="true"
+                                onClick={() => editScore(index)}
+                              >
+                                Edit Score
+                              </Button>
+                            </TableCell>
+                          );
+                        }
                         const value = row[column.id];
                         return (
                           <TableCell
                             key={column.id}
-                            align={column.align}
+                            align="center"
                             style={{
                               fontFamily: "Inter",
                               fontWeight: 400,
@@ -118,6 +135,7 @@ export default function MatchesTable(props) {
           component="div"
           rowsPerPage={rowsPerPage}
           page={page}
+          count={props.matches.length}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
@@ -126,9 +144,11 @@ export default function MatchesTable(props) {
   } else {
     return (
       <ScoreEnterBox
+        open={enterScoreActive}
         match={selectedMatch}
         matchIndex={selectedMatchIndex}
         league={props.league}
+        onClose={handleModalClose}
       />
     );
   }
