@@ -58,8 +58,8 @@ const LeaderboardTable = ({ selectedLeague }) => {
               <TableCell style={cellStyle}>Team </TableCell>
               <TableCell style={cellStyle}>Team Wins</TableCell>
               <TableCell style={cellStyle}>Team Losses</TableCell>
-              <TableCell style={cellStyle}>Matches Won</TableCell>
-              <TableCell style={cellStyle}>Matches Lost</TableCell>
+              <TableCell style={cellStyle}>Sets Won</TableCell>
+              <TableCell style={cellStyle}>Sets Lost</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

@@ -2,8 +2,13 @@ import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import Modal from "@mui/material/Modal";
+import {
+  Dialog,
+  DialogActions,
+  TextField,
+} from "@mui/material";
 import LeaderboardTable from "./LeaderboardTable";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { alpha } from "@mui/material/styles";
 
 const modalStyle = {
@@ -18,13 +23,24 @@ const modalStyle = {
   p: 4,
 };
 
+const buttonTheme = createTheme({
+  palette: {
+    primary: {
+      main: "#9146D8",
+    },
+    secondary: {
+      main: "#D9D9D9",
+    },
+  },
+});
+
 export const Leaderboard = () => {
   const [leagues, setLeagues] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [leaderboardLeagueId, setLeaderboardLeagueId] = useState(null);
   const [selectedLeagueName, setSelectedLeagueName] = useState(""); // Added state for the league's name
-  const [isModalOpen, setIsModalOpen] = useState(false); // State to manage Modal open/close
+  const [searchPrivate, setSearchPrivate] = React.useState(false);
 
   useEffect(() => {
     // Fetch ongoing leagues from the backend
@@ -84,9 +100,6 @@ export const Leaderboard = () => {
     setSelectedLeagueName(leagueName); // Set the league name
     setSuggestions([]);
   };
-
-  const handleOpenModal = () => setIsModalOpen(true);
-  const handleCloseModal = () => setIsModalOpen(false);
 
   return (
     <Box>
@@ -192,7 +205,7 @@ export const Leaderboard = () => {
 
             <Button
               variant="contained"
-              onClick={handleOpenModal}
+              onClick={() => setSearchPrivate(true)}
               style={{
                 height: "30px",
                 marginLeft: "10px",
@@ -245,21 +258,54 @@ export const Leaderboard = () => {
           </Box>
         </Box>
       </Box>
-      <Modal
-        open={isModalOpen}
-        onClose={handleCloseModal}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+      <Dialog
+        open={searchPrivate}
+        onClose={() => setSearchPrivate(false)}
+        fullWidth
       >
-        <Box sx={modalStyle}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Filler
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            marginX: 3,
+            marginTop: 2,
+            marginBottom: 3,
+          }}
+        >
+          <Typography variant="h5" align="center">
+            Search a Private League
           </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Placeholder content goes here.
-          </Typography>
+          <TextField
+            required
+            variant="outlined"
+            label="Private League Name"
+            sx={{ marginY: 2 }}
+          />
+          <TextField
+            required
+            variant="outlined"
+            label="Access Code"
+            sx={{ marginBottom: 2 }}
+          />
+          <DialogActions
+            sx={{ display: "flex", justifyContent: "space-evenly", padding: 0 }}
+          >
+            <ThemeProvider theme={buttonTheme}>
+              <Button
+                variant="contained"
+                color="secondary"
+                sx={{ width: "50%" }}
+                onClick={() => setSearchPrivate(false)}
+              >
+                Cancel
+              </Button>
+              <Button variant="contained" color="primary" sx={{ width: "50%" }}>
+                Search
+              </Button>
+            </ThemeProvider>
+          </DialogActions>
         </Box>
-      </Modal>
+      </Dialog>
     </Box>
   );
 };

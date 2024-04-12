@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import MatchesTable from "./MatchesTable";
 import { alpha, styled } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import axios from "axios";
+import { Dialog, DialogActions, TextField } from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 function createData(
   league,
@@ -18,12 +21,24 @@ function createData(
   return { league, team1, team2, winner, score, team1captain, team2captain };
 }
 
+const buttonTheme = createTheme({
+  palette: {
+    primary: {
+      main: "#9146D8",
+    },
+    secondary: {
+      main: "#D9D9D9",
+    },
+  },
+});
+
 export const Matches = () => {
   const [matches, setMatches] = useState([]);
   const [leagues, setLeagues] = useState([]);
   const [searchLeagueName, setSearchLeagueName] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [currentLeague, setCurrentLeague] = useState(null); // Renamed from 'league' to avoid confusion in useEffect dependencies
+  const [searchPrivate, setSearchPrivate] = React.useState(false);
 
   const getLeagues = async (search = "") => {
     try {
@@ -58,10 +73,9 @@ export const Matches = () => {
 
   const handleSuggestionClick = (leagueName) => {
     setSearchLeagueName(leagueName);
-    setMatchesInTable(leagueName); 
+    setMatchesInTable(leagueName);
     setSuggestions([]);
   };
-  
 
   const setMatchesInTable = (leagueName) => {
     const league = leagues.find((l) => l.LeagueName === leagueName);
@@ -132,70 +146,78 @@ export const Matches = () => {
             captain, click on a match to edit or submit a score.
           </Typography>
         </Box>
-
         <Box
-  display="flex"
-  flexDirection="column"
-  justifyContent="center"
-  alignItems="center"
-  alignContent="center"
-  paddingTop="3em"
-  paddingBottom="3em"
-  paddingLeft="25%"
-  width="50%"
-  position="relative"  // Ensure the position context is set correctly
->
-  <input
-    value={searchLeagueName}
-    onChange={handleSearchChange}
-    placeholder="Search League Name"
-    style={{
-      width: "200px",
-      height: "30px",
-      marginBottom: "10px",
-      padding: "10px",
-      fontFamily: "Arial",
-    }}
-  />
-  {searchLeagueName.length >= 3 && suggestions.length > 0 && (
-    <Box
-    sx={{
-      width: "200px",
-      maxHeight:
-        suggestions.length > 3
-          ? "150px"
-          : `${40 * suggestions.length}px`, // Dynamic maxHeight adjustment
-      overflowY: "auto",
-      position: "absolute",
-      marginTop: "10px", // Adjusted for clear separation
-      background: "white",
-      borderRadius: "5px",
-      boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
-      zIndex: 5, // Ensure this is on top of other elements
-    }}
-  >
-    {suggestions.map((suggestion) => (
-      <Box
-        key={suggestion._id}
-        sx={{
-          padding: "10px",
-          cursor: "pointer",
-          "&:hover": {
-            background: "#f0f0f0",
-          },
-        }}
-        onClick={() =>
-          handleSuggestionClick(
-            suggestion.LeagueName,
-            suggestion._id
-          )
-        }
-      >
-        {suggestion.LeagueName}
-      </Box>
-      ))}
-    </Box>
-  )}
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          paddingTop="3em"
+          paddingBottom="3em"
+        >
+          <Box display="flex" alignItems="center">
+            <input
+              value={searchLeagueName}
+              onChange={handleSearchChange}
+              placeholder="Search League Name"
+              style={{
+                width: "200px",
+                height: "30px",
+                marginBottom: "10px",
+                padding: "10px",
+                fontFamily: "Arial",
+              }}
+            />
+            {searchLeagueName.length >= 3 && suggestions.length > 0 && (
+              <Box
+                sx={{
+                  width: "200px",
+                  maxHeight:
+                    suggestions.length > 3
+                      ? "150px"
+                      : `${40 * suggestions.length}px`, // Dynamic maxHeight adjustment
+                  overflowY: "auto",
+                  position: "absolute",
+                  marginTop: "10px", // Adjusted for clear separation
+                  background: "white",
+                  borderRadius: "5px",
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+                  zIndex: 5, // Ensure this is on top of other elements
+                }}
+              >
+                {suggestions.map((suggestion) => (
+                  <Box
+                    key={suggestion._id}
+                    sx={{
+                      padding: "10px",
+                      cursor: "pointer",
+                      "&:hover": {
+                        background: "#f0f0f0",
+                      },
+                    }}
+                    onClick={() =>
+                      handleSuggestionClick(
+                        suggestion.LeagueName,
+                        suggestion._id
+                      )
+                    }
+                  >
+                    {suggestion.LeagueName}
+                  </Box>
+                ))}
+              </Box>
+            )}
+            <Button
+              variant="contained"
+              onClick={() => setSearchPrivate(true)}
+              style={{
+                height: "30px",
+                marginLeft: "10px",
+                backgroundColor: "#1976D2",
+              }} // Adjust the marginLeft as needed, and set the background color to blue
+            >
+              Search Private
+            </Button>
+          </Box>
 
           <Box
             sx={{
@@ -220,6 +242,62 @@ export const Matches = () => {
               />
             ) : null}
           </Box>
+          <Dialog
+            open={searchPrivate}
+            onClose={() => setSearchPrivate(false)}
+            fullWidth
+          >
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                marginX: 3,
+                marginTop: 2,
+                marginBottom: 3,
+              }}
+            >
+              <Typography variant="h5" align="center">
+                Search a Private League
+              </Typography>
+              <TextField
+                required
+                variant="outlined"
+                label="Private League Name"
+                sx={{ marginY: 2 }}
+              />
+              <TextField
+                required
+                variant="outlined"
+                label="Access Code"
+                sx={{ marginBottom: 2 }}
+              />
+              <DialogActions
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-evenly",
+                  padding: 0,
+                }}
+              >
+                <ThemeProvider theme={buttonTheme}>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    sx={{ width: "50%" }}
+                    onClick={() => setSearchPrivate(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{ width: "50%" }}
+                  >
+                    Search
+                  </Button>
+                </ThemeProvider>
+              </DialogActions>
+            </Box>
+          </Dialog>
         </Box>
       </Box>
     </Box>
