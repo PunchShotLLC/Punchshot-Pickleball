@@ -59,11 +59,10 @@ export const Matches = () => {
       return;
     }
 
-
     const league = value;
 
     for (let i = 0; i < leagues.length; i++) {
-      if (leagues[i]["LeagueName"] === leagueName) {
+      if (leagues[i]["LeagueName"] === league) {
         let matchesToSet = leagues[i]["Matches"];
         console.log(matchesToSet);
 
@@ -102,7 +101,7 @@ export const Matches = () => {
   }, []);
 
   useEffect(() => {
-    setMatchesInTable({ target: { value: selectedLeague } });
+    setMatchesInTable({ target: { value: league } });
   }, [leagues]);
 
   return (

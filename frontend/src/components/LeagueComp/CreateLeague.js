@@ -87,7 +87,6 @@ export const CreateLeague = ({ show, onClose }) => {
     key: "",
     language: "en", // Default language for responses.
     region: "es", // Default region for responses.
-    
   });
 
   /**
@@ -108,22 +107,6 @@ export const CreateLeague = ({ show, onClose }) => {
   };
 
   const createLeague = async () => {
-    console.log("I GOT HERE");
-
-    // Ensure registration date is at least a week before the league start date
-    const weekInMilliseconds = 7 * 24 * 60 * 60 * 1000; // One week
-    if (new Date(startDate) - new Date(registrationDate) < weekInMilliseconds) {
-      alert(
-        "Team registration date must be at least a week before the league start date."
-      );
-      return;
-    }
-
-    if (privateLeague && accessCode.length <= 4) {
-      alert("Access Code must be longer than 4 characters!");
-      return;
-    }
-
     if (
       leagueName === null ||
       leagueName.length === 0 ||
@@ -136,9 +119,39 @@ export const CreateLeague = ({ show, onClose }) => {
       leagueDivision === null ||
       leagueDivision.length === 0 ||
       leagueSkillLevel === null ||
-      leagueSkillLevel.length === 0
+      leagueSkillLevel.length === 0 ||
+      day === null ||
+      day.length === 0
     ) {
       alert("All fields are required!");
+      return;
+    }
+
+    // Ensure registration date is at least a week before the league start date
+    const weekInMilliseconds = 7 * 24 * 60 * 60 * 1000; // One week
+    if (new Date(startDate) - new Date(registrationDate) < weekInMilliseconds) {
+      alert(
+        "Team registration date must be at least a week before the league start date."
+      );
+      return;
+    }
+    if (new Date(endDate) - new Date(startDate) < 4 * weekInMilliseconds) {
+      alert(
+        "League start date must be at least 4 weeks before the league end date."
+      );
+      return;
+    }
+    if (
+      new Date(endDate + " 12:00:00").getDay() !== parseInt(day) &&
+      new Date(startDate + " 12:00:00").getDay() !== parseInt(day)
+    ) {
+      console.log(new Date(endDate).getDay());
+      alert("League start date and end date must be on the match day.");
+      return;
+    }
+
+    if (privateLeague && accessCode.length <= 4) {
+      alert("Access Code must be longer than 4 characters!");
       return;
     }
 
@@ -194,7 +207,7 @@ export const CreateLeague = ({ show, onClose }) => {
     const isChecked = event.target.checked;
     setPrivateLeague(isChecked);
     setAccessCode("");
-    if(!isChecked) {
+    if (!isChecked) {
       setAccessCode("N/A");
     }
   };
@@ -202,15 +215,28 @@ export const CreateLeague = ({ show, onClose }) => {
   return (
     <ThemeProvider theme={buttonTheme}>
       <StyledModal open={show} onClose={onClose}>
-        <Box sx={{display: "flex", flexDirection: "column", bgcolor: "white", gap: 1.5, paddingX: 2, borderRadius: 1.5}}>
-        {/* <StyledForm> */}
-          <Box sx={{display: "flex", justifyContent: "space-between", marginTop: 1}}>
-          <Typography variant="h5" >Create New League</Typography>
-          <IconButton
-            onClick={onClose}                      
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            bgcolor: "white",
+            gap: 1.5,
+            paddingX: 2,
+            borderRadius: 1.5,
+          }}
+        >
+          {/* <StyledForm> */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: 1,
+            }}
           >
-            <CloseIcon />
-          </IconButton>          
+            <Typography variant="h5">Create New League</Typography>
+            <IconButton onClick={onClose}>
+              <CloseIcon />
+            </IconButton>
           </Box>
           <FormRow>
             <TextField
@@ -301,7 +327,11 @@ export const CreateLeague = ({ show, onClose }) => {
             />
           </FormRow>
           <FormRow>
-            <FormControlLabel onChange={handleChangePrivate} control={<Checkbox/>} label="Private" />
+            <FormControlLabel
+              onChange={handleChangePrivate}
+              control={<Checkbox />}
+              label="Private"
+            />
             <TextField
               label="Access Code"
               type="text"
@@ -346,10 +376,15 @@ export const CreateLeague = ({ show, onClose }) => {
               height="300px"
             />
           </Box>
-          <Button variant="contained" color="primary" onClick={createLeague} sx={{marginBottom: 1}}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={createLeague}
+            sx={{ marginBottom: 1 }}
+          >
             Create League
           </Button>
-        {/* </StyledForm> */}
+          {/* </StyledForm> */}
         </Box>
       </StyledModal>
     </ThemeProvider>

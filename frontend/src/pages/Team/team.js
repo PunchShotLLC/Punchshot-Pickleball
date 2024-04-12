@@ -344,6 +344,7 @@ export const TeamSelect = (props) => {
 
     alert("A request is being sent to the captain");
     // Make the GET request to send an email
+    console.log(location.state.Teams[teamIndex]);
     const emailApiUrl = `http://localhost:8000/leagues/sendRequestEmail?sendTo=${location.state.Teams[teamIndex].CaptainEmail}&user=${user.Username}`;
 
     fetch(emailApiUrl)

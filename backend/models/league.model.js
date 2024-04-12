@@ -66,7 +66,7 @@ const leagueSchema = new Schema({
   },
   Division: {
     type: String,
-    enum: ["Men", "Women", "Mixed"],
+    enum: ["Male", "Female", "Mixed"],
     required: true,
   },
   Latitude: {
