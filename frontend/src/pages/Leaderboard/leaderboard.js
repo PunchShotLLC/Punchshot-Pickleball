@@ -144,10 +144,9 @@ export const Leaderboard = () => {
               onKeyPress={handleKeyPress}
               style={{
                 width: "200px",
-                height: "50px",
+                height: "30px",
                 marginBottom: "10px",
                 padding: "10px",
-                borderRadius: "10px",
                 fontFamily: "Arial",
               }}
             />
@@ -158,7 +157,7 @@ export const Leaderboard = () => {
                   maxHeight:
                     suggestions.length > 3
                       ? "150px"
-                      : `${50 * suggestions.length}px`, // Dynamic maxHeight adjustment
+                      : `${40 * suggestions.length}px`, // Dynamic maxHeight adjustment
                   overflowY: "auto",
                   position: "absolute",
                   marginTop: "100px", // Adjusted for clear separation
@@ -194,7 +193,11 @@ export const Leaderboard = () => {
             <Button
               variant="contained"
               onClick={handleOpenModal}
-              style={{ marginLeft: "10px", backgroundColor: "#1976D2" }} // Adjust the marginLeft as needed, and set the background color to blue
+              style={{
+                height: "30px",
+                marginLeft: "10px",
+                backgroundColor: "#1976D2",
+              }} // Adjust the marginLeft as needed, and set the background color to blue
             >
               Search Private
             </Button>
@@ -211,7 +214,7 @@ export const Leaderboard = () => {
           {selectedLeagueName && (
             <Typography
               sx={{
-                color: "black",
+                color: "white",
                 fontFamily: "Inter",
                 fontSize: "1.5rem",
                 fontWeight: "600",
@@ -243,20 +246,20 @@ export const Leaderboard = () => {
         </Box>
       </Box>
       <Modal
-          open={isModalOpen}
-          onClose={handleCloseModal}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={modalStyle}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              Filler
-            </Typography>
-            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-              Placeholder content goes here.
-            </Typography>
-          </Box>
-        </Modal>
+        open={isModalOpen}
+        onClose={handleCloseModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={modalStyle}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Filler
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Placeholder content goes here.
+          </Typography>
+        </Box>
+      </Modal>
     </Box>
   );
 };
