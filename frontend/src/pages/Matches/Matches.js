@@ -1,10 +1,8 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import MatchesTable from "./MatchesTable";
-import { alpha } from "@mui/material/styles";
-import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
+import { alpha, styled } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import axios from "axios";
 
@@ -20,79 +18,22 @@ function createData(
   return { league, team1, team2, winner, score, team1captain, team2captain };
 }
 
-const StyledInput = styled(InputBase)({
-  borderRadius: "1em",
-  border: "3px solid #000000",
-  fontSize: "calc(0.8vw + 0.1em)",
-  paddingLeft: "1vw",
-  paddingRight: "48px", // Make room for the icon button on the right
-  width: "100%", // Ensure the input stretches to fill the flex container
-});
-
 export const Matches = () => {
   const [matches, setMatches] = useState([]);
   const [leagues, setLeagues] = useState([]);
   const [searchLeagueName, setSearchLeagueName] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [currentLeague, setCurrentLeague] = useState(null); // Renamed from 'league' to avoid confusion in useEffect dependencies
 
-  // This state is for the current league selected
-  // The league needs to be passed from
-  // Matches -> MatchTable -> ScoreEnterBox so that
-  // we can call the updateLeague endpoint
-  const [league, setLeague] = useState(null);
-
-  const getLeagues = async (leagueName) => {
+  const getLeagues = async (search = "") => {
     try {
-      const url = `http://localhost:8000/leagues/${
-        leagueName ? leagueName : ""
-      }`;
-      const response = await axios.get(url);
+      const response = await axios.get(
+        `http://localhost:8000/leagues/${search}`
+      );
       setLeagues(response.data);
     } catch (error) {
       console.error("Error fetching leagues:", error);
       alert("Failed to fetch leagues");
-    }
-  };
-
-  const setMatchesInTable = (value) => {
-    if (value === "Select" || value === null) {
-      setMatches([]);
-      return;
-    }
-
-    const league = value;
-
-    for (let i = 0; i < leagues.length; i++) {
-      if (leagues[i]["LeagueName"] === league) {
-        let matchesToSet = leagues[i]["Matches"];
-        console.log(matchesToSet);
-
-        // Make lookup table between team and captains
-        let leagueTeams = leagues[i]["Teams"];
-        let captains = {};
-        for (let i = 0; i < leagueTeams.length; i++) {
-          captains[leagueTeams[i]["TeamName"]] = leagueTeams[i]["TeamCaptain"];
-        }
-
-        let matchesAfterCreateData = [];
-        for (let j = 0; j < matchesToSet.length; j++) {
-          let captain1 = captains[matchesToSet[j]["Team1"]];
-          let captain2 = captains[matchesToSet[j]["Team2"]];
-          matchesAfterCreateData.push(
-            createData(
-              matchesToSet[j]["Date"],
-              matchesToSet[j]["Team1"],
-              matchesToSet[j]["Team2"],
-              captain1,
-              captain2,
-              matchesToSet[j]["WinnerTeam"],
-              matchesToSet[j]["Score"]
-            )
-          );
-        }
-
-        setMatches(matchesAfterCreateData);
-        setLeague(leagues[i]);
-      }
     }
   };
 
@@ -101,8 +42,56 @@ export const Matches = () => {
   }, []);
 
   useEffect(() => {
-    setMatchesInTable({ target: { value: league } });
-  }, [leagues]);
+    if (searchLeagueName === "") {
+      setSuggestions([]);
+    } else {
+      const filtered = leagues.filter((league) =>
+        league.LeagueName.toLowerCase().includes(searchLeagueName.toLowerCase())
+      );
+      setSuggestions(filtered);
+    }
+  }, [searchLeagueName, leagues]);
+
+  const handleSearchChange = (event) => {
+    setSearchLeagueName(event.target.value);
+  };
+
+  const handleSuggestionClick = (leagueName) => {
+    setSearchLeagueName(leagueName);
+    setMatchesInTable(leagueName); 
+    setSuggestions([]);
+  };
+  
+
+  const setMatchesInTable = (leagueName) => {
+    const league = leagues.find((l) => l.LeagueName === leagueName);
+    if (!league) {
+      setMatches([]);
+      setCurrentLeague(null);
+      return;
+    }
+    setCurrentLeague(league);
+
+    let matchesAfterCreateData = league.Matches.map((match) => {
+      let captain1 = league.Teams.find(
+        (t) => t.TeamName === match.Team1
+      )?.TeamCaptain;
+      let captain2 = league.Teams.find(
+        (t) => t.TeamName === match.Team2
+      )?.TeamCaptain;
+      return createData(
+        match.Date,
+        match.Team1,
+        match.Team2,
+        captain1,
+        captain2,
+        match.WinnerTeam,
+        match.Score
+      );
+    });
+
+    setMatches(matchesAfterCreateData);
+  };
 
   return (
     <Box>
@@ -145,58 +134,68 @@ export const Matches = () => {
         </Box>
 
         <Box
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-          alignContent="center"
-          paddingTop="3em"
-          paddingBottom="3em"
-          paddingLeft="25%"
-          width="50%"
-        >
-          <StyledInput
-            value={searchLeagueName}
-            onChange={(e) => {
-              setSearchLeagueName(e.target.value);
-              getLeagues(e.target.value);
-              console.log(leagues);
-            }}
-            placeholder="Search League Name"
-            sx={{
-              paddingLeft: "1em",
-              paddingRight: "1em",
-              color: "white",
-              borderColor: "white",
-            }}
-          />
-          <Box
-            sx={{
-              maxHeight: "70%",
-              paddingLeft: "1em",
-              width: "100%",
-              paddingRight: "1em",
-              overflowY: "scroll",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            {leagues.length !== 0
-              ? leagues.map(
-                  (league, index) =>
-                    !league.Private && (
-                      <button
-                        id={league["LeagueName"]}
-                        key={index}
-                        onClick={() => setMatchesInTable(league["LeagueName"])}
-                        style={{ textAlign: "left" }}
-                      >
-                        {league["LeagueName"]}
-                      </button>
-                    )
-                )
-              : null}
-          </Box>
+  display="flex"
+  flexDirection="column"
+  justifyContent="center"
+  alignItems="center"
+  alignContent="center"
+  paddingTop="3em"
+  paddingBottom="3em"
+  paddingLeft="25%"
+  width="50%"
+  position="relative"  // Ensure the position context is set correctly
+>
+  <input
+    value={searchLeagueName}
+    onChange={handleSearchChange}
+    placeholder="Search League Name"
+    style={{
+      width: "200px",
+      height: "30px",
+      marginBottom: "10px",
+      padding: "10px",
+      fontFamily: "Arial",
+    }}
+  />
+  {searchLeagueName.length >= 3 && suggestions.length > 0 && (
+    <Box
+    sx={{
+      width: "200px",
+      maxHeight:
+        suggestions.length > 3
+          ? "150px"
+          : `${40 * suggestions.length}px`, // Dynamic maxHeight adjustment
+      overflowY: "auto",
+      position: "absolute",
+      marginTop: "10px", // Adjusted for clear separation
+      background: "white",
+      borderRadius: "5px",
+      boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+      zIndex: 5, // Ensure this is on top of other elements
+    }}
+  >
+    {suggestions.map((suggestion) => (
+      <Box
+        key={suggestion._id}
+        sx={{
+          padding: "10px",
+          cursor: "pointer",
+          "&:hover": {
+            background: "#f0f0f0",
+          },
+        }}
+        onClick={() =>
+          handleSuggestionClick(
+            suggestion.LeagueName,
+            suggestion._id
+          )
+        }
+      >
+        {suggestion.LeagueName}
+      </Box>
+      ))}
+    </Box>
+  )}
 
           <Box
             sx={{
@@ -216,7 +215,7 @@ export const Matches = () => {
             {matches.length > 0 ? (
               <MatchesTable
                 matches={matches}
-                league={league}
+                league={currentLeague}
                 updateLeague={getLeagues}
               />
             ) : null}
