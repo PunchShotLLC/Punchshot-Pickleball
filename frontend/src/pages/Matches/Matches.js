@@ -4,6 +4,9 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import MatchesTable from "./MatchesTable";
 import { alpha } from "@mui/material/styles";
+import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
+import InputBase from "@mui/material/InputBase";
+import axios from "axios";
 
 function createData(
   league,
@@ -17,10 +20,19 @@ function createData(
   return { league, team1, team2, winner, score, team1captain, team2captain };
 }
 
+const StyledInput = styled(InputBase)({
+  borderRadius: "1em",
+  border: "3px solid #000000",
+  fontSize: "calc(0.8vw + 0.1em)",
+  paddingLeft: "1vw",
+  paddingRight: "48px", // Make room for the icon button on the right
+  width: "100%", // Ensure the input stretches to fill the flex container
+});
+
 export const Matches = () => {
   const [matches, setMatches] = useState([]);
   const [leagues, setLeagues] = useState([]);
-  const [selectedLeague, setSelectedLeague] = useState("");
+  const [searchLeagueName, setSearchLeagueName] = useState("");
 
   // This state is for the current league selected
   // The league needs to be passed from
@@ -28,26 +40,27 @@ export const Matches = () => {
   // we can call the updateLeague endpoint
   const [league, setLeague] = useState(null);
 
-  const getLeagues = async (leagueId) => {
-    // Get the leagues
-    const rawResponse = await fetch(`http://localhost:8000/leagues/`).catch(
-      (err) => console.log(err)
-    );
-    const content = await rawResponse.json();
-
-    setLeagues(content);
-
-    // console.log(leagues);
+  const getLeagues = async (leagueName) => {
+    try {
+      const url = `http://localhost:8000/leagues/${
+        leagueName ? leagueName : ""
+      }`;
+      const response = await axios.get(url);
+      setLeagues(response.data);
+    } catch (error) {
+      console.error("Error fetching leagues:", error);
+      alert("Failed to fetch leagues");
+    }
   };
 
-  const setMatchesInTable = (event) => {
-    if (event.target.value === "Select") {
+  const setMatchesInTable = (value) => {
+    if (value === "Select" || value === null) {
       setMatches([]);
       return;
     }
 
-    const leagueName = event.target.value;
-    setSelectedLeague(leagueName);
+
+    const league = value;
 
     for (let i = 0; i < leagues.length; i++) {
       if (leagues[i]["LeagueName"] === leagueName) {
@@ -137,38 +150,54 @@ export const Matches = () => {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
+          alignContent="center"
           paddingTop="3em"
           paddingBottom="3em"
+          paddingLeft="25%"
+          width="50%"
         >
-          <select
-            name="leagues"
-            id="leagues"
-            onChange={setMatchesInTable}
-            style={{
-              width: "200px",
-              height: "50px",
-              marginBottom: "10px",
-              padding: "10px",
-              borderRadius: "10px",
-
-              fontFamily: "Arial",
+          <StyledInput
+            value={searchLeagueName}
+            onChange={(e) => {
+              setSearchLeagueName(e.target.value);
+              getLeagues(e.target.value);
+              console.log(leagues);
+            }}
+            placeholder="Search League Name"
+            sx={{
+              paddingLeft: "1em",
+              paddingRight: "1em",
+              color: "white",
+              borderColor: "white",
+            }}
+          />
+          <Box
+            sx={{
+              maxHeight: "70%",
+              paddingLeft: "1em",
+              width: "100%",
+              paddingRight: "1em",
+              overflowY: "scroll",
+              display: "flex",
+              flexDirection: "column",
             }}
           >
-            <option id="none">Select League</option>
-
             {leagues.length !== 0
               ? leagues.map(
                   (league, index) =>
-                    !league.Private && ( // Add your condition here
-                      <option id={league["LeagueName"]} key={index}>
-                        {" "}
-                        {/* Ensure you have a unique key */}
+                    !league.Private && (
+                      <button
+                        id={league["LeagueName"]}
+                        key={index}
+                        onClick={() => setMatchesInTable(league["LeagueName"])}
+                        style={{ textAlign: "left" }}
+                      >
                         {league["LeagueName"]}
-                      </option>
+                      </button>
                     )
                 )
               : null}
-          </select>
+          </Box>
 
           <Box
             sx={{
