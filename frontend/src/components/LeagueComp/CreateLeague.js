@@ -16,6 +16,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import MapWithCircle from "./MapWithCircle";
 import axios from "axios";
 import { setDefaults, fromAddress } from "react-geocode";
+import { auto } from "@popperjs/core";
 
 const buttonTheme = createTheme({
   palette: {
@@ -32,7 +33,7 @@ const StyledModal = styled(Modal)({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  overflowY: "auto",
+  overflowY: "",
   margin: "32px",
 });
 
@@ -45,6 +46,8 @@ const StyledForm = styled("form")({
   gap: "16px",
   width: "calc(100% - 64px)",
   maxWidth: "600px",
+  height: "80vh",
+  overflowY: "auto",
 });
 
 const FormRow = styled("div")({
@@ -75,6 +78,7 @@ export const CreateLeague = ({ show, onClose }) => {
   const [leagueCenterCoords, setLeagueCenterCoords] = useState(null);
   const [address, setAddress] = useState("");
   const [privateLeague, setPrivateLeague] = useState(false);
+  const [accessCode, setAccessCode] = useState("N/A");
 
   const [leagues, setLeagues] = useState(null);
 
@@ -115,6 +119,11 @@ export const CreateLeague = ({ show, onClose }) => {
       return;
     }
 
+    if (privateLeague && accessCode.length <= 4) {
+      alert("Access Code must be longer than 4 characters!");
+      return;
+    }
+
     if (
       leagueName === null ||
       leagueName.length === 0 ||
@@ -148,6 +157,7 @@ export const CreateLeague = ({ show, onClose }) => {
       Longitude: leagueCenterCoords.lng,
       Radius: leagueRadiusMeter,
       Private: privateLeague,
+      AccessCode: accessCode,
       Day: day,
     };
 
@@ -183,19 +193,25 @@ export const CreateLeague = ({ show, onClose }) => {
   const handleChangePrivate = (event) => {
     const isChecked = event.target.checked;
     setPrivateLeague(isChecked);
+    setAccessCode("");
+    if(!isChecked) {
+      setAccessCode("N/A");
+    }
   };
 
   return (
     <ThemeProvider theme={buttonTheme}>
       <StyledModal open={show} onClose={onClose}>
-        <StyledForm>
+        <Box sx={{display: "flex", flexDirection: "column", bgcolor: "white", gap: 1.5, paddingX: 2, borderRadius: 1.5}}>
+        {/* <StyledForm> */}
+          <Box sx={{display: "flex", justifyContent: "space-between", marginTop: 1}}>
+          <Typography variant="h5" >Create New League</Typography>
           <IconButton
-            onClick={onClose}
-            sx={{ position: "absolute", right: 8, top: 8 }}
+            onClick={onClose}                      
           >
             <CloseIcon />
-          </IconButton>
-          <Typography variant="h6">Create New League</Typography>
+          </IconButton>          
+          </Box>
           <FormRow>
             <TextField
               label="League Name"
@@ -286,6 +302,17 @@ export const CreateLeague = ({ show, onClose }) => {
           </FormRow>
           <FormRow>
             <FormControlLabel onChange={handleChangePrivate} control={<Checkbox/>} label="Private" />
+            <TextField
+              label="Access Code"
+              type="text"
+              InputLabelProps={{ shrink: true }}
+              value={accessCode}
+              onChange={(e) => setAccessCode(e.target.value)}
+              fullWidth
+              disabled={!privateLeague}
+            />
+          </FormRow>
+          <FormRow>
             <Select
               value={day}
               onChange={(e) => setDay(e.target.value)}
@@ -293,7 +320,7 @@ export const CreateLeague = ({ show, onClose }) => {
               displayEmpty
             >
               <MenuItem value="" disabled>
-                Day
+                Match Day of the Week
               </MenuItem>
               <MenuItem value="1">Monday</MenuItem>
               <MenuItem value="2">Tuesday</MenuItem>
@@ -319,10 +346,11 @@ export const CreateLeague = ({ show, onClose }) => {
               height="300px"
             />
           </Box>
-          <Button variant="contained" color="primary" onClick={createLeague}>
+          <Button variant="contained" color="primary" onClick={createLeague} sx={{marginBottom: 1}}>
             Create League
           </Button>
-        </StyledForm>
+        {/* </StyledForm> */}
+        </Box>
       </StyledModal>
     </ThemeProvider>
   );

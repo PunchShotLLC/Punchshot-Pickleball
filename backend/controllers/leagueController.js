@@ -24,6 +24,7 @@ export const createLeague = async (req, res, body) => {
     Longitude,
     Radius,
     Private,
+    AccessCode,
     Day,
   } = req.body;
 
@@ -112,6 +113,7 @@ export const createLeague = async (req, res, body) => {
     Radius,
     Day,
     Private,
+    AccessCode,
   };
 
   const checkLeagueParamsResult = checkLeagueParams(leagueObject);
@@ -137,6 +139,7 @@ export const createLeague = async (req, res, body) => {
       Longitude,
       Radius,
       Private,
+      AccessCode,
       Day,
     }).save();
 

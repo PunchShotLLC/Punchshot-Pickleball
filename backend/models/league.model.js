@@ -91,6 +91,10 @@ const leagueSchema = new Schema({
     type: Boolean,
     required: false,
   },
+  AccessCode: {
+    type: String,
+    required: true,
+  },
 });
 
 export default mongoose.model("League", leagueSchema);

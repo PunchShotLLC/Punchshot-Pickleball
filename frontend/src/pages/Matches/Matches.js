@@ -59,11 +59,11 @@ export const Matches = () => {
       return;
     }
 
-    // const league = event.target.value;
+
     const league = value;
 
     for (let i = 0; i < leagues.length; i++) {
-      if (leagues[i]["LeagueName"] === league) {
+      if (leagues[i]["LeagueName"] === leagueName) {
         let matchesToSet = leagues[i]["Matches"];
         console.log(matchesToSet);
 
@@ -76,11 +76,8 @@ export const Matches = () => {
 
         let matchesAfterCreateData = [];
         for (let j = 0; j < matchesToSet.length; j++) {
-          console.log("Running createData");
-          console.log("Captain of team 1:");
           let captain1 = captains[matchesToSet[j]["Team1"]];
           let captain2 = captains[matchesToSet[j]["Team2"]];
-          console.log(captain1);
           matchesAfterCreateData.push(
             createData(
               matchesToSet[j]["Date"],
@@ -94,9 +91,6 @@ export const Matches = () => {
           );
         }
 
-        console.log("matches after create data");
-        console.log(matchesAfterCreateData);
-
         setMatches(matchesAfterCreateData);
         setLeague(leagues[i]);
       }
@@ -106,6 +100,10 @@ export const Matches = () => {
   useEffect(() => {
     getLeagues();
   }, []);
+
+  useEffect(() => {
+    setMatchesInTable({ target: { value: selectedLeague } });
+  }, [leagues]);
 
   return (
     <Box>
@@ -217,7 +215,11 @@ export const Matches = () => {
             }}
           >
             {matches.length > 0 ? (
-              <MatchesTable matches={matches} league={league} />
+              <MatchesTable
+                matches={matches}
+                league={league}
+                updateLeague={getLeagues}
+              />
             ) : null}
           </Box>
         </Box>
