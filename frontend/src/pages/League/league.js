@@ -454,6 +454,8 @@ export const League = () => {
               <MyLocationIcon />
             </IconButton>
           </Box>
+
+          {/* Modal for searching a private league */}
           <Dialog
             open={searchPrivate}
             onClose={() => setSearchPrivate(false)}
@@ -510,6 +512,7 @@ export const League = () => {
               </DialogActions>
             </Box>
           </Dialog>
+          
           {user?.Username === "ADMIN_PUNCHSHOT" && (
             <ThemeProvider theme={buttonTheme}>
               <Button
