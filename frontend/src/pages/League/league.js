@@ -53,7 +53,7 @@ const buttonTheme = createTheme({
 export const League = () => {
   const [leagues, setLeagues] = useState(null);
   const [allLeagues, setAllLeagues] = useState(null);
-  const { loading, user } = useContext(UserContext);
+  const { user, loading } = useContext(UserContext);
   const [renderCreateLeague, setRenderCreateLeague] = useState(false);
   const [searchLeagueName, setSearchLeagueName] = useState("");
   const [checkedNovice, setCheckedNovice] = React.useState(true);
@@ -65,7 +65,7 @@ export const League = () => {
   const [searchPrivate, setSearchPrivate] = React.useState(false);
 
   const navigate = useNavigate();
-
+  
   useEffect(() => {
     if (!loading && !user) {
       navigate("/");
@@ -74,6 +74,36 @@ export const League = () => {
       getLeagues();
     }
   }, [user, loading, navigate]);
+
+  const getLeagues = async (leagueName) => {
+    try {
+      const url = `http://localhost:8000/leagues/${
+        leagueName ? leagueName : ""
+      }`;
+      const response = await axios.get(url);
+      const filteredLeagues = response.data.filter((league) => {
+        console.log(league);
+        if (
+          ((checkedNovice && league.SkillLevel === "Novice") ||
+            (checkedIntermediate && league.SkillLevel === "Intermediate") ||
+            (checkedAdvanced && league.SkillLevel === "Advanced")) &&
+          ((checkedMale && league.Division === "Male") ||
+            (checkedFemale && league.Division === "Female") ||
+            (checkedMixed && league.Division === "Mixed"))
+        ) {
+          return true;
+        }
+        return false;
+      });
+
+      console.log(filteredLeagues);
+      setLeagues(filteredLeagues);
+      setAllLeagues(response.data);
+    } catch (error) {
+      console.error("Error fetching leagues:", error);
+      alert("Failed to fetch leagues");
+    }
+  };
 
   const handleChangeNovice = (event) => {
     console.log(event.target.checked);
@@ -207,35 +237,6 @@ export const League = () => {
     setLeagues(filteredLeagues);
   };
 
-  const getLeagues = async (leagueName) => {
-    try {
-      const url = `http://localhost:8000/leagues/${
-        leagueName ? leagueName : ""
-      }`;
-      const response = await axios.get(url);
-      const filteredLeagues = response.data.filter((league) => {
-        console.log(league);
-        if (
-          ((checkedNovice && league.SkillLevel === "Novice") ||
-            (checkedIntermediate && league.SkillLevel === "Intermediate") ||
-            (checkedAdvanced && league.SkillLevel === "Advanced")) &&
-          ((checkedMale && league.Division === "Male") ||
-            (checkedFemale && league.Division === "Female") ||
-            (checkedMixed && league.Division === "Mixed"))
-        ) {
-          return true;
-        }
-        return false;
-      });
-
-      console.log(filteredLeagues);
-      setLeagues(filteredLeagues);
-      setAllLeagues(response.data);
-    } catch (error) {
-      console.error("Error fetching leagues:", error);
-      alert("Failed to fetch leagues");
-    }
-  };
 
   const fetchCurrentLocationAndLeagues = () => {
     if (navigator.geolocation) {
@@ -534,7 +535,7 @@ export const League = () => {
             }}
           >
             {leagues !== null &&
-              leagues.map((league, index) => (
+              leagues.map((league, index) => (                 
                 <LeagueComp
                   key={league._id} // Assuming each league has a unique ID
                   logo={require("../../assets/images/ATL1.png")} // Make sure this path is correct
@@ -552,7 +553,7 @@ export const League = () => {
                   id={league._id}
                   private={league.Private}
                   accessCode={league.AccessCode}
-                  showLeague={league.Status === "PENDING" && !league.Private}
+                  showLeague={league.Status === "PENDING" && (user?.Username === "ADMIN_PUNCHSHOT" || !league.Private)}
                   onClick={() =>
                     navigate("/leagueInfo", { state: leagues[index] })
                   }
