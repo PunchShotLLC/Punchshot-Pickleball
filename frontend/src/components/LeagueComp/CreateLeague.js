@@ -84,7 +84,7 @@ export const CreateLeague = ({ show, onClose }) => {
 
   // TODO: ENTER API KEY
   setDefaults({
-    key: "AIzaSyASByHOyayF2D5qfd8Y2muEA6dfRkeK84c",
+    key: "",
     language: "en", // Default language for responses.
     region: "es", // Default region for responses.
   });

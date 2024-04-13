@@ -7,7 +7,7 @@ import {
 import { useMemo } from "react";
 
 // TODO: ENTER API KEY
-const GOOGLE_MAPS_API_KEY = "AIzaSyASByHOyayF2D5qfd8Y2muEA6dfRkeK84c";
+const GOOGLE_MAPS_API_KEY = "";
 
 const MapWithCircle = ({ center, radius, width, height }) => {
   // Load in the API key
