@@ -25,7 +25,8 @@ export const createLeague = async (req, res, body) => {
     Radius,
     Private,
     AccessCode,
-    Day,
+    MatchDay,
+    MatchTime,
   } = req.body;
 
   if (!LeagueName) {
@@ -78,11 +79,17 @@ export const createLeague = async (req, res, body) => {
       error: "Radius is required!",
     });
   }
-  if (!Day) {
+  if (!MatchDay) {
     return res.json({
-      error: "Day is required!",
+      error: "Match Day is required!",
     });
   }
+  if (!MatchTime) {
+    return res.json({
+      error: "Match Time is required!",
+    });
+  }
+
 
   const existLeagueName = await League.findOne({ LeagueName });
   if (existLeagueName) {
@@ -111,7 +118,8 @@ export const createLeague = async (req, res, body) => {
     Latitude,
     Longitude,
     Radius,
-    Day,
+    MatchDay,
+    MatchTime,
     Private,
     AccessCode,
   };
@@ -140,7 +148,8 @@ export const createLeague = async (req, res, body) => {
       Radius,
       Private,
       AccessCode,
-      Day,
+      MatchDay,
+      MatchTime,
     }).save();
 
     return res.json({ message: "League was successfully created!" });

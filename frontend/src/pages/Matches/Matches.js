@@ -39,6 +39,9 @@ export const Matches = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [currentLeague, setCurrentLeague] = useState(null); // Renamed from 'league' to avoid confusion in useEffect dependencies
   const [searchPrivate, setSearchPrivate] = React.useState(false);
+  const [matchTime, setMatchTime] = useState("");
+
+  //const matchTime = "1:00pm";
 
   const getLeagues = async (search = "") => {
     try {
@@ -66,6 +69,31 @@ export const Matches = () => {
       setSuggestions(filtered);
     }
   }, [searchLeagueName, leagues]);
+
+  useEffect(() => {
+    if (currentLeague) {
+     let time = currentLeague.MatchTime;
+
+     const militaryTimeParts = time.split(':');
+     const militaryHour = parseInt(militaryTimeParts[0], 10);
+     const militaryMinute = parseInt(militaryTimeParts[1], 10);
+     let suffix = 'AM';
+   
+     let twelveHour = militaryHour;
+     if (twelveHour >= 12) {
+       suffix = 'PM';
+       twelveHour -= 12;
+     }
+     if (twelveHour === 0) {
+       twelveHour = 12; 
+     }
+   
+     const twelveHourTime = `${twelveHour}:${militaryMinute.toString().padStart(2, '0')} ${suffix}`;   
+     setMatchTime(twelveHourTime);
+    }
+  }, [currentLeague]);
+
+
 
   const handleSearchChange = (event) => {
     setSearchLeagueName(event.target.value);
@@ -100,12 +128,14 @@ export const Matches = () => {
         captain1,
         captain2,
         match.WinnerTeam,
-        match.Score
+        match.Score,
       );
     });
 
     setMatches(matchesAfterCreateData);
   };
+
+
 
   return (
     <Box>
@@ -238,6 +268,7 @@ export const Matches = () => {
               <MatchesTable
                 matches={matches}
                 league={currentLeague}
+                time = {matchTime}
                 updateLeague={getLeagues}
               />
             ) : null}
