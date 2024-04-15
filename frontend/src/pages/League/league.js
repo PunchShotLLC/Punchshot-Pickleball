@@ -63,6 +63,9 @@ export const League = () => {
   const [checkedFemale, setCheckedFemale] = React.useState(true);
   const [checkedMixed, setCheckedMixed] = React.useState(true);
   const [searchPrivate, setSearchPrivate] = React.useState(false);
+  const [searchedPrivate, setSearchedPrivate] = React.useState(false);
+  const [searchPrivateLeagueName, setsearchPrivateLeagueName] = useState("");
+  const [searchPrivateLeagueAccessCode, setsearchPrivateLeagueAccessCode] = useState("");
 
   const navigate = useNavigate();
   
@@ -99,6 +102,36 @@ export const League = () => {
       console.log(filteredLeagues);
       setLeagues(filteredLeagues);
       setAllLeagues(response.data);
+    } catch (error) {
+      console.error("Error fetching leagues:", error);
+      alert("Failed to fetch leagues");
+    }
+  };
+
+  const getPrivateLeague = async (privateLeagueName, privateLeagueAccessCode) => {
+    console.log(privateLeagueName)
+    console.log(privateLeagueAccessCode)
+    try {
+      const url = `http://localhost:8000/leagues/${
+        privateLeagueName ? privateLeagueName : ""
+      }`;
+      const response = await axios.get(url);
+      const filteredLeagues = response.data.filter((league) => {
+        console.log(league);
+        if (privateLeagueAccessCode === league.AccessCode) {
+          return true;
+        }
+        return false;
+      });
+
+      console.log(filteredLeagues);
+      if (filteredLeagues.length < 1) {
+        alert("League could not be found");
+      } else {
+        setLeagues(filteredLeagues);
+        setSearchedPrivate(true);
+        setSearchPrivate(false)
+      }
     } catch (error) {
       console.error("Error fetching leagues:", error);
       alert("Failed to fetch leagues");
@@ -434,6 +467,7 @@ export const League = () => {
               onChange={(e) => {
                 setSearchLeagueName(e.target.value);
                 getLeagues(e.target.value);
+                setSearchedPrivate(false);
               }}
               placeholder="Search League Name"
               sx={{
@@ -478,12 +512,18 @@ export const League = () => {
                 variant="outlined"
                 label="Private League Name"
                 sx={{ marginY: 2 }}
+                onChange={(e) => {
+                  setsearchPrivateLeagueName(e.target.value);
+                }}
               />
               <TextField
                 required
                 variant="outlined"
                 label="Access Code"
                 sx={{ marginBottom: 2 }}
+                onChange={(e) => {
+                  setsearchPrivateLeagueAccessCode(e.target.value);
+                }}
               />
               <DialogActions
                 sx={{
@@ -505,6 +545,7 @@ export const League = () => {
                     variant="contained"
                     color="primary"
                     sx={{ width: "50%" }}
+                    onClick={() => getPrivateLeague(searchPrivateLeagueName, searchPrivateLeagueAccessCode)}
                   >
                     View Teams
                   </Button>
@@ -556,7 +597,10 @@ export const League = () => {
                   id={league._id}
                   private={league.Private}
                   accessCode={league.AccessCode}
-                  showLeague={league.Status === "PENDING" && (user?.Username === "ADMIN_PUNCHSHOT" || !league.Private)}
+                  showLeague={
+                    league.Status === "PENDING" &&
+                    (user?.Username === "ADMIN_PUNCHSHOT" || !league.Private || (league.Private && searchedPrivate))
+                  }
                   onClick={() =>
                     navigate("/leagueInfo", { state: leagues[index] })
                   }
