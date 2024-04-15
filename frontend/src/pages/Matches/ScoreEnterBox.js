@@ -265,7 +265,6 @@ export default function ScoreEnterBox(props) {
                       <TableCell align="center">
                         <TextField
                           value={row.score1}
-                          required
                           onChange={(e) =>
                             handleScoreChange(index, "score1", e.target.value)
                           }
@@ -274,6 +273,7 @@ export default function ScoreEnterBox(props) {
                               style: { textAlign: "center" },
                             },
                           }}
+                          disabled={index === 2 && !input}
                         />
                       </TableCell>
                       <TableCell align="center">
@@ -328,6 +328,7 @@ export default function ScoreEnterBox(props) {
                               style: { textAlign: "center" },
                             },
                           }}
+                          disabled={index === 2 && !input}
                         />
                       </TableCell>
                       <TableCell align="center">
