@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -8,6 +8,7 @@ import InputBase from "@mui/material/InputBase";
 import axios from "axios";
 import { Dialog, DialogActions, TextField } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { UserContext } from "../../components/UserContext/usercontext";
 
 function createData(
   league,
@@ -39,6 +40,7 @@ export const Matches = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [currentLeague, setCurrentLeague] = useState(null); // Renamed from 'league' to avoid confusion in useEffect dependencies
   const [searchPrivate, setSearchPrivate] = React.useState(false);
+  const { user } = useContext(UserContext);
 
   const getLeagues = async (search = "") => {
     try {
@@ -60,12 +62,14 @@ export const Matches = () => {
     if (searchLeagueName === "") {
       setSuggestions([]);
     } else {
-      const filtered = leagues.filter((league) =>
-        league.LeagueName.toLowerCase().includes(searchLeagueName.toLowerCase())
+      const filtered = leagues.filter((league) => {
+        return league.LeagueName.toLowerCase().includes(searchLeagueName.toLowerCase())
+        && league.Status === "ONGOING" && (user?.Username === "ADMIN_PUNCHSHOT" || !league.Private);
+      }
       );
       setSuggestions(filtered);
     }
-  }, [searchLeagueName, leagues]);
+  }, [searchLeagueName, leagues, user?.Username]);
 
   const handleSearchChange = (event) => {
     setSearchLeagueName(event.target.value);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -10,6 +10,7 @@ import {
 import LeaderboardTable from "./LeaderboardTable";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { alpha } from "@mui/material/styles";
+import { UserContext } from "../../components/UserContext/usercontext";
 
 const modalStyle = {
   position: "absolute",
@@ -41,20 +42,10 @@ export const Leaderboard = () => {
   const [leaderboardLeagueId, setLeaderboardLeagueId] = useState(null);
   const [selectedLeagueName, setSelectedLeagueName] = useState(""); // Added state for the league's name
   const [searchPrivate, setSearchPrivate] = React.useState(false);
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
-    // Fetch ongoing leagues from the backend
-    const fetchLeagues = async () => {
-      const response = await fetch("http://localhost:8000/leagues/");
-      const data = await response.json();
-      setLeagues(data);
-    };
-
-    fetchLeagues();
-  }, []);
-
-  useEffect(() => {
-    // Fetch ongoing leagues from the backend
+    // Fetch all leagues from the backend
     const fetchLeagues = async () => {
       const response = await fetch("http://localhost:8000/leagues/");
       const data = await response.json();
@@ -69,8 +60,10 @@ export const Leaderboard = () => {
     if (searchInput === "") {
       setSuggestions([]);
     } else {
-      const filtered = leagues.filter((league) =>
-        league.LeagueName.toLowerCase().includes(searchInput.toLowerCase())
+      const filtered = leagues.filter((league) => {
+        return league.LeagueName.toLowerCase().includes(searchInput.toLowerCase())
+        && league.Status === "ONGOING" && (user?.Username === "ADMIN_PUNCHSHOT" || !league.Private);
+      }
       );
       setSuggestions(filtered);
     }
