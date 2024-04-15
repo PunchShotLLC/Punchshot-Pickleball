@@ -107,6 +107,8 @@ export const Leaderboard = () => {
       setSelectedLeagueName(match.LeagueName);
       setSuggestions([]);
       setSearchPrivate(false);
+    } else {
+      alert("League could not be found");
     }
   };
 
