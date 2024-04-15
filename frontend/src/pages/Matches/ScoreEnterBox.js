@@ -18,15 +18,44 @@ export default function ScoreEnterBox(props) {
     { id: "sets", label: "Set", minWidth: 120 },
     { id: "team1", label: props.match.team1 + " Score", minWidth: 120 },
     { id: "player1", label: "Player", minWidth: 120 },
-    { id: "team2", label: props.match.team2 + " Score", minWidth: 120 },
     { id: "player2", label: "Player", minWidth: 120 },
+    { id: "team2", label: props.match.team2 + " Score", minWidth: 120 },
+    { id: "player3", label: "Player", minWidth: 120 },
+    { id: "player4", label: "Player", minWidth: 120 },
     { id: "winner", label: "Winner", minWidth: 120 },
   ];
 
   const [scores, setScores] = useState([
-    { set: 1, score1: "", player1: "", score2: "", player2: "", winner: null },
-    { set: 2, score1: "", player1: "", score2: "", player2: "", winner: null },
-    { set: 3, score1: "", player1: "", score2: "", player2: "", winner: null },
+    {
+      set: 1,
+      score1: "",
+      player1: "",
+      player2: "",
+      score2: "",
+      player3: "",
+      player4: "",
+      winner: null,
+    },
+    {
+      set: 2,
+      score1: "",
+      player1: "",
+      player2: "",
+      score2: "",
+      player3: "",
+      player4: "",
+      winner: null,
+    },
+    {
+      set: 3,
+      score1: "",
+      player1: "",
+      player2: "",
+      score2: "",
+      player3: "",
+      player4: "",
+      winner: null,
+    },
   ]);
   const [result, setResult] = useState(null);
   const [matchWinner, setMatchWinner] = useState(null);
@@ -53,6 +82,17 @@ export default function ScoreEnterBox(props) {
       updatedScores[index].winner =
         score1 > score2 ? props.match.team1 : props.match.team2;
 
+      if (
+        updatedScores[0].winner !== null &&
+        updatedScores[1].winner !== null
+      ) {
+        if (updatedScores[0].winner !== updatedScores[1].winner) {
+          setInput(true);
+        } else {
+          setInput(false);
+        }
+      }
+
       // Determine result
       const team1Sets = updatedScores.filter(
         (set) => set.winner === props.match.team1
@@ -61,7 +101,7 @@ export default function ScoreEnterBox(props) {
         (set) => set.winner === props.match.team2
       ).length;
 
-      if (team1Sets + team2Sets == 3 && team1Sets !== team2Sets) {
+      if (team1Sets + team2Sets >= 2 && team1Sets !== team2Sets) {
         let res = `${props.match.team1} won ${team1Sets}-${team2Sets}`;
         setMatchWinner(props.match.team1);
         setMatchScore(`${team1Sets}-${team2Sets}`);
@@ -124,16 +164,47 @@ export default function ScoreEnterBox(props) {
     }
 
     for (let i = 0; i < 2; i++) {
-      if (scores[i].player1 === "" || scores[i].player2 === "") {
+      if (
+        scores[i].player1 === "" ||
+        scores[i].player2 === "" ||
+        scores[i].player3 === "" ||
+        scores[i].player4 === ""
+      ) {
         alert("One or more players are missing.");
         return;
       }
     }
 
-    if (input && (scores[2].player1 === "" || scores[2].player2 === "")) {
+    if (
+      input &&
+      (scores[2].player1 === "" ||
+        scores[2].player2 === "" ||
+        scores[2].player3 === "" ||
+        scores[2].player4 === "")
+    ) {
       alert("One or more players are missing.");
       return;
     }
+
+    for (let i = 0; i < 3; i++) {
+      const players = [
+        scores[i].player1,
+        scores[i].player2,
+        scores[i].player3,
+        scores[i].player4,
+      ];
+      for (let j = 0; j < players.length; j += 2) {
+        if (
+          players[j] !== "" &&
+          players[j + 1] !== "" &&
+          players[j] === players[j + 1]
+        ) {
+          alert("Invalid Player Input.");
+          return;
+        }
+      }
+    }
+
     // Set the appropriate values in the league object
     props.league["Matches"][props.matchIndex]["WinnerTeam"] = matchWinner;
     props.league["Matches"][props.matchIndex]["Score"] = matchScore;
@@ -194,6 +265,7 @@ export default function ScoreEnterBox(props) {
                       <TableCell align="center">
                         <TextField
                           value={row.score1}
+                          required
                           onChange={(e) =>
                             handleScoreChange(index, "score1", e.target.value)
                           }
@@ -209,6 +281,7 @@ export default function ScoreEnterBox(props) {
                           id="player1"
                           select
                           label="Select"
+                          required
                           value={scores[index]["player1"]}
                           sx={{ width: "100%" }}
                           onChange={(e) =>
@@ -225,7 +298,28 @@ export default function ScoreEnterBox(props) {
                       </TableCell>
                       <TableCell align="center">
                         <TextField
+                          id="player2"
+                          select
+                          label="Select"
+                          required
+                          value={scores[index]["player2"]}
+                          sx={{ width: "100%" }}
+                          onChange={(e) =>
+                            handlePlayerChange(index, "player2", e.target.value)
+                          }
+                          disabled={index === 2 && !input}
+                        >
+                          {team1Players.map((option, index) => (
+                            <MenuItem key={index} value={option}>
+                              {option}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                      </TableCell>
+                      <TableCell align="center">
+                        <TextField
                           value={row.score2}
+                          required
                           onChange={(e) =>
                             handleScoreChange(index, "score2", e.target.value)
                           }
@@ -238,13 +332,34 @@ export default function ScoreEnterBox(props) {
                       </TableCell>
                       <TableCell align="center">
                         <TextField
-                          id="player2"
+                          id="player3"
                           select
                           label="Select"
-                          value={scores[index]["player2"]}
+                          required
+                          value={scores[index]["player3"]}
                           sx={{ width: "100%" }}
                           onChange={(e) =>
-                            handlePlayerChange(index, "player2", e.target.value)
+                            handlePlayerChange(index, "player3", e.target.value)
+                          }
+                          disabled={index === 2 && !input}
+                        >
+                          {team2Players.map((option, index) => (
+                            <MenuItem key={index} value={option}>
+                              {option}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                      </TableCell>
+                      <TableCell align="center">
+                        <TextField
+                          id="player4"
+                          select
+                          label="Select"
+                          required
+                          value={scores[index]["player4"]}
+                          sx={{ width: "100%" }}
+                          onChange={(e) =>
+                            handlePlayerChange(index, "player4", e.target.value)
                           }
                           disabled={index === 2 && !input}
                         >
