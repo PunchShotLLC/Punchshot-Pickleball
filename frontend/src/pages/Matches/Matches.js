@@ -41,6 +41,8 @@ export const Matches = () => {
   const [currentLeague, setCurrentLeague] = useState(null); // Renamed from 'league' to avoid confusion in useEffect dependencies
   const [searchPrivate, setSearchPrivate] = React.useState(false);
   const [matchTime, setMatchTime] = useState("");
+  const [searchPrivateLeagueName, setsearchPrivateLeagueName] = useState("");
+  const [searchPrivateLeagueAccessCode, setsearchPrivateLeagueAccessCode] = useState("");
   const { user } = useContext(UserContext);
 
   const getLeagues = async (search = "") => {
@@ -137,7 +139,22 @@ export const Matches = () => {
     setMatches(matchesAfterCreateData);
   };
 
-
+  const getPrivateLeague = async (privateLeagueName, privateLeagueAccessCode) => {
+    const match = leagues.find(
+      (league) =>
+        league.LeagueName.toLowerCase() === privateLeagueName.toLowerCase() &&
+        league.AccessCode === privateLeagueAccessCode &&
+        league.Status === "ONGOING"
+    );
+    if (match) {
+      setSearchLeagueName(privateLeagueName);
+      setMatchesInTable(privateLeagueName);
+      setSuggestions([]);
+      setSearchPrivate(false);
+    } else {
+      alert("League could not be found or is not ongoing"); 
+    }
+  };
 
   return (
     <Box>
@@ -297,12 +314,18 @@ export const Matches = () => {
                 variant="outlined"
                 label="Private League Name"
                 sx={{ marginY: 2 }}
+                onChange={(e) => {
+                  setsearchPrivateLeagueName(e.target.value);
+                }}
               />
               <TextField
                 required
                 variant="outlined"
                 label="Access Code"
                 sx={{ marginBottom: 2 }}
+                onChange={(e) => {
+                  setsearchPrivateLeagueAccessCode(e.target.value);
+                }}
               />
               <DialogActions
                 sx={{
@@ -324,6 +347,7 @@ export const Matches = () => {
                     variant="contained"
                     color="primary"
                     sx={{ width: "50%" }}
+                    onClick={() => getPrivateLeague(searchPrivateLeagueName, searchPrivateLeagueAccessCode)}
                   >
                     Search
                   </Button>
