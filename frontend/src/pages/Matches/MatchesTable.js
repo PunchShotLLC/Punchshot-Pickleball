@@ -136,7 +136,6 @@ export default function MatchesTable(props) {
           component="div"
           rowsPerPage={rowsPerPage}
           page={page}
-          count={props.matches.length}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
