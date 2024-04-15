@@ -8,6 +8,8 @@ import { useState, useEffect } from "react";
 import { Modal } from "@mui/material";
 import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
 import MapWithCircle from "./MapWithCircle";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Tooltip from "@mui/material/Tooltip";
 
 export const LeagueComp = (props) => {
   function isBeforeToday(dateStr) {
@@ -99,13 +101,6 @@ export const LeagueComp = (props) => {
   };
 
   const statusColor = props.showLeague ? "green" : "red";
-
-  const checkPrivate = () => {
-    if (props.private == true) {
-      console.log("trueeeee");
-    }
-  };
-  checkPrivate();
 
   if (props.showLeague) {
     return (
@@ -230,7 +225,17 @@ export const LeagueComp = (props) => {
             }}
           >
             <Box sx={{ ...styles.column, margin: "1em" }}>
-              <Typography sx={styles.name}>{props.name}</Typography>
+              {props.private ? (
+                <Box sx={{ display: "flex" }}>
+                  <Typography sx={styles.name}>{props.name}</Typography>
+                  <Tooltip title="Private" placement="top" arrow>
+                    <LockOutlinedIcon sx={{ fontSize: 15 }} />
+                  </Tooltip>
+                </Box>
+              ) : (
+                <Typography sx={styles.name}>{props.name}</Typography>
+              )}
+
               <Typography sx={styles.basicInfo}>
                 <Typography sx={{ fontWeight: "bold" }}>Date:</Typography>&nbsp;
                 {new Date(props.startDate).toLocaleDateString()} -{" "}

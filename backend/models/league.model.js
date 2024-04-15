@@ -81,10 +81,15 @@ const leagueSchema = new Schema({
     type: Number,
     required: true,
   },
-  Day: {
+  MatchDay: {
     type: String,
     required: true,
   },
+  MatchTime: {
+    type: String,
+    required: true,
+  },
+
   Matches: [Object],
 
   Private: {

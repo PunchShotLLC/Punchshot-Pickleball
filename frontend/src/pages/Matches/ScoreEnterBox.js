@@ -53,18 +53,6 @@ export default function ScoreEnterBox(props) {
       updatedScores[index].winner =
         score1 > score2 ? props.match.team1 : props.match.team2;
 
-      // If set 1 and set 2 are done, determine if set 3 is needed
-      if (
-        updatedScores[0].winner !== null &&
-        updatedScores[1].winner !== null
-      ) {
-        if (updatedScores[0].winner !== updatedScores[1].winner) {
-          setInput(true);
-        } else {
-          setInput(false);
-        }
-      }
-
       // Determine result
       const team1Sets = updatedScores.filter(
         (set) => set.winner === props.match.team1
@@ -73,7 +61,7 @@ export default function ScoreEnterBox(props) {
         (set) => set.winner === props.match.team2
       ).length;
 
-      if (team1Sets + team2Sets >= 2 && team1Sets !== team2Sets) {
+      if (team1Sets + team2Sets == 3 && team1Sets !== team2Sets) {
         let res = `${props.match.team1} won ${team1Sets}-${team2Sets}`;
         setMatchWinner(props.match.team1);
         setMatchScore(`${team1Sets}-${team2Sets}`);
@@ -214,7 +202,6 @@ export default function ScoreEnterBox(props) {
                               style: { textAlign: "center" },
                             },
                           }}
-                          disabled={index === 2 && !input}
                         />
                       </TableCell>
                       <TableCell align="center">
@@ -247,7 +234,6 @@ export default function ScoreEnterBox(props) {
                               style: { textAlign: "center" },
                             },
                           }}
-                          disabled={index === 2 && !input}
                         />
                       </TableCell>
                       <TableCell align="center">

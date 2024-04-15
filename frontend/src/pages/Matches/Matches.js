@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -8,6 +8,7 @@ import InputBase from "@mui/material/InputBase";
 import axios from "axios";
 import { Dialog, DialogActions, TextField } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { UserContext } from "../../components/UserContext/usercontext";
 
 function createData(
   league,
@@ -39,6 +40,8 @@ export const Matches = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [currentLeague, setCurrentLeague] = useState(null); // Renamed from 'league' to avoid confusion in useEffect dependencies
   const [searchPrivate, setSearchPrivate] = React.useState(false);
+  const [matchTime, setMatchTime] = useState("");
+  const { user } = useContext(UserContext);
 
   const getLeagues = async (search = "") => {
     try {
@@ -60,12 +63,39 @@ export const Matches = () => {
     if (searchLeagueName === "") {
       setSuggestions([]);
     } else {
-      const filtered = leagues.filter((league) =>
-        league.LeagueName.toLowerCase().includes(searchLeagueName.toLowerCase())
+      const filtered = leagues.filter((league) => {
+        return league.LeagueName.toLowerCase().includes(searchLeagueName.toLowerCase())
+        && league.Status === "ONGOING" && (user?.Username === "ADMIN_PUNCHSHOT" || !league.Private);
+      }
       );
       setSuggestions(filtered);
     }
-  }, [searchLeagueName, leagues]);
+  }, [searchLeagueName, leagues, user?.Username]);
+
+  useEffect(() => {
+    if (currentLeague) {
+     let time = currentLeague.MatchTime;
+
+     const militaryTimeParts = time.split(':');
+     const militaryHour = parseInt(militaryTimeParts[0], 10);
+     const militaryMinute = parseInt(militaryTimeParts[1], 10);
+     let suffix = 'AM';
+   
+     let twelveHour = militaryHour;
+     if (twelveHour >= 12) {
+       suffix = 'PM';
+       twelveHour -= 12;
+     }
+     if (twelveHour === 0) {
+       twelveHour = 12; 
+     }
+   
+     const twelveHourTime = `${twelveHour}:${militaryMinute.toString().padStart(2, '0')} ${suffix}`;   
+     setMatchTime(twelveHourTime);
+    }
+  }, [currentLeague]);
+
+
 
   const handleSearchChange = (event) => {
     setSearchLeagueName(event.target.value);
@@ -100,12 +130,14 @@ export const Matches = () => {
         captain1,
         captain2,
         match.WinnerTeam,
-        match.Score
+        match.Score,
       );
     });
 
     setMatches(matchesAfterCreateData);
   };
+
+
 
   return (
     <Box>
@@ -238,6 +270,7 @@ export const Matches = () => {
               <MatchesTable
                 matches={matches}
                 league={currentLeague}
+                time = {matchTime}
                 updateLeague={getLeagues}
               />
             ) : null}
