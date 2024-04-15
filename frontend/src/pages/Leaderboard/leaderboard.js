@@ -42,6 +42,8 @@ export const Leaderboard = () => {
   const [leaderboardLeagueId, setLeaderboardLeagueId] = useState(null);
   const [selectedLeagueName, setSelectedLeagueName] = useState(""); // Added state for the league's name
   const [searchPrivate, setSearchPrivate] = React.useState(false);
+  const [searchPrivateLeagueName, setsearchPrivateLeagueName] = useState("");
+  const [searchPrivateLeagueAccessCode, setsearchPrivateLeagueAccessCode] = useState("");
   const { user } = useContext(UserContext);
 
   useEffect(() => {
@@ -92,6 +94,20 @@ export const Leaderboard = () => {
     setLeaderboardLeagueId(leagueId);
     setSelectedLeagueName(leagueName); // Set the league name
     setSuggestions([]);
+  };
+
+  const getPrivateLeague = async (privateLeagueName, privateLeagueAccessCode) => {
+    const match = leagues.find(
+      (league) =>
+        league.LeagueName.toLowerCase() === privateLeagueName.toLowerCase() &&
+        league.AccessCode === privateLeagueAccessCode
+    );
+    if (match) {
+      setLeaderboardLeagueId(match._id);
+      setSelectedLeagueName(match.LeagueName);
+      setSuggestions([]);
+      setSearchPrivate(false);
+    }
   };
 
   return (
@@ -273,12 +289,18 @@ export const Leaderboard = () => {
             variant="outlined"
             label="Private League Name"
             sx={{ marginY: 2 }}
+            onChange={(e) => {
+              setsearchPrivateLeagueName(e.target.value);
+            }}
           />
           <TextField
             required
             variant="outlined"
             label="Access Code"
             sx={{ marginBottom: 2 }}
+            onChange={(e) => {
+              setsearchPrivateLeagueAccessCode(e.target.value);
+            }}
           />
           <DialogActions
             sx={{ display: "flex", justifyContent: "space-evenly", padding: 0 }}
@@ -292,7 +314,12 @@ export const Leaderboard = () => {
               >
                 Cancel
               </Button>
-              <Button variant="contained" color="primary" sx={{ width: "50%" }}>
+              <Button 
+                variant="contained" 
+                color="primary" 
+                sx={{ width: "50%" }}
+                onClick={() => getPrivateLeague(searchPrivateLeagueName, searchPrivateLeagueAccessCode)}
+              >
                 Search
               </Button>
             </ThemeProvider>
