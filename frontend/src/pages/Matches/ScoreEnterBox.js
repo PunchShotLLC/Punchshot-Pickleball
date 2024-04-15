@@ -11,24 +11,37 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
 
 export default function ScoreEnterBox(props) {
   const columns = [
     { id: "sets", label: "Set", minWidth: 120 },
-    { id: "team1", label: props.match.team1, minWidth: 120 },
-    { id: "team2", label: props.match.team2, minWidth: 120 },
+    { id: "team1", label: props.match.team1 + " Score", minWidth: 120 },
+    { id: "player1", label: "Player", minWidth: 120 },
+    { id: "team2", label: props.match.team2 + " Score", minWidth: 120 },
+    { id: "player2", label: "Player", minWidth: 120 },
     { id: "winner", label: "Winner", minWidth: 120 },
   ];
 
   const [scores, setScores] = useState([
-    { set: 1, score1: "", score2: "", winner: null },
-    { set: 2, score1: "", score2: "", winner: null },
-    { set: 3, score1: "", score2: "", winner: null },
+    { set: 1, score1: "", player1: "", score2: "", player2: "", winner: null },
+    { set: 2, score1: "", player1: "", score2: "", player2: "", winner: null },
+    { set: 3, score1: "", player1: "", score2: "", player2: "", winner: null },
   ]);
   const [result, setResult] = useState(null);
   const [matchWinner, setMatchWinner] = useState(null);
   const [matchScore, setMatchScore] = useState(null);
-  const [input, setInput] = useState(true);
+  const [input, setInput] = useState(false);
+
+  const team1 = props.league.Teams.find((team, index) => {
+    return team.TeamName === props.match.team1;
+  });
+  const team1Players = [...team1.TeamMembers, team1.TeamCaptain];
+
+  const team2 = props.league.Teams.find((team, index) => {
+    return team.TeamName === props.match.team2;
+  });
+  const team2Players = [...team2.TeamMembers, team2.TeamCaptain];
 
   const handleScoreChange = (index, field, value) => {
     const updatedScores = [...scores];
@@ -39,18 +52,6 @@ export default function ScoreEnterBox(props) {
       // Calculate winner
       updatedScores[index].winner =
         score1 > score2 ? props.match.team1 : props.match.team2;
-
-      // If set 1 and set 2 are done, determine if set 3 is needed
-      // if (
-      //   updatedScores[0].winner !== null &&
-      //   updatedScores[1].winner !== null
-      // ) {
-      //   if (updatedScores[0].winner !== updatedScores[1].winner) {
-      //     setInput(false);
-      //   } else {
-      //     setInput(true);
-      //   }
-      // }
 
       // Determine result
       const team1Sets = updatedScores.filter(
@@ -78,6 +79,12 @@ export default function ScoreEnterBox(props) {
       setMatchScore(null);
     }
     setScores(updatedScores);
+  };
+
+  const handlePlayerChange = (index, field, value) => {
+    const updatedPlayers = [...scores];
+    updatedPlayers[index][field] = value;
+    setScores(updatedPlayers);
   };
 
   const validateScores = (score1, score2) => {
@@ -116,9 +123,21 @@ export default function ScoreEnterBox(props) {
       return;
     }
 
+    for (let i = 0; i < 2; i++) {
+      if (scores[i].player1 === "" || scores[i].player2 === "") {
+        alert("One or more players are missing.");
+        return;
+      }
+    }
+
+    if (input && (scores[2].player1 === "" || scores[2].player2 === "")) {
+      alert("One or more players are missing.");
+      return;
+    }
     // Set the appropriate values in the league object
     props.league["Matches"][props.matchIndex]["WinnerTeam"] = matchWinner;
     props.league["Matches"][props.matchIndex]["Score"] = matchScore;
+    props.league["Matches"][props.matchIndex]["SetsDetail"] = scores;
 
     // Make the patch request to update the leagues
     const requestOptions = {
@@ -183,8 +202,26 @@ export default function ScoreEnterBox(props) {
                               style: { textAlign: "center" },
                             },
                           }}
-                          // disabled={index === 2 && input}
                         />
+                      </TableCell>
+                      <TableCell align="center">
+                        <TextField
+                          id="player1"
+                          select
+                          label="Select"
+                          value={scores[index]["player1"]}
+                          sx={{ width: "100%" }}
+                          onChange={(e) =>
+                            handlePlayerChange(index, "player1", e.target.value)
+                          }
+                          disabled={index === 2 && !input}
+                        >
+                          {team1Players.map((option, index) => (
+                            <MenuItem key={index} value={option}>
+                              {option}
+                            </MenuItem>
+                          ))}
+                        </TextField>
                       </TableCell>
                       <TableCell align="center">
                         <TextField
@@ -197,8 +234,26 @@ export default function ScoreEnterBox(props) {
                               style: { textAlign: "center" },
                             },
                           }}
-                          // disabled={index === 2 && input}
                         />
+                      </TableCell>
+                      <TableCell align="center">
+                        <TextField
+                          id="player2"
+                          select
+                          label="Select"
+                          value={scores[index]["player2"]}
+                          sx={{ width: "100%" }}
+                          onChange={(e) =>
+                            handlePlayerChange(index, "player2", e.target.value)
+                          }
+                          disabled={index === 2 && !input}
+                        >
+                          {team2Players.map((option, index) => (
+                            <MenuItem key={index} value={option}>
+                              {option}
+                            </MenuItem>
+                          ))}
+                        </TextField>
                       </TableCell>
                       <TableCell align="center">{row.winner}</TableCell>
                     </TableRow>
@@ -240,8 +295,8 @@ const styles = {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: "40%",
-    height: "50%",
+    width: "60%",
+    height: "60%",
     bgcolor: "background.paper",
     borderRadius: "16px",
     p: 4,
