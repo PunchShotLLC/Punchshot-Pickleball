@@ -24,7 +24,11 @@ export const LeagueComp = (props) => {
     // Compare the dates
     return givenDate < today;
   }
-
+  function formatDateString(str) {
+    const splitStr = str.split("T")[0].split("-")
+    const date = new Date(splitStr[0], splitStr[1] - 1, splitStr[2])
+    return date.toLocaleDateString()
+  }
   const startLeague = async () => {
     console.log("Attempting to start league");
 
@@ -176,7 +180,7 @@ export const LeagueComp = (props) => {
                   />
                   <Typography sx={styles.modalData}>
                     Team Registration Date:{" "}
-                    {new Date(props.registrationDate).toLocaleDateString()}
+                    {formatDateString(props.registrationDate)}
                   </Typography>
                 </Box>
                 <MapWithCircle
@@ -238,8 +242,8 @@ export const LeagueComp = (props) => {
 
               <Typography sx={styles.basicInfo}>
                 <Typography sx={{ fontWeight: "bold" }}>Date:</Typography>&nbsp;
-                {new Date(props.startDate).toLocaleDateString()} -{" "}
-                {new Date(props.endDate).toLocaleDateString()}
+                {formatDateString(props.startDate)} -{" "}
+                {formatDateString(props.endDate)}
               </Typography>
               <Typography sx={styles.basicInfo}>
                 <Typography sx={{ fontWeight: "bold" }}>
