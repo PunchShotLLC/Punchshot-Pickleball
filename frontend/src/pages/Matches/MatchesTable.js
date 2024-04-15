@@ -109,6 +109,14 @@ export default function MatchesTable(props) {
                           );
                         }
                         const value = row[column.id];
+                        if (column.id === "league") {
+                          return (
+                            <TableCell key={column.id} align="center">
+                              {value + " at " + props.time}
+                            </TableCell>
+                          );
+                        }
+                        
                         return (
                           <TableCell
                             key={column.id}

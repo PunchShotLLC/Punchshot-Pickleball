@@ -11,6 +11,10 @@ import { FormControlLabel } from "@mui/material";
 import { FormGroup } from "@mui/material";
 import { Checkbox } from "@mui/material";
 
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import MapWithCircle from "./MapWithCircle";
@@ -79,6 +83,8 @@ export const CreateLeague = ({ show, onClose }) => {
   const [address, setAddress] = useState("");
   const [privateLeague, setPrivateLeague] = useState(false);
   const [accessCode, setAccessCode] = useState("N/A");
+  const [matchTime, setMatchTime] = useState("");
+
 
   const [leagues, setLeagues] = useState(null);
 
@@ -171,7 +177,8 @@ export const CreateLeague = ({ show, onClose }) => {
       Radius: leagueRadiusMeter,
       Private: privateLeague,
       AccessCode: accessCode,
-      Day: day,
+      MatchDay: day,
+      MatchTime: matchTime,
     };
 
     console.log("RESP TEST");
@@ -210,6 +217,15 @@ export const CreateLeague = ({ show, onClose }) => {
     if (!isChecked) {
       setAccessCode("N/A");
     }
+  };
+
+
+  const handleChangeMatchTime = (newTime) => {
+    const time = new Date(newTime);
+    const hours = time.getHours();
+    const minutes = time.getMinutes();
+    const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    setMatchTime(formattedTime);
   };
 
   return (
@@ -350,7 +366,7 @@ export const CreateLeague = ({ show, onClose }) => {
               displayEmpty
             >
               <MenuItem value="" disabled>
-                Match Day of the Week
+                Match Day
               </MenuItem>
               <MenuItem value="1">Monday</MenuItem>
               <MenuItem value="2">Tuesday</MenuItem>
@@ -360,6 +376,9 @@ export const CreateLeague = ({ show, onClose }) => {
               <MenuItem value="6">Saturday</MenuItem>
               <MenuItem value="0">Sunday</MenuItem>
             </Select>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <TimePicker label="Match Time" onChange={handleChangeMatchTime}/>
+            </LocalizationProvider>
           </FormRow>
           <Box
             sx={{
@@ -373,7 +392,7 @@ export const CreateLeague = ({ show, onClose }) => {
               center={leagueCenterCoords}
               radius={leagueRadiusMeter}
               width="600px"
-              height="300px"
+              height="200px"
             />
           </Box>
           <Button
